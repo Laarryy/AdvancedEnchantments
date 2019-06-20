@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityAerial;
@@ -32,6 +33,7 @@ import ninja.egg82.updater.SpigotUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -131,6 +133,22 @@ public class AdvancedEnchantments {
     }
 
     private void loadCommands() {
+        commandManager.getCommandCompletions().registerCompletion("enchant", c -> {
+            String lower = c.getInput().toLowerCase().replace(" ", "_");
+            Set<String> enchants = new LinkedHashSet<>();
+            for (Enchantment e : Enchantment.values()) {
+                if (e.getName().toLowerCase().startsWith(lower)) {
+                    enchants.add(e.getName());
+                }
+            }
+            for (AdvancedEnchantment e : AdvancedEnchantment.values()) {
+                if (e.getName().toLowerCase().startsWith(lower)) {
+                    enchants.add(e.getName());
+                }
+            }
+            return ImmutableList.copyOf(enchants);
+        });
+
         commandManager.getCommandCompletions().registerCompletion("subcommand", c -> {
             String lower = c.getInput().toLowerCase();
             Set<String> commands = new LinkedHashSet<>();

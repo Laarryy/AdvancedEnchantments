@@ -5,6 +5,8 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import co.aikar.taskchain.TaskChainFactory;
 import me.egg82.ae.commands.internal.ReloadCommand;
+import me.egg82.ae.commands.internal.RemoveCommand;
+import me.egg82.ae.commands.internal.SetCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -32,16 +34,16 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Syntax("<enchant> [level]")
     @CommandCompletion("@enchant")
     public void onSet(CommandSender sender, String enchant, int level) {
-        //new SetCommand(sender, enchant, level).run();
+        new SetCommand(sender, enchant, level).run();
     }
 
-    @Subcommand("remove")
+    @Subcommand("remove|delete")
     @CommandPermission("ae.admin")
     @Description("Removed an enchantment from your currently-held item.")
     @Syntax("<enchant>")
     @CommandCompletion("@enchant")
     public void onRemove(CommandSender sender, String enchant) {
-        //new RemoveCommand(sender, enchant).run();
+        new RemoveCommand(sender, enchant).run();
     }
 
     @CatchUnknown @Default
