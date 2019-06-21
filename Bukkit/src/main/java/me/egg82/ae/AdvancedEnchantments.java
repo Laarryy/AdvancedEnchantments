@@ -17,7 +17,11 @@ import java.util.logging.Level;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
+import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityAerial;
+import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
+import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
+import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.hooks.PlayerAnalyticsHook;
 import me.egg82.ae.hooks.PluginHook;
@@ -36,7 +40,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -166,7 +174,21 @@ public class AdvancedEnchantments {
 
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin).accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemReplace().accept(e)));
+
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityAerial().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> {
+            if (e.getSource().getViewers().isEmpty()) {
+                return false;
+            }
+            if (e.getSource().getViewers().get(0).hasPermission("ae.admin")) {
+                return true;
+            }
+            return false;
+        }).handler(e -> new InventoryMoveItemAdherence().accept(e)));
     }
 
     private void loadHooks() {

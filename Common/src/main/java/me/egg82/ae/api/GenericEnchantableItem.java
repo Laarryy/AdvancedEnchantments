@@ -17,9 +17,9 @@ public abstract class GenericEnchantableItem {
 
     public Set<GenericEnchantmentTarget> getEnchantmentTargets() { return targets; }
 
-    public boolean hasEnchantment(GenericEnchantment enchantment) { return enchantments.containsKey(enchantment); }
+    public boolean hasEnchantment(GenericEnchantment enchantment) { return enchantment != null && enchantments.containsKey(enchantment); }
 
-    public int getEnchantmentLevel(GenericEnchantment enchantment) { return enchantments.computeIfAbsent(enchantment, k -> -1); }
+    public int getEnchantmentLevel(GenericEnchantment enchantment) { return enchantment == null ? -1 : enchantments.computeIfAbsent(enchantment, k -> -1); }
 
     public void setEnchantmentLevel(GenericEnchantment enchantment, int level) { enchantments.compute(enchantment, (k, v) -> level < 0 ? null : level); }
 

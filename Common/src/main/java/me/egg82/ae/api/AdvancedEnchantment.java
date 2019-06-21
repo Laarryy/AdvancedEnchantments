@@ -38,7 +38,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
 
     public static Optional<AdvancedEnchantment> getByName(String name) {
         for (AdvancedEnchantment enchantment : allEnchantments) {
-            if (enchantment.name.equalsIgnoreCase(name)) {
+            if (enchantment.name.equalsIgnoreCase(name) || enchantment.friendlyName.equalsIgnoreCase(name)) {
                 return Optional.of(enchantment);
             }
         }
