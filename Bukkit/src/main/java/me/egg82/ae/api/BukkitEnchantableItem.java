@@ -158,7 +158,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
             if (kvp.getKey() instanceof BukkitEnchantment) {
                 bukkitEnchants.add((BukkitEnchantment) kvp.getKey());
-                item.addEnchantment((Enchantment) kvp.getKey().getConcrete(), kvp.getValue());
+                item.addUnsafeEnchantment((Enchantment) kvp.getKey().getConcrete(), kvp.getValue());
             } else {
                 otherEnchants.add(kvp.getKey());
                 // Skip Bukkit enchants for lore
@@ -186,7 +186,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         } else {
             if (!otherEnchants.isEmpty() && !hasHackyEnchant) {
                 enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
-                item.addEnchantment(Enchantment.DURABILITY, 1);
+                item.addUnsafeEnchantment(Enchantment.DURABILITY, 0);
                 hasHackyEnchant = true;
             }
 

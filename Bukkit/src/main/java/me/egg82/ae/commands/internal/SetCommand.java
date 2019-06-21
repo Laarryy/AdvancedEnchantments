@@ -41,7 +41,7 @@ public class SetCommand implements Runnable {
             sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Level cannot be < " + en.get().getMinLevel());
             return;
         }
-        if (l < en.get().getMaxLevel()) {
+        if (l > en.get().getMaxLevel()) {
             sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Level cannot be > " + en.get().getMaxLevel());
             return;
         }
@@ -69,9 +69,21 @@ public class SetCommand implements Runnable {
         Optional<GenericEnchantableItem> enchantableOffHand = Optional.ofNullable(offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null);
 
         if (enchantableMainHand.isPresent()) {
+            if (!en.get().canEnchant(enchantableMainHand.get())) {
+                sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You cannot enchant that item with this enchantment.");
+                return;
+            }
+
             enchantableMainHand.get().setEnchantmentLevel(en.get(), l);
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully set \"" + en.get().getFriendlyName() + "\" to " + l + " for item in main hand.");
         } else if (enchantableOffHand.isPresent()) {
+            if (!en.get().canEnchant(enchantableOffHand.get())) {
+                sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You cannot enchant that item with this enchantment.");
+                return;
+            }
+
             enchantableOffHand.get().setEnchantmentLevel(en.get(), l);
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully set \"" + en.get().getFriendlyName() + "\" to " + l + " for item in off hand.");
         } else {
             sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You are not holding anything to enchant.");
         }
