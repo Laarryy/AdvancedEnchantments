@@ -49,7 +49,7 @@ public class EntityDamageByEntityThunderous implements Consumer<EntityDamageByEn
             return;
         }
 
-        if (Math.random() > 0.03 * level) {
+        if (Math.random() > 0.04 * level) {
             return;
         }
 
