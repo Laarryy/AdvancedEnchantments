@@ -88,6 +88,7 @@
                                         <exclude>com/github/benmanes/caffeine/**</exclude>
                                         <exclude>com/google/common/**</exclude> <!-- included with many things -->
                                         <exclude>com/google/errorprone/annotations/**</exclude> <!-- included with guava -->
+                                        <exclude>com/google/gson/**</exclude> <!-- included with mineskin java-client -->
                                         <exclude>com/google/j2objc/annotations/**</exclude> <!-- included with guava -->
                                         <exclude>com/google/thirdparty/publicsuffix/**</exclude> <!-- included with guava -->
                                         <exclude>com/googlecode/concurrentlinkedhashmap/**</exclude>
@@ -101,6 +102,8 @@
                                         <exclude>org/checkerframework/**</exclude> <!-- included with configurate-core -->
                                         <exclude>org/codehaus/mojo/animal_sniffer/**</exclude> <!-- included with guava -->
                                         <exclude>org/json/simple/**</exclude> <!-- included with gameanalytics-api -->
+                                        <exclude>org/jsoup/**</exclude> <!-- included with mineskin java-client -->
+                                        <exclude>org/mineskin/**</exclude>
                                         <exclude>org/reflections/**</exclude> <!-- included with reflection-utils -->
                                     </excludes>
                                 </filter>
@@ -140,6 +143,10 @@
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>inventivetalent</id>
+            <url>https://repo.inventivetalent.org/content/groups/public/</url>
         </repository>
 
         <repository>
@@ -217,6 +224,12 @@
             <groupId>info.ronjenkins</groupId>
             <artifactId>slf4bukkit</artifactId>
             <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mineskin</groupId>
+            <artifactId>java-client</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

@@ -173,6 +173,12 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(reflectionUtils, jarsDir, classLoader, "Reflection Utils");
 
+        Artifact.Builder mineskinJavaClient = Artifact.builder("org.mineskin", "java-client", "1.0.3-SNAPSHOT", cacheDir)
+                .addRepository("https://nexus.egg82.me/repository/inventivetalent/")
+                .addRepository("https://repo.inventivetalent.org/content/groups/public/")
+                .addRepository("https://nexus.egg82.me/repository/maven-central/");
+        buildInject(mineskinJavaClient, jarsDir, classLoader, "Mineskin Client");
+
         // Global
 
         Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.7.0", cacheDir)

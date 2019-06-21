@@ -28,7 +28,7 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
         new ReloadCommand(plugin, taskFactory.newChain(), sender).run();
     }
 
-    @Subcommand("add|set")
+    @Subcommand("add|set|enchant")
     @CommandPermission("ae.admin")
     @Description("Adds an enchantment (or sets its level) to your currently-held item.")
     @Syntax("<enchant> [level]")
