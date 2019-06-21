@@ -48,6 +48,15 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
         return Optional.empty();
     }
 
+    public static Optional<AdvancedEnchantment> getByUuid(UUID uuid) {
+        for (AdvancedEnchantment enchantment : allEnchantments) {
+            if (enchantment.uuid.equals(uuid)) {
+                return Optional.of(enchantment);
+            }
+        }
+        return Optional.empty();
+    }
+
     protected AdvancedEnchantment(UUID uuid, String name, String friendlyName, boolean isCurse, int minLevel, int maxLevel) {
         super(uuid, name, friendlyName, isCurse, minLevel, maxLevel, null);
         allEnchantments.add(this);

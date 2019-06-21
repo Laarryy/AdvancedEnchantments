@@ -101,6 +101,14 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             int one = getValue(numerals.charAt(i));
             int two = i < numerals.length() - 1 ? getValue(numerals.charAt(i + 1)) : -1;
 
+            if (one <= 0) {
+                continue;
+            }
+            if (two <= 0) {
+                i++;
+                continue;
+            }
+
             if (one < two) {
                 retVal += two - one;
                 i++;
@@ -129,7 +137,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             case 'M':
                 return 1000;
             default:
-                return -1;
+                return 0;
         }
     }
 
@@ -231,12 +239,6 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
             String[] enchantName = Arrays.copyOf(split, split.length - 1, String[].class);
             Optional<AdvancedEnchantment> enchant = AdvancedEnchantment.getByName(String.join(" ", enchantName));
-            if (enchant.isPresent()) {
-                continue;
-            }
-
-            // Detecting broken enchants (no level) - should never happen, but hey
-            enchant = AdvancedEnchantment.getByName(String.join(" ", split));
             if (enchant.isPresent()) {
                 continue;
             }
