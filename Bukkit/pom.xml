@@ -91,6 +91,8 @@
                                         <exclude>com/google/j2objc/annotations/**</exclude> <!-- included with guava -->
                                         <exclude>com/google/thirdparty/publicsuffix/**</exclude> <!-- included with guava -->
                                         <exclude>com/googlecode/concurrentlinkedhashmap/**</exclude>
+                                        <exclude>javassist/**</exclude>
+                                        <exclude>javax/annotation/**</exclude>
                                         <exclude>ninja/egg82/analytics/**</exclude>
                                         <exclude>ninja/egg82/configuration/**</exclude>
                                         <exclude>ninja/egg82/reflect/**</exclude>

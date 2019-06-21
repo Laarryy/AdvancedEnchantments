@@ -1,6 +1,5 @@
 package me.egg82.ae.api;
 
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

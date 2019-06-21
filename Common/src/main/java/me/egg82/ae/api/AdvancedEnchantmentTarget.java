@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class AdvancedEnchantmentTarget extends GenericEnchantmentTarget {
+    private static final Set<AdvancedEnchantmentTarget> allTargets = new HashSet<>(); // Needs to be set BEFORE the targets are defined, else NPE
+
     public static final AdvancedEnchantmentTarget ALL = new AdvancedEnchantmentTarget("ALL");
     public static final AdvancedEnchantmentTarget ARMOR = new AdvancedEnchantmentTarget("ARMOR");
     public static final AdvancedEnchantmentTarget WEAPON = new AdvancedEnchantmentTarget("WEAPON");
@@ -16,8 +18,6 @@ public class AdvancedEnchantmentTarget extends GenericEnchantmentTarget {
     public static final AdvancedEnchantmentTarget BREAKABLE = new AdvancedEnchantmentTarget("BREAKABLE");
     public static final AdvancedEnchantmentTarget WEARABLE = new AdvancedEnchantmentTarget("WEARABLE");
     public static final AdvancedEnchantmentTarget TRIDENT = new AdvancedEnchantmentTarget("TRIDENT");
-
-    private static final Set<AdvancedEnchantmentTarget> allTargets = new HashSet<>();
 
     public static Set<AdvancedEnchantmentTarget> values() { return ImmutableSet.copyOf(allTargets); }
 

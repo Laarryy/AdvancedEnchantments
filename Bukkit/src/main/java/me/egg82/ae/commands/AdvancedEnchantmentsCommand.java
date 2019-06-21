@@ -33,7 +33,7 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Description("Adds an enchantment (or sets its level) to your currently-held item.")
     @Syntax("<enchant> [level]")
     @CommandCompletion("@enchant")
-    public void onSet(CommandSender sender, String enchant, int level) {
+    public void onSet(CommandSender sender, String enchant, @Optional String level) {
         new SetCommand(sender, enchant, level).run();
     }
 

@@ -9,6 +9,8 @@ import me.egg82.ae.api.curses.AdherenceCurse;
 import me.egg82.ae.api.enchantments.AerialEnchantment;
 
 public abstract class AdvancedEnchantment extends GenericEnchantment {
+    private static final Set<AdvancedEnchantment> allEnchantments = new HashSet<>(); // Needs to be set BEFORE the enchants are defined, else NPE
+
     public static final AdvancedEnchantment AERIAL = new AerialEnchantment();
     /*public static final AdvancedEnchantment BEHEADING = new BeheadingEnchantment();
     public static final AdvancedEnchantment BLEEDING = new BleedingEnchantment();
@@ -31,8 +33,6 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     /*public static final AdvancedEnchantment ENDER_CURSE = new EnderCurse();
     public static final AdvancedEnchantment LEECHING_CURSE = new LeechingCurse();
     public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();*/
-
-    private static final Set<AdvancedEnchantment> allEnchantments = new HashSet<>();
 
     public static Set<AdvancedEnchantment> values() { return ImmutableSet.copyOf(allEnchantments); }
 

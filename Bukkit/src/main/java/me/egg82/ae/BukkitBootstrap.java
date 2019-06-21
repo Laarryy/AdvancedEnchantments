@@ -159,6 +159,14 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(serviceLocator, jarsDir, classLoader, "Service Locator");
 
+        Artifact.Builder javassist = Artifact.builder("org.javassist", "javassist", "3.25.0-GA", cacheDir)
+                .addRepository("https://nexus.egg82.me/repository/maven-central/");
+        buildInject(javassist, jarsDir, classLoader, "Javassist");
+
+        Artifact.Builder javaxAnnotationApi = Artifact.builder("javax.annotation", "javax.annotation-api", "1.3.2", cacheDir)
+                .addRepository("https://nexus.egg82.me/repository/maven-central/");
+        buildInject(javaxAnnotationApi, jarsDir, classLoader, "Javax Annotations");
+
         Artifact.Builder reflectionUtils = Artifact.builder("ninja.egg82", "reflection-utils", "1.0.4", cacheDir)
                 .addRepository("https://nexus.egg82.me/repository/egg82/")
                 .addRepository("https://www.myget.org/F/egg82-java/maven/")
