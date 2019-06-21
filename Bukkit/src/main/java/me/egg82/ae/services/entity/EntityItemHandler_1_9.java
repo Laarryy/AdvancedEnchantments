@@ -25,4 +25,20 @@ public class EntityItemHandler_1_9 implements EntityItemHandler {
         ItemStack retVal = entity.getEquipment().getItemInOffHand();
         return (retVal == null || retVal.getType() == Material.AIR) ? Optional.empty() : Optional.of(retVal);
     }
+
+    public void setItemInMainHand(LivingEntity entity, ItemStack item) {
+        if (entity == null) {
+            throw new IllegalArgumentException("entity cannot be null.");
+        }
+
+        entity.getEquipment().setItemInMainHand(item);
+    }
+
+    public void setItemInOffHand(LivingEntity entity, ItemStack item) {
+        if (entity == null) {
+            throw new IllegalArgumentException("entity cannot be null.");
+        }
+
+        entity.getEquipment().setItemInOffHand(item);
+    }
 }

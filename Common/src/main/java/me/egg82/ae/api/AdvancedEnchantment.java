@@ -6,10 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import me.egg82.ae.api.curses.AdherenceCurse;
-import me.egg82.ae.api.enchantments.AerialEnchantment;
-import me.egg82.ae.api.enchantments.BeheadingEnchantment;
-import me.egg82.ae.api.enchantments.BleedingEnchantment;
-import me.egg82.ae.api.enchantments.BlindingEnchantment;
+import me.egg82.ae.api.enchantments.*;
 
 public abstract class AdvancedEnchantment extends GenericEnchantment {
     private static final Set<AdvancedEnchantment> allEnchantments = new HashSet<>(); // Needs to be set BEFORE the enchants are defined, else NPE
@@ -18,9 +15,9 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment BEHEADING = new BeheadingEnchantment();
     public static final AdvancedEnchantment BLEEDING = new BleedingEnchantment();
     public static final AdvancedEnchantment BLINDING = new BlindingEnchantment();
-    /*public static final AdvancedEnchantment CHARGING = new ChargingEnchantment();
+    public static final AdvancedEnchantment CHARGING = new ChargingEnchantment();
     public static final AdvancedEnchantment DISARMING = new DisarmingEnchantment();
-    public static final AdvancedEnchantment EXPLOSIVE = new ExplosiveEnchantment();
+    /*public static final AdvancedEnchantment EXPLOSIVE = new ExplosiveEnchantment();
     public static final AdvancedEnchantment FIERY = new FieryEnchantment();
     public static final AdvancedEnchantment FREEZING = new FreezingEnchantment();
     public static final AdvancedEnchantment MAGNETIC = new MagneticEnchantment();

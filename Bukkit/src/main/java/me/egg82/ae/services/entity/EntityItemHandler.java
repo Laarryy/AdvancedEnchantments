@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 
 public interface EntityItemHandler {
     Optional<ItemStack> getItemInMainHand(LivingEntity entity);
-
     Optional<ItemStack> getItemInOffHand(LivingEntity entity);
+
+    void setItemInMainHand(LivingEntity entity, ItemStack item);
+    void setItemInOffHand(LivingEntity entity, ItemStack item);
 }
