@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.*;
 
 public abstract class GenericEnchantableItem {
-    private final Object concrete;
+    protected Object concrete;
 
     protected final Set<GenericEnchantmentTarget> targets = new HashSet<>();
     protected final Map<GenericEnchantment, Integer> enchantments = new HashMap<>();

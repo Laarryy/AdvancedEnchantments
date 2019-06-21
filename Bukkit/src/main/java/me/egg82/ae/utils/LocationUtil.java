@@ -1,9 +1,23 @@
 package me.egg82.ae.utils;
 
 import org.bukkit.block.BlockFace;
+import org.bukkit.util.Vector;
 
 public class LocationUtil {
     private LocationUtil() { }
+
+    public static boolean isFinite(Vector vec) {
+        if (Math.abs(vec.getX()) > Double.MAX_VALUE) {
+            return false;
+        }
+        if (Math.abs(vec.getY()) > Double.MAX_VALUE) {
+            return false;
+        }
+        if (Math.abs(vec.getZ()) > Double.MAX_VALUE) {
+            return false;
+        }
+        return true;
+    }
 
     public static BlockFace getFacingDirection(double yaw, boolean cardinal) {
         yaw += 180.0d;

@@ -7,7 +7,7 @@ public abstract class GenericEnchantmentTarget {
     protected final UUID uuid;
     protected final String name;
 
-    private final Object concrete;
+    protected Object concrete;
 
     private final int hash;
 

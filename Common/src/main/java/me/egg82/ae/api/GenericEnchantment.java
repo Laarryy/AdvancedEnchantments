@@ -13,7 +13,7 @@ public abstract class GenericEnchantment {
     protected final Set<GenericEnchantment> conflicts = new HashSet<>();
     protected final Set<GenericEnchantmentTarget> targets = new HashSet<>();
 
-    private final Object concrete;
+    protected Object concrete;
 
     private final int hash;
 

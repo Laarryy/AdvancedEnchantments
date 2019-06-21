@@ -1,6 +1,5 @@
 package me.egg82.ae.events.enchants.block.blockBreak;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -86,8 +85,7 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
                 continue;
             }
 
-            Collection<ItemStack> drops = b.getDrops(mainHand.get());
-            if (drops.isEmpty()) {
+            if (b.getDrops(mainHand.get()).isEmpty()) {
                 continue;
             }
 
