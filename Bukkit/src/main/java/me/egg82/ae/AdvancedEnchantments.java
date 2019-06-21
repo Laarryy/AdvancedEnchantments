@@ -19,6 +19,7 @@ import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityAerial;
+import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityBleeding;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
@@ -28,6 +29,7 @@ import me.egg82.ae.hooks.PlayerAnalyticsHook;
 import me.egg82.ae.hooks.PluginHook;
 import me.egg82.ae.services.GameAnalyticsErrorHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.tasks.TaskBleeding;
 import me.egg82.ae.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -62,6 +64,7 @@ public class AdvancedEnchantments {
     private PaperCommandManager commandManager;
 
     private List<BukkitEventSubscriber<?>> events = new ArrayList<>();
+    private List<Integer> tasks = new ArrayList<>();
 
     private Metrics metrics = null;
 
@@ -99,6 +102,7 @@ public class AdvancedEnchantments {
         loadServices();
         loadCommands();
         loadEvents();
+        loadTasks();
         loadHooks();
         loadMetrics();
 
@@ -107,6 +111,7 @@ public class AdvancedEnchantments {
         plugin.getServer().getConsoleSender().sendMessage(LogUtil.getHeading()
                 + ChatColor.YELLOW + "[" + ChatColor.AQUA + "Version " + ChatColor.WHITE + plugin.getDescription().getVersion() + ChatColor.YELLOW +  "] "
                 + ChatColor.YELLOW + "[" + ChatColor.WHITE + commandManager.getRegisteredRootCommands().size() + ChatColor.GOLD + " Commands" + ChatColor.YELLOW +  "] "
+                + ChatColor.YELLOW + "[" + ChatColor.WHITE + tasks.size() + ChatColor.GRAY + " Tasks" + ChatColor.YELLOW +  "] "
                 + ChatColor.YELLOW + "[" + ChatColor.WHITE + events.size() + ChatColor.BLUE + " Events" + ChatColor.YELLOW +  "]"
         );
 
@@ -116,6 +121,11 @@ public class AdvancedEnchantments {
     public void onDisable() {
         taskFactory.shutdown(8, TimeUnit.SECONDS);
         commandManager.unregisterCommands();
+
+        for (int task : tasks) {
+            Bukkit.getScheduler().cancelTask(task);
+        }
+        tasks.clear();
 
         for (BukkitEventSubscriber<?> event : events) {
             event.cancel();
@@ -180,6 +190,7 @@ public class AdvancedEnchantments {
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBleeding().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
@@ -192,6 +203,10 @@ public class AdvancedEnchantments {
             }
             return false;
         }).handler(e -> new InventoryMoveItemAdherence().accept(e)));
+    }
+
+    private void loadTasks() {
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));
     }
 
     private void loadHooks() {

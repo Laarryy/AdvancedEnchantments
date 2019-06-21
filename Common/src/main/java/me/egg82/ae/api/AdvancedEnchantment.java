@@ -8,14 +8,15 @@ import java.util.UUID;
 import me.egg82.ae.api.curses.AdherenceCurse;
 import me.egg82.ae.api.enchantments.AerialEnchantment;
 import me.egg82.ae.api.enchantments.BeheadingEnchantment;
+import me.egg82.ae.api.enchantments.BleedingEnchantment;
 
 public abstract class AdvancedEnchantment extends GenericEnchantment {
     private static final Set<AdvancedEnchantment> allEnchantments = new HashSet<>(); // Needs to be set BEFORE the enchants are defined, else NPE
 
     public static final AdvancedEnchantment AERIAL = new AerialEnchantment();
     public static final AdvancedEnchantment BEHEADING = new BeheadingEnchantment();
-    /*public static final AdvancedEnchantment BLEEDING = new BleedingEnchantment();
-    public static final AdvancedEnchantment BLINDING = new BlindingEnchantment();
+    public static final AdvancedEnchantment BLEEDING = new BleedingEnchantment();
+    /*public static final AdvancedEnchantment BLINDING = new BlindingEnchantment();
     public static final AdvancedEnchantment CHARGING = new ChargingEnchantment();
     public static final AdvancedEnchantment DISARMING = new DisarmingEnchantment();
     public static final AdvancedEnchantment EXPLOSIVE = new ExplosiveEnchantment();
