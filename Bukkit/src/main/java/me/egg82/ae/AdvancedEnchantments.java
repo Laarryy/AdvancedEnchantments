@@ -21,6 +21,8 @@ import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakExplosive;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
+import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFiery;
+import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
@@ -49,6 +51,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -197,6 +201,13 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).handler(e -> new BlockBreakExplosive().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityShootBowFiery().accept(e)));
+        try {
+            Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
+            events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitFiery().accept(e)));
+        } catch (ClassNotFoundException ignored) {}
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getDamager().getUniqueId())).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityDamageByEntityFiery().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));

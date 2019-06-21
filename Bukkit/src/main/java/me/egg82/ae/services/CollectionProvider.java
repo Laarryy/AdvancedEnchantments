@@ -15,4 +15,7 @@ public class CollectionProvider {
 
     private static Set<Location> explosive = new HashSet<>();
     public static Set<Location> getExplosive() { return explosive; }
+
+    private static Set<UUID> fiery = new HashSet<>();
+    public static Set<UUID> getFiery() { return fiery; }
 }
