@@ -57,8 +57,10 @@ public class RemoveCommand implements Runnable {
 
         if (enchantableMainHand.isPresent()) {
             enchantableMainHand.get().removeEnchantment(en.get());
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully removed \"" + en.get().getFriendlyName() + "\" from item in main hand.");
         } else if (enchantableOffHand.isPresent()) {
             enchantableOffHand.get().removeEnchantment(en.get());
+            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully removed \"" + en.get().getFriendlyName() + "\" from item in off hand.");
         } else {
             sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You are not holding anything to remove enchantments from.");
         }

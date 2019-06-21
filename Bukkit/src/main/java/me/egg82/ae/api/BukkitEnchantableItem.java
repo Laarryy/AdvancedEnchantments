@@ -29,7 +29,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         super(item);
         this.item = item;
         targets.addAll(getTargets(item));
-        enchantments.putAll(getVanillaEnchantments(item));
+        enchantments.putAll(getBukkitEnchantments(item));
         enchantments.putAll(getAdvancedEnchantments(item));
     }
 
@@ -43,7 +43,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal;
     }
 
-    private Map<GenericEnchantment, Integer> getVanillaEnchantments(ItemStack item) {
+    private Map<GenericEnchantment, Integer> getBukkitEnchantments(ItemStack item) {
         Map<GenericEnchantment, Integer> retVal = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             retVal.put(BukkitEnchantment.fromEnchant(kvp.getKey()), kvp.getValue());
@@ -143,12 +143,14 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     public void rewriteMeta(ItemStack item) {
+        cache.invalidate(item);
+
         ItemMeta meta = getMeta(item);
 
         List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore());
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             if (!enchantments.containsKey(BukkitEnchantment.fromEnchant(kvp.getKey()))) {
-                item.removeEnchantment(kvp.getKey());
+                meta.removeEnchant(kvp.getKey());
             }
         }
 
@@ -158,10 +160,10 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
             if (kvp.getKey() instanceof BukkitEnchantment) {
                 bukkitEnchants.add((BukkitEnchantment) kvp.getKey());
-                item.addUnsafeEnchantment((Enchantment) kvp.getKey().getConcrete(), kvp.getValue());
+                meta.addEnchant((Enchantment) kvp.getKey().getConcrete(), kvp.getValue(), true);
             } else {
                 otherEnchants.add(kvp.getKey());
-                // Skip Bukkit enchants for lore
+                // Only add AE enchants to lore
                 lore.add((kvp.getKey().isCurse() ? ChatColor.RED : ChatColor.GRAY) + kvp.getKey().getFriendlyName() + " " + getNumerals(kvp.getValue()));
             }
         }
@@ -179,20 +181,26 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         if (hasBukkitEnchants) {
             if (hasHackyEnchant) {
                 enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
-                item.removeEnchantment(Enchantment.DURABILITY);
+                meta.removeEnchant(Enchantment.DURABILITY);
                 hasHackyEnchant = false;
             }
             meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
         } else {
             if (!otherEnchants.isEmpty() && !hasHackyEnchant) {
                 enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
-                item.addUnsafeEnchantment(Enchantment.DURABILITY, 0);
+                meta.addEnchant(Enchantment.DURABILITY, 0, true);
                 hasHackyEnchant = true;
             }
 
             if (hasHackyEnchant) {
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                if (!otherEnchants.isEmpty()) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                } else {
+                    enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
+                    meta.removeEnchant(Enchantment.DURABILITY);
+                    hasHackyEnchant = false;
+                }
             }
         }
 
@@ -294,5 +302,17 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         return retVal.toString();
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BukkitEnchantableItem that = (BukkitEnchantableItem) o;
+        return item.equals(that.item);
+    }
+
+    public int hashCode() {
+        return Objects.hash(item.hashCode());
     }
 }
