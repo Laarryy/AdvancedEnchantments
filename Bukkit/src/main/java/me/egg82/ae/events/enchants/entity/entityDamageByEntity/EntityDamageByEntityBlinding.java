@@ -37,14 +37,11 @@ public class EntityDamageByEntityBlinding implements Consumer<EntityDamageByEnti
         LivingEntity from = (LivingEntity) event.getDamager();
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(from);
-        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(from);
-
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
-        GenericEnchantableItem enchantableOffHand = offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null;
 
         int level;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.BLINDING, enchantableMainHand, enchantableOffHand);
+            level = api.getMaxLevel(AdvancedEnchantment.BLINDING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;

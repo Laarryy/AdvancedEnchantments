@@ -59,14 +59,11 @@ public class EntityDeathBeheading implements Consumer<EntityDeathEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getEntity().getKiller());
-        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(event.getEntity().getKiller());
-
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
-        GenericEnchantableItem enchantableOffHand = offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null;
 
         int level;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.BEHEADING, enchantableMainHand, enchantableOffHand);
+            level = api.getMaxLevel(AdvancedEnchantment.BEHEADING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;

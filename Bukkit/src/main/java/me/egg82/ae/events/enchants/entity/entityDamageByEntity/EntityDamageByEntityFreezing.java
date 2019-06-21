@@ -1,27 +1,31 @@
 package me.egg82.ae.events.enchants.entity.entityDamageByEntity;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
+import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EntityDamageByEntityAerial implements Consumer<EntityDamageByEntityEvent> {
+public class EntityDamageByEntityFreezing implements Consumer<EntityDamageByEntityEvent> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    public EntityDamageByEntityAerial() { }
+    public EntityDamageByEntityFreezing() { }
 
     public void accept(EntityDamageByEntityEvent event) {
         EntityItemHandler entityItemHandler;
@@ -39,7 +43,7 @@ public class EntityDamageByEntityAerial implements Consumer<EntityDamageByEntity
 
         int level;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.AERIAL, enchantableMainHand);
+            level = api.getMaxLevel(AdvancedEnchantment.FREEZING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
@@ -49,8 +53,18 @@ public class EntityDamageByEntityAerial implements Consumer<EntityDamageByEntity
             return;
         }
 
-        double damage = event.getDamage();
-        damage += damage - (damage / (level + 0.3333333333333334d));
-        event.setDamage(damage);
+        if (Math.random() > 0.05 * level) {
+            return;
+        }
+
+        if (event.getEntity() instanceof LivingEntity) {
+            ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, level * 10, level), true);
+        }
+
+        if (Math.random() > 0.08 * level) {
+            return;
+        }
+
+        CollectionProvider.getFreezing().put(event.getEntity().getUniqueId(), level * (event.getFinalDamage() * 0.02), 2500L, TimeUnit.MILLISECONDS);
     }
 }
