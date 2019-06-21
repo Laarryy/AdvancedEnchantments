@@ -19,6 +19,7 @@ import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakExplosive;
 import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakFreezingCancel;
+import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakSmelting;
 import me.egg82.ae.events.enchants.block.blockPlace.BlockPlaceFreezingCancel;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
@@ -51,6 +52,7 @@ import ninja.egg82.updater.SpigotUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -212,6 +214,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).handler(e -> new BlockBreakExplosive().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).handler(e -> new BlockBreakSmelting().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityThunderous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityVampiric().accept(e)));
 

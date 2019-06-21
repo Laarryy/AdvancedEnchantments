@@ -104,7 +104,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             if (one <= 0) {
                 continue;
             }
-            if (two <= 0) {
+            if (i < numerals.length() - 1 && two <= 0) {
                 i++;
                 continue;
             }
