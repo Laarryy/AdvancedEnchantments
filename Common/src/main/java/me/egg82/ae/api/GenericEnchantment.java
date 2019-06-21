@@ -1,9 +1,6 @@
 package me.egg82.ae.api;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class GenericEnchantment {
     protected final UUID uuid;
@@ -63,13 +60,23 @@ public abstract class GenericEnchantment {
             return false;
         }
 
+        boolean good = false;
         for (GenericEnchantmentTarget target : item.getEnchantmentTargets()) {
             if (targets.contains(target)) {
-                return true;
+                good = true;
+                break;
             }
         }
 
-        return false;
+        if (good) {
+            for (Map.Entry<GenericEnchantment, Integer> enchantment : item.getEnchantments().entrySet()) {
+                if (conflictsWith(enchantment.getKey())) {
+                    return false;
+                }
+            }
+        }
+
+        return good;
     }
 
     public boolean equals(Object o) {

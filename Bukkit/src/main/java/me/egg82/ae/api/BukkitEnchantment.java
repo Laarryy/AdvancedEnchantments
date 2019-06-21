@@ -1,5 +1,6 @@
 package me.egg82.ae.api;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -7,9 +8,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 public class BukkitEnchantment extends GenericEnchantment {
-    private static ConcurrentMap<String, GenericEnchantment> enchants = new ConcurrentHashMap<>();
+    private static ConcurrentMap<String, BukkitEnchantment> enchants = new ConcurrentHashMap<>();
 
-    public static GenericEnchantment fromEnchant(Enchantment enchant) {
+    public static BukkitEnchantment fromEnchant(Enchantment enchant) {
         if (enchant == null) {
             return null;
         }
@@ -42,7 +43,17 @@ public class BukkitEnchantment extends GenericEnchantment {
         }
 
         ItemStack i = (ItemStack) item.getConcrete();
-        return enchant.canEnchantItem(i);
+        if (!enchant.canEnchantItem(i)) {
+            return false;
+        }
+
+        for (Map.Entry<GenericEnchantment, Integer> enchantment : item.getEnchantments().entrySet()) {
+            if (conflictsWith(enchantment.getKey())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static String normalizeName(String name) {

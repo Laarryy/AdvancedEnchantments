@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class BukkitEnchantableItem extends GenericEnchantableItem {
     private static Cache<ItemStack, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
 
-    public static GenericEnchantableItem fromItemStack(ItemStack item) {
+    public static BukkitEnchantableItem fromItemStack(ItemStack item) {
         if (item == null) {
             return null;
         }
@@ -129,20 +129,20 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
     public void setEnchantmentLevel(GenericEnchantment enchantment, int level) {
         super.setEnchantmentLevel(enchantment, level);
-        rewriteMeta(item);
+        rewriteMeta();
     }
 
     public void addEnchantment(GenericEnchantment enchantment) {
         super.addEnchantment(enchantment);
-        rewriteMeta(item);
+        rewriteMeta();
     }
 
     public void removeEnchantment(GenericEnchantment enchantment) {
         super.removeEnchantment(enchantment);
-        rewriteMeta(item);
+        rewriteMeta();
     }
 
-    public void rewriteMeta(ItemStack item) {
+    public void rewriteMeta() {
         cache.invalidate(item);
 
         ItemMeta meta = getMeta(item);

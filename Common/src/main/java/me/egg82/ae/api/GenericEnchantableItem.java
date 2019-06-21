@@ -1,5 +1,6 @@
 package me.egg82.ae.api;
 
+import com.google.common.collect.ImmutableMap;
 import java.util.*;
 
 public abstract class GenericEnchantableItem {
@@ -25,6 +26,8 @@ public abstract class GenericEnchantableItem {
     public void addEnchantment(GenericEnchantment enchantment) { setEnchantmentLevel(enchantment, enchantment.minLevel); }
 
     public void removeEnchantment(GenericEnchantment enchantment) { enchantments.remove(enchantment); }
+
+    public Map<GenericEnchantment, Integer> getEnchantments() { return ImmutableMap.copyOf(enchantments); }
 
     public boolean equals(Object o) {
         if (this == o) return true;
