@@ -239,12 +239,12 @@ public class EntityDeathBeheading implements Consumer<EntityDeathEvent> {
 
     private ItemStack createSkull(short data) {
         ItemStack skull = new ItemStack(skullMaterial, 1);
-        skull.setDurability(data);
         SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
         if (skullMeta == null) {
             skullMeta = (SkullMeta) Bukkit.getItemFactory().getItemMeta(skullMaterial);
         }
         skull.setItemMeta(skullMeta);
+        skull.setDurability(data);
 
         return skull;
     }
