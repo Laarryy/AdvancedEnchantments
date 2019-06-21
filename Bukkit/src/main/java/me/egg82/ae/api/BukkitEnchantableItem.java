@@ -66,7 +66,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         for (String line : meta.getLore()) {
-            line = ChatColor.stripColor(line);
+            line = ChatColor.stripColor(line).trim();
             String[] split = line.split("\\s+");
             if (split.length <= 1) {
                 continue;
@@ -222,7 +222,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         List<String> retVal = new ArrayList<>();
 
         for (String line : lore) {
-            String newLine = ChatColor.stripColor(line);
+            String newLine = ChatColor.stripColor(line).trim();
             String[] split = newLine.split("\\s+");
             if (split.length <= 1) {
                 retVal.add(line);
@@ -231,8 +231,13 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
             String[] enchantName = Arrays.copyOf(split, split.length - 1, String[].class);
             Optional<AdvancedEnchantment> enchant = AdvancedEnchantment.getByName(String.join(" ", enchantName));
-            Optional<Integer> level = getLevel(split[split.length - 1]);
-            if (enchant.isPresent() && level.isPresent()) {
+            if (enchant.isPresent()) {
+                continue;
+            }
+
+            // Detecting broken enchants (no level) - should never happen, but hey
+            enchant = AdvancedEnchantment.getByName(String.join(" ", split));
+            if (enchant.isPresent()) {
                 continue;
             }
 
@@ -252,6 +257,10 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     private String getNumerals(int level) {
+        if (level <= 0) {
+            return "O";
+        }
+
         StringBuilder retVal = new StringBuilder();
 
         while (level >= 1000) {
