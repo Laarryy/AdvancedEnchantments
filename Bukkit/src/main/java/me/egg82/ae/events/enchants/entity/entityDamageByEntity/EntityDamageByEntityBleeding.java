@@ -54,7 +54,7 @@ public class EntityDamageByEntityBleeding implements Consumer<EntityDamageByEnti
             return;
         }
 
-        if (Math.random() > 0.1 * level) {
+        if (Math.random() > 0.08 * level) {
             return;
         }
 
