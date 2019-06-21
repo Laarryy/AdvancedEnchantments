@@ -43,7 +43,7 @@ public class TaskMagnetic implements Runnable {
                 continue;
             }
 
-            double distance = level * 2.0d;
+            double distance = 2.5d + level;
 
             for (Entity e : player.getWorld().getNearbyEntities(player.getLocation(), distance, 2.0d, distance)) {
                 if (e instanceof Item || e instanceof ExperienceOrb) {
