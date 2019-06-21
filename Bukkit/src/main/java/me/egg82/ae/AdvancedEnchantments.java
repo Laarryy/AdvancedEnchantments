@@ -42,6 +42,7 @@ import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.tasks.TaskBleeding;
 import me.egg82.ae.tasks.TaskFreezing;
 import me.egg82.ae.tasks.TaskMagnetic;
+import me.egg82.ae.tasks.TaskRepairing;
 import me.egg82.ae.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -211,10 +212,12 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBleeding().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBlinding().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).handler(e -> new BlockBreakExplosive().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).handler(e -> new BlockBreakSmelting().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).handler(e -> new BlockBreakSmelting().accept(e))); // This should be registered after explosive, for compatibility
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityThunderous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityVampiric().accept(e)));
 
@@ -259,6 +262,7 @@ public class AdvancedEnchantments {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskFreezing(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskMagnetic(), 0L, 2L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskRepairing(), 0L, 60L));
     }
 
     private void loadHooks() {
