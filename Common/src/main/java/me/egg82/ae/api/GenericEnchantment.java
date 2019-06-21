@@ -70,7 +70,7 @@ public abstract class GenericEnchantment {
 
         if (good) {
             for (Map.Entry<GenericEnchantment, Integer> enchantment : item.getEnchantments().entrySet()) {
-                if (conflictsWith(enchantment.getKey())) {
+                if (conflictsWith(enchantment.getKey()) || enchantment.getKey().conflictsWith(this)) {
                     return false;
                 }
             }
