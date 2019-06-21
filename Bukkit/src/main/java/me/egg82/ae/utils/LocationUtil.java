@@ -1,5 +1,6 @@
 package me.egg82.ae.utils;
 
+import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
@@ -74,5 +75,11 @@ public class LocationUtil {
         }
 
         return BlockFace.NORTH_NORTH_WEST;
+    }
+
+    public static Location getRandomPointAround(Location loc, double radius, boolean includeY) {
+        double angle = Math.random() * Math.PI * 2.0d;
+        double sin = Math.sin(angle);
+        return new Location(loc.getWorld(), loc.getX() + radius * Math.cos(angle), (includeY) ? loc.getY() + radius * sin * sin : loc.getY(), loc.getZ() + radius * sin);
     }
 }

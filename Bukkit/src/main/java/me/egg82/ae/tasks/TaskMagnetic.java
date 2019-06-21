@@ -1,5 +1,6 @@
 package me.egg82.ae.tasks;
 
+import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
@@ -10,7 +11,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +25,18 @@ public class TaskMagnetic implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            PlayerInventory inventory = player.getInventory();
+            Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
+            if (!equipment.isPresent()) {
+                return;
+            }
 
             int level;
             try {
                 level = api.getMaxLevel(AdvancedEnchantment.MAGNETIC,
-                        BukkitEnchantableItem.fromItemStack(inventory.getHelmet()),
-                        BukkitEnchantableItem.fromItemStack(inventory.getChestplate()),
-                        BukkitEnchantableItem.fromItemStack(inventory.getLeggings()),
-                        BukkitEnchantableItem.fromItemStack(inventory.getBoots())
+                        BukkitEnchantableItem.fromItemStack(equipment.get().getHelmet()),
+                        BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate()),
+                        BukkitEnchantableItem.fromItemStack(equipment.get().getLeggings()),
+                        BukkitEnchantableItem.fromItemStack(equipment.get().getBoots())
                         );
             } catch (APIException ex) {
                 logger.error(ex.getMessage(), ex);

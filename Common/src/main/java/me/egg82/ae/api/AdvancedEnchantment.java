@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import me.egg82.ae.api.curses.AdherenceCurse;
+import me.egg82.ae.api.curses.EnderCurse;
+import me.egg82.ae.api.curses.LeechingCurse;
+import me.egg82.ae.api.curses.PacifismCurse;
 import me.egg82.ae.api.enchantments.*;
 
 public abstract class AdvancedEnchantment extends GenericEnchantment {
@@ -26,13 +29,13 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment POISONOUS = new PoisonousEnchantment();
     public static final AdvancedEnchantment REPAIRING = new RepairingEnchantment();
     public static final AdvancedEnchantment SMELTING = new SmeltingEnchantment();
-    public static final AdvancedEnchantment THUNDEROUS = new ThunderousEnchantment();
-    public static final AdvancedEnchantment VAMPIRIC = new VampiricEnchantment();*/
+    public static final AdvancedEnchantment THUNDEROUS = new ThunderousEnchantment();*/
+    public static final AdvancedEnchantment VAMPIRIC = new VampiricEnchantment();
 
     public static final AdvancedEnchantment ADHERENCE_CURSE = new AdherenceCurse();
-    /*public static final AdvancedEnchantment ENDER_CURSE = new EnderCurse();
+    public static final AdvancedEnchantment ENDER_CURSE = new EnderCurse();
     public static final AdvancedEnchantment LEECHING_CURSE = new LeechingCurse();
-    public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();*/
+    public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();
 
     public static Set<AdvancedEnchantment> values() { return ImmutableSet.copyOf(allEnchantments); }
 

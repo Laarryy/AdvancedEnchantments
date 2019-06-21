@@ -3,6 +3,7 @@ package me.egg82.ae.utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class BlockUtil {
@@ -35,5 +36,37 @@ public class BlockUtil {
         }
 
         return blocks;
+    }
+
+    public static Block getHighestSolidBlock(Location l) {
+        if (l == null) {
+            throw new IllegalArgumentException("l cannot be null.");
+        }
+
+        // We don't want to modify the original Location
+        l = l.clone();
+        // getType is a bit expensive
+        Material type = l.getBlock().getType();
+
+        if (!type.isSolid()) {
+            // The block isn't solid, so we scan downwards to find the last non-solid block
+            // Stop at 0 so we don't get stuck in an infinite loop
+            while (l.getY() > 0 && !type.isSolid()) {
+                // Apparently adding negatives is faster than subtracting (citation needed)
+                l.add(0.0d, -1.0d, 0.0d);
+                type = l.getBlock().getType();
+            }
+            // We don't care if 0 is the "highest" solid block because technically that's correct
+            return l.getBlock();
+        }
+
+        // The block is solid, so we need to scan upwards to find the first non-solid block
+        while (l.getY() < l.getWorld().getMaxHeight() && type.isSolid()) {
+            l.add(0.0d, 1.0d, 0.0d);
+            type = l.getBlock().getType();
+        }
+        // We don't care if maxHeight is the "highest" solid block because technically that's correct
+        // If the block isn't solid, subtract 1 from it
+        return type.isSolid() ? l.getBlock() : l.add(0.0d, -1.0d, 0.0d).getBlock();
     }
 }
