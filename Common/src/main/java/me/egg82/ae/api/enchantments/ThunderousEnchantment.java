@@ -6,7 +6,7 @@ import me.egg82.ae.api.AdvancedEnchantmentTarget;
 
 public class ThunderousEnchantment extends AdvancedEnchantment {
     public ThunderousEnchantment() {
-        super(UUID.randomUUID(), "thunderous", "Thunderous", false, 1, 5);
+        super(UUID.randomUUID(), "thunderous", "Thunderous", false, 1, 3);
         targets.add(AdvancedEnchantmentTarget.WEAPON);
     }
 }
