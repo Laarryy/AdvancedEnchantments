@@ -20,6 +20,7 @@ import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityAerial;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityBleeding;
+import me.egg82.ae.events.enchants.entity.entityDamageByEntity.EntityDamageByEntityBlinding;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
@@ -191,6 +192,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBleeding().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityBlinding().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
