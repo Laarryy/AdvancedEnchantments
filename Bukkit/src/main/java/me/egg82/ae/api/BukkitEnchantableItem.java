@@ -90,7 +90,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     private Optional<Integer> getLevel(String numerals) {
-        numerals = numerals.toUpperCase().replaceAll("[^MDCLXVI]", "");
+        numerals = numerals.toUpperCase().replaceAll("[^MDCLXVIO]", "");
         if (numerals.isEmpty()) {
             return Optional.empty();
         }
