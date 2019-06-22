@@ -3,6 +3,9 @@ package me.egg82.ae.services;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import me.egg82.ae.core.FakeBlockData;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bukkit.Location;
@@ -21,4 +24,7 @@ public class CollectionProvider {
 
     private static Set<UUID> fiery = new HashSet<>();
     public static Set<UUID> getFiery() { return fiery; }
+
+    private static ConcurrentMap<Location, FakeBlockData> fakeBlocks = new ConcurrentHashMap<>();
+    public static ConcurrentMap<Location, FakeBlockData> getFakeBlocks() { return fakeBlocks; }
 }

@@ -1,7 +1,9 @@
 package me.egg82.ae.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -68,5 +70,31 @@ public class BlockUtil {
         // We don't care if maxHeight is the "highest" solid block because technically that's correct
         // If the block isn't solid, subtract 1 from it
         return type.isSolid() ? l.getBlock() : l.add(0.0d, -1.0d, 0.0d).getBlock();
+    }
+
+    public static Set<Block> getHalfCircleAround(Location loc, double radius, int numPoints, int maxHeight) {
+        Set<Block> retVal = new HashSet<>();
+        double piSlice = Math.PI / numPoints;
+
+        double angle = loc.getYaw();
+
+        while (angle < 0.0d) {
+            angle += 360.0d;
+        }
+        while (angle > 360.0d) {
+            angle -= 360.0d;
+        }
+
+        angle = angle * Math.PI / 180.0d;
+
+        for (int i = 0; i < numPoints; i++) {
+            double newAngle = angle + piSlice * i;
+            Block b = getHighestSolidBlock(new Location(loc.getWorld(), loc.getX() + radius * Math.cos(newAngle), loc.getY(), loc.getZ() + radius * Math.sin(newAngle)));
+            if (Math.abs(b.getLocation().getY() - loc.getY()) <= maxHeight) {
+                retVal.add(b);
+            }
+        }
+
+        return retVal;
     }
 }

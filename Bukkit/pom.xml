@@ -148,6 +148,14 @@
             <id>inventivetalent</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
+        </repository>
+        <repository>
+            <id>dmulloy2-snapshots</id>
+            <url>http://repo.dmulloy2.net/nexus/repository/snapshots/</url>
+        </repository>
 
         <repository>
             <id>papermc</id>
@@ -241,6 +249,18 @@
             <groupId>com.djrapitops</groupId>
             <artifactId>Plan-common</artifactId>
             <version>4.5.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.packetwrapper</groupId>
+            <artifactId>PacketWrapper</artifactId>
+            <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 

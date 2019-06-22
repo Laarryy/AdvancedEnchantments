@@ -32,13 +32,16 @@ import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
+import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.events.enchants.player.playerMove.PlayerMoveFreezingCancel;
 import me.egg82.ae.events.enchants.player.playerTeleport.PlayerTeleportFreezingCancel;
 import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.hooks.PlayerAnalyticsHook;
 import me.egg82.ae.hooks.PluginHook;
+import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.GameAnalyticsErrorHandler;
+import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.tasks.TaskBleeding;
 import me.egg82.ae.tasks.TaskFreezing;
@@ -69,9 +72,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.slf4j.Logger;
@@ -171,6 +172,12 @@ public class AdvancedEnchantments {
             logger.error(ex.getMessage(), ex);
         }
 
+        try {
+            ServiceLocator.register(BukkitVersionUtil.getBestMatch(FakeBlockHandler.class, BukkitVersionUtil.getGameVersion(), "me.egg82.ae.services.block", false), false);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            logger.error(ex.getMessage(), ex);
+        }
+
         ServiceLocator.register(new SpigotUpdater(plugin, 45790));
     }
 
@@ -217,6 +224,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).handler(e -> new BlockBreakExplosive().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING).handler(e -> new PlayerAnimationMirage(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityShootBowMultishot().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).handler(e -> new BlockBreakSmelting().accept(e))); // This should be registered after explosive, for compatibility
@@ -275,6 +283,17 @@ public class AdvancedEnchantments {
             ServiceLocator.register(new PlayerAnalyticsHook());
         } else {
             plugin.getServer().getConsoleSender().sendMessage(LogUtil.getHeading() + ChatColor.YELLOW + "Plan was not found. Personal analytics support has been disabled.");
+        }
+
+        if (manager.getPlugin("ProtocolLib") != null) {
+            plugin.getServer().getConsoleSender().sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Enabling support for ProtocolLib.");
+            Set<? extends FakeBlockHandler> handlers = ServiceLocator.remove(FakeBlockHandler.class);
+            for (FakeBlockHandler h : handlers) {
+                h.removeAll();
+            }
+            ServiceLocator.register(new ProtocolLibHook(plugin));
+        } else {
+            plugin.getServer().getConsoleSender().sendMessage(LogUtil.getHeading() + ChatColor.YELLOW + "ProtocolLib was not found. Falling back to vanilla mechanics.");
         }
     }
 
