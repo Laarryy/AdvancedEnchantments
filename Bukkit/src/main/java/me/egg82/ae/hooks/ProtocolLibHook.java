@@ -151,7 +151,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
         Map<ChunkData, List<MultiBlockChangeInfo>> chunkInfo = new HashMap<>();
 
         for (Map.Entry<Location, FakeBlockData> kvp : blocks.entrySet()) {
-            ChunkData chunkData = new ChunkData(kvp.getKey().getWorld(), kvp.getKey().getBlockX() >> 4, kvp.getKey().getBlockY() >> 4);
+            ChunkData chunkData = new ChunkData(kvp.getKey().getWorld(), kvp.getKey().getBlockX() >> 4, kvp.getKey().getBlockZ() >> 4);
             List<MultiBlockChangeInfo> info = chunkInfo.computeIfAbsent(chunkData, k -> new ArrayList<>());
             info.add(new MultiBlockChangeInfo(kvp.getKey(), WrappedBlockData.createData(kvp.getValue().getType(), kvp.getValue().getData())));
         }
