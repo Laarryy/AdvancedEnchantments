@@ -22,6 +22,9 @@ public class CollectionProvider {
     private static Set<Location> explosive = new HashSet<>();
     public static Set<Location> getExplosive() { return explosive; }
 
+    private static Set<Location> artisan = new HashSet<>();
+    public static Set<Location> getArtisan() { return artisan; }
+
     private static Set<UUID> fiery = new HashSet<>();
     public static Set<UUID> getFiery() { return fiery; }
 

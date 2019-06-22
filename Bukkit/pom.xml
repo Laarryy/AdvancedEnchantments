@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>advancedenchantments-bukkit</artifactId>
-    <version>4.5.9</version>
+    <version>4.6.9</version>
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
@@ -267,7 +267,7 @@
         <dependency>
             <groupId>me.egg82</groupId>
             <artifactId>advancedenchantments-common</artifactId>
-            <version>4.5.9</version>
+            <version>4.6.9</version>
         </dependency>
 
         <dependency>

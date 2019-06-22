@@ -20,7 +20,8 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             return null;
         }
 
-        return cache.get(item, k -> new BukkitEnchantableItem(item)).update(item);
+        //return cache.get(item, k -> new BukkitEnchantableItem(item)).update(item);
+        return new BukkitEnchantableItem(item);
     }
 
     private ItemStack item;

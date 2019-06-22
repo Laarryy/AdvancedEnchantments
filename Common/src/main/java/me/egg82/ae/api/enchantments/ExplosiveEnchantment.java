@@ -8,5 +8,6 @@ public class ExplosiveEnchantment extends AdvancedEnchantment {
     public ExplosiveEnchantment() {
         super(UUID.randomUUID(), "explosive", "Explosive", false, 1, 3);
         targets.add(AdvancedEnchantmentTarget.TOOL);
+        conflicts.add(AdvancedEnchantment.ARTISAN);
     }
 }

@@ -1,7 +1,6 @@
 package me.egg82.ae.events.enchants.block.blockBreak;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
@@ -12,7 +11,6 @@ import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.ItemDurabilityUtil;
-import me.egg82.ae.utils.LocationUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
@@ -20,18 +18,17 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
+public class BlockBreakArtisan implements Consumer<BlockBreakEvent> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    public BlockBreakExplosive() { }
+    public BlockBreakArtisan() { }
 
     public void accept(BlockBreakEvent event) {
         EntityItemHandler entityItemHandler;
@@ -48,8 +45,8 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
         boolean hasEnchantment;
         int level;
         try {
-            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.EXPLOSIVE, enchantableMainHand);
-            level = api.getMaxLevel(AdvancedEnchantment.EXPLOSIVE, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.ARTISAN, enchantableMainHand);
+            level = api.getMaxLevel(AdvancedEnchantment.ARTISAN, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
@@ -59,45 +56,23 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
             return;
         }
 
-        BlockFace facing = LocationUtil.getFacingDirection(event.getPlayer().getLocation().getYaw(), true);
-        List<Block> facingBlocks = event.getPlayer().getLastTwoTargetBlocks(null, 5);
-        if (facingBlocks.size() == 2) {
-            facing = facingBlocks.get(1).getFace(facingBlocks.get(0));
-        }
+        Set<Location> blockLocations = getSimilar(event.getBlock(), level + 1, new HashSet<>());
 
-        List<Block> blocks;
-        if (facing == BlockFace.NORTH || facing == BlockFace.SOUTH) {
-            blocks = BlockUtil.getBlocks(event.getBlock().getLocation(), level, level, 0);
-        } else if (facing == BlockFace.UP || facing == BlockFace.DOWN) {
-            blocks = BlockUtil.getBlocks(event.getBlock().getLocation(), level, 0, level);
-        } else {
-            blocks = BlockUtil.getBlocks(event.getBlock().getLocation(), 0, level, level);
-        }
-
-        int blockCount = 1;
         Location originalLocation = event.getBlock().getLocation();
 
-        for (Block block : blocks) {
-            Location location = block.getLocation();
-            Material type = block.getType();
-
+        for (Location location : blockLocations) {
             if (location.equals(originalLocation)) {
                 continue;
             }
-            if (type == Material.AIR || type == Material.BEDROCK || type == Material.BARRIER) {
-                continue;
-            }
 
-            if (block.getDrops(mainHand.get()).isEmpty()) {
-                continue;
-            }
+            Block block = location.getBlock();
 
-            CollectionProvider.getExplosive().add(location);
+            CollectionProvider.getArtisan().add(location);
 
             BlockBreakEvent e = new BlockBreakEvent(block, event.getPlayer());
             Bukkit.getPluginManager().callEvent(e);
 
-            CollectionProvider.getExplosive().remove(location);
+            CollectionProvider.getArtisan().remove(location);
 
             if (!e.isCancelled()) {
                 if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
@@ -105,14 +80,45 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
                 } else {
                     block.setType(Material.AIR);
                 }
-                blockCount++;
             }
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), blockCount, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), blockLocations.size() - 1, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }
+    }
+
+    private Set<Location> getSimilar(Block block, int depth, Set<Location> walked) {
+        Set<Location> retVal = new HashSet<>();
+
+        if (depth <= 0) {
+            return retVal;
+        }
+
+        if (!walked.add(block.getLocation())) {
+            return retVal;
+        }
+
+        retVal.add(block.getLocation());
+
+        Material searchType = block.getType();
+        byte searchData = block.getData();
+
+        for (Block b : BlockUtil.getBlocks(block.getLocation(), 1, 1, 1)) {
+            Material type = b.getType();
+
+            if (type == Material.AIR || type == Material.BEDROCK || type == Material.BARRIER) {
+                continue;
+            }
+            if (type != searchType || b.getData() != searchData) {
+                continue;
+            }
+
+            retVal.addAll(getSimilar(b, depth - 1, walked));
+        }
+
+        return retVal;
     }
 }
