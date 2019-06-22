@@ -6,6 +6,8 @@ import java.lang.reflect.Method;
 import java.net.URLClassLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import me.egg82.ae.api.GenericEnchantableItem;
+import me.egg82.ae.api.GenericEnchantment;
 
 public class ExternalAPI {
     private static ExternalAPI api = null;
@@ -40,6 +42,48 @@ public class ExternalAPI {
             throw new IllegalStateException("api is already set.");
         }
         api = new ExternalAPI(classLoader);
+    }
+
+    public int getMaxLevel(GenericEnchantment enchantment, GenericEnchantableItem... items) throws APIException {
+        try {
+            return (Integer) invokeMethod("getMaxLevel", enchantment, items);
+        } catch (NoSuchMethodException | IllegalAccessException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        } catch (InvocationTargetException ex) {
+            Throwable t = ex.getTargetException();
+            if (t.getClass().getName().equals("me.egg82.ae.APIException")) {
+                throw convertToAPIException(t);
+            }
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
+    public boolean anyHasEnchantment(GenericEnchantment enchantment, GenericEnchantableItem... items) throws APIException {
+        try {
+            return (Boolean) invokeMethod("anyHasEnchantment", enchantment, items);
+        } catch (NoSuchMethodException | IllegalAccessException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        } catch (InvocationTargetException ex) {
+            Throwable t = ex.getTargetException();
+            if (t.getClass().getName().equals("me.egg82.ae.APIException")) {
+                throw convertToAPIException(t);
+            }
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
+    public boolean allHaveEnchantment(GenericEnchantment enchantment, GenericEnchantableItem... items) throws APIException {
+        try {
+            return (Boolean) invokeMethod("allHaveEnchantment", enchantment, items);
+        } catch (NoSuchMethodException | IllegalAccessException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        } catch (InvocationTargetException ex) {
+            Throwable t = ex.getTargetException();
+            if (t.getClass().getName().equals("me.egg82.ae.APIException")) {
+                throw convertToAPIException(t);
+            }
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
     }
 
     private Object invokeMethod(String name, Object... params) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {

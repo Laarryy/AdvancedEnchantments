@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.xml.xpath.XPathExpressionException;
+import me.egg82.ae.api.ExternalBukkitEnchantableItem;
 import me.egg82.ae.utils.LogUtil;
 import ninja.egg82.maven.Artifact;
 import ninja.egg82.maven.Scope;
@@ -83,6 +84,9 @@ public class BukkitBootstrap extends JavaPlugin {
 
         if (ExternalAPI.getInstance() == null) {
             ExternalAPI.setInstance(proxiedClassLoader);
+        }
+        if (ExternalBukkitEnchantableItem.getClassLoader() == null) {
+            ExternalBukkitEnchantableItem.setClassLoader(proxiedClassLoader);
         }
     }
 

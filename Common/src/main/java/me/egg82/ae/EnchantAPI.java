@@ -2,11 +2,9 @@ package me.egg82.ae;
 
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.api.GenericEnchantment;
-import me.egg82.ae.services.InternalAPI;
 
 public class EnchantAPI {
     private static final EnchantAPI api = new EnchantAPI();
-    private final InternalAPI internalApi = new InternalAPI();
 
     private EnchantAPI() { }
 
