@@ -26,6 +26,7 @@ import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFiery;
 import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFreezingCancel;
+import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowMultishot;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
@@ -216,6 +217,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).handler(e -> new BlockBreakExplosive().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityShootBowMultishot().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).handler(e -> new BlockBreakSmelting().accept(e))); // This should be registered after explosive, for compatibility
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).handler(e -> new EntityDamageByEntityThunderous().accept(e)));

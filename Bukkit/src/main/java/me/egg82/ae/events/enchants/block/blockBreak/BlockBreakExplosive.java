@@ -81,7 +81,7 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
             if (l.equals(event.getBlock().getLocation())) {
                 continue;
             }
-            if (block.getType() == null || block.getType() == Material.AIR || block.getType() == Material.BEDROCK || block.getType() == Material.BARRIER) {
+            if (block.getType() == Material.AIR || block.getType() == Material.BEDROCK || block.getType() == Material.BARRIER) {
                 continue;
             }
 
@@ -106,8 +106,10 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
             }
         }
 
-        if (event.getPlayer().getGameMode() != GameMode.CREATIVE && !ItemDurabilityUtil.removeDurability(mainHand.get(), blockCount, event.getPlayer().getLocation())) {
-            entityItemHandler.setItemInMainHand(event.getPlayer(), null);
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), blockCount, event.getPlayer().getLocation())) {
+                entityItemHandler.setItemInMainHand(event.getPlayer(), null);
+            }
         }
     }
 }

@@ -52,15 +52,15 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
-        int level;
+        boolean hasEnchantment;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.SMELTING, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.SMELTING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 

@@ -82,4 +82,22 @@ public class LocationUtil {
         double sin = Math.sin(angle);
         return new Location(loc.getWorld(), loc.getX() + radius * Math.cos(angle), (includeY) ? loc.getY() + radius * sin * sin : loc.getY(), loc.getZ() + radius * sin);
     }
+
+    public static Location getLocationInFront(Location loc, double distance, boolean includeY) {
+        double angle = loc.getYaw();
+
+        angle += 90.0d;
+
+        while (angle < 0.0d) {
+            angle += 360.0d;
+        }
+        while (angle > 360.0d) {
+            angle -= 360.0d;
+        }
+
+        angle = angle * Math.PI / 180.0d;
+        double sin = Math.sin(angle);
+
+        return new Location(loc.getWorld(), loc.getX() + distance * Math.cos(angle), (includeY) ? loc.getY() + distance * sin * sin : loc.getY(), loc.getZ() + distance * sin);
+    }
 }

@@ -35,15 +35,15 @@ public class EntityShootBowFiery implements Consumer<EntityShootBowEvent> {
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getEntity());
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
-        int level;
+        boolean hasEnchantment;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.FIERY, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.FIERY, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 
