@@ -39,15 +39,17 @@ public class EntityDamageByEntityBleeding implements Consumer<EntityDamageByEnti
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(from);
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
+        boolean hasEnchantment;
         int level;
         try {
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.BLEEDING, enchantableMainHand);
             level = api.getMaxLevel(AdvancedEnchantment.BLEEDING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 

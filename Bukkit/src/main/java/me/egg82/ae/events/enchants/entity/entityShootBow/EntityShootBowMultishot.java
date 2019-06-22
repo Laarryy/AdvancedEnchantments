@@ -42,9 +42,11 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getEntity());
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
+        boolean hasEnchantment;
         int level;
         boolean hasFiery;
         try {
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.MULTISHOT, enchantableMainHand);
             level = api.getMaxLevel(AdvancedEnchantment.MULTISHOT, enchantableMainHand);
             hasFiery = api.anyHasEnchantment(AdvancedEnchantment.FIERY, enchantableMainHand); // Fiery compatibility
         } catch (APIException ex) {
@@ -52,7 +54,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment || level <= 0) {
             return;
         }
 

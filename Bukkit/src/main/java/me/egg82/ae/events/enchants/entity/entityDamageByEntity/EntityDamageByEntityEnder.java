@@ -25,8 +25,15 @@ public class EntityDamageByEntityEnder implements Consumer<EntityDamageByEntityE
         LivingEntity to = (LivingEntity) event.getEntity();
         EntityEquipment equipment = to.getEquipment();
 
+        boolean hasEnchantment;
         int level;
         try {
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.ENDER_CURSE,
+                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    );
             level = api.getMaxLevel(AdvancedEnchantment.ENDER_CURSE,
                     BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
                     BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
@@ -38,7 +45,7 @@ public class EntityDamageByEntityEnder implements Consumer<EntityDamageByEntityE
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 

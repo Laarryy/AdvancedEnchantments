@@ -1,6 +1,5 @@
 package me.egg82.ae.events.enchants.entity.projectileHit;
 
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 import me.egg82.ae.APIException;
@@ -9,10 +8,6 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.LocationUtil;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.EntityEquipment;
@@ -30,8 +25,15 @@ public class ProjectileHitEnder implements Consumer<ProjectileHitEvent> {
         LivingEntity to = (LivingEntity) event.getHitEntity();
         EntityEquipment equipment = to.getEquipment();
 
+        boolean hasEnchantment;
         int level;
         try {
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.ENDER_CURSE,
+                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
+                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    );
             level = api.getMaxLevel(AdvancedEnchantment.ENDER_CURSE,
                     BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
                     BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
@@ -43,7 +45,7 @@ public class ProjectileHitEnder implements Consumer<ProjectileHitEvent> {
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 

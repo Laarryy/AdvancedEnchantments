@@ -39,15 +39,15 @@ public class EntityDamageByEntityPacifismCancel implements Consumer<EntityDamage
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(from);
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
-        int level;
+        boolean hasEnchantment;
         try {
-            level = api.getMaxLevel(AdvancedEnchantment.PACIFISM_CURSE, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.PACIFISM_CURSE, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment) {
             return;
         }
 

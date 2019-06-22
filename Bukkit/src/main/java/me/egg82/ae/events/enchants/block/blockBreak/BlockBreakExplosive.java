@@ -45,15 +45,17 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
         GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
+        boolean hasEnchantment;
         int level;
         try {
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.EXPLOSIVE, enchantableMainHand);
             level = api.getMaxLevel(AdvancedEnchantment.EXPLOSIVE, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (level < 0) {
+        if (!hasEnchantment || level <= 0) {
             return;
         }
 
