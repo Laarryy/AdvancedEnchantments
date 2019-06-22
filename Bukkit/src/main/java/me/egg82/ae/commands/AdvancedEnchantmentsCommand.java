@@ -39,7 +39,7 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
 
     @Subcommand("remove|delete")
     @CommandPermission("ae.admin")
-    @Description("Removed an enchantment from your currently-held item.")
+    @Description("Removes an enchantment from your currently-held item.")
     @Syntax("<enchant>")
     @CommandCompletion("@enchant")
     public void onRemove(CommandSender sender, String enchant) {
