@@ -181,6 +181,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         printLatest("PacketWrapper");
         Artifact.Builder packetWrapper = Artifact.builder("com.comphenix.packetwrapper", "PacketWrapper", "1.13-R0.1-SNAPSHOT", cacheDir)
+                .addRepository("https://nexus.egg82.me/repository/dmulloy2-snapshots/")
                 .addRepository("http://repo.dmulloy2.net/nexus/repository/snapshots/")
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(packetWrapper, jarsDir, classLoader, "PacketWrapper");
