@@ -44,10 +44,7 @@ import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.GameAnalyticsErrorHandler;
 import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
-import me.egg82.ae.tasks.TaskBleeding;
-import me.egg82.ae.tasks.TaskFreezing;
-import me.egg82.ae.tasks.TaskMagnetic;
-import me.egg82.ae.tasks.TaskRepairing;
+import me.egg82.ae.tasks.*;
 import me.egg82.ae.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
@@ -278,6 +275,8 @@ public class AdvancedEnchantments {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskFreezing(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskMagnetic(), 0L, 2L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskRepairing(), 0L, 100L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskWither(), 0L, 40L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskCalling(), 0L, 40L));
     }
 
     private void loadHooks() {

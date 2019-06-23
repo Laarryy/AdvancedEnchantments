@@ -53,6 +53,6 @@ public class EntityDamageByEntityEnder implements Consumer<EntityDamageByEntityE
             return;
         }
 
-        to.teleport(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(to.getLocation(), new Random().nextInt(150) + 150, false)).getLocation().add(0.0d, 1.0d, 0.0d));
+        to.teleport(BlockUtil.getHighestSolidBlock(LocationUtil.getRandomPointAround(to.getLocation(), (new Random().nextInt(5) + 5) * level, false)).getLocation().add(0.0d, 1.0d, 0.0d));
     }
 }
