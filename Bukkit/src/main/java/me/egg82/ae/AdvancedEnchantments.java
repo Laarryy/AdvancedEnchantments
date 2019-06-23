@@ -22,7 +22,8 @@ import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakExplosive;
 import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakFreezingCancel;
 import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakSmelting;
 import me.egg82.ae.events.enchants.block.blockPlace.BlockPlaceFreezingCancel;
-import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemReplace;
+import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemAdd;
+import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemRewrite;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFiery;
@@ -214,7 +215,8 @@ public class AdvancedEnchantments {
 
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemReplace().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemAdd().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemRewrite().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));

@@ -1,3 +1,8 @@
+# If true, will add all registered custom enchants to the vanilla enchanting system
+# Registered enchants are enchantments that extend AdvancedEnchantment
+# For the layman: this will mean most, if not all, custom enchantments
+add-enchants: false
+
 # When true, logs some extra output to the console so you can see if/why things might be failing
 debug: false
 
@@ -18,4 +23,4 @@ update:
   notify: true
 
 # Config version, no touchy plz
-version: 1.0
+version: 1.1
