@@ -35,6 +35,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment ENDER_CURSE = new EnderCurse();
     public static final AdvancedEnchantment LEECHING_CURSE = new LeechingCurse();
     public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();
+    public static final AdvancedEnchantment STICKINESS_CURSE = new StickinessCurse();
     public static final AdvancedEnchantment WITHER_CURSE = new WitherCurse();
 
     public static Set<AdvancedEnchantment> values() { return ImmutableSet.copyOf(allEnchantments); }

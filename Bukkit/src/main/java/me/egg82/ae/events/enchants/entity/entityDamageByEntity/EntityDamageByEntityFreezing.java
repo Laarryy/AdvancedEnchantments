@@ -51,7 +51,7 @@ public class EntityDamageByEntityFreezing implements Consumer<EntityDamageByEnti
             return;
         }
 
-        if (!hasEnchantment) {
+        if (!hasEnchantment || level <= 0) {
             return;
         }
 

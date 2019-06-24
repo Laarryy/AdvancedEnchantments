@@ -35,6 +35,8 @@ import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdhere
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
+import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
+import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
 import me.egg82.ae.events.enchants.player.playerMove.PlayerMoveFreezingCancel;
 import me.egg82.ae.events.enchants.player.playerTeleport.PlayerTeleportFreezingCancel;
 import me.egg82.ae.extended.Configuration;
@@ -57,7 +59,6 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -248,6 +249,9 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getFreezing().containsKey(e.getPlayer().getUniqueId())).handler(e -> new BlockBreakFreezingCancel().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockPlaceEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getFreezing().containsKey(e.getPlayer().getUniqueId())).handler(e -> new BlockPlaceFreezingCancel().accept(e)));
 
+        events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.stickiness")).handler(e -> new PlayerItemHeldStickiness().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getStickiness().containsKey(e.getPlayer().getUniqueId())).handler(e -> new PlayerItemHeldStickinessCancel().accept(e)));
+
         events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> {
@@ -270,7 +274,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.curse.pacifism")).handler(e -> new EntityDamageByEntityPacifismCancel().accept(e)));
     }
 
-    private boolean canUseEnchant(Object obj, String node) { return !(obj instanceof CommandSender) || ((CommandSender) obj).hasPermission(node); }
+    private boolean canUseEnchant(Object obj, String node) { return !(obj instanceof Player) || ((Player) obj).hasPermission(node); }
 
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));

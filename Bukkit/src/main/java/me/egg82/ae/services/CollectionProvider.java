@@ -19,6 +19,9 @@ public class CollectionProvider {
     private static ExpiringMap<UUID, Double> freezing = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getFreezing() { return freezing; }
 
+    private static ExpiringMap<UUID, Integer> stickiness = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
+    public static ExpiringMap<UUID, Integer> getStickiness() { return stickiness; }
+
     private static Set<Location> explosive = new HashSet<>();
     public static Set<Location> getExplosive() { return explosive; }
 
