@@ -20,8 +20,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             return null;
         }
 
-        //return cache.get(item, k -> new BukkitEnchantableItem(item)).update(item);
-        return new BukkitEnchantableItem(item);
+        return cache.get(item, k -> new BukkitEnchantableItem(item)).clone(item);
     }
 
     private ItemStack item;
@@ -34,11 +33,14 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         enchantments.putAll(getAdvancedEnchantments(item));
     }
 
-    private BukkitEnchantableItem update(ItemStack item) {
+    private BukkitEnchantableItem(ItemStack item, Set<GenericEnchantmentTarget> targets, Map<GenericEnchantment, Integer> enchantments) {
+        super(item);
         this.item = item;
-        this.concrete = item;
-        return this;
+        this.targets.addAll(targets);
+        this.enchantments.putAll(enchantments);
     }
+
+    private BukkitEnchantableItem clone(ItemStack item) { return new BukkitEnchantableItem(item, targets, enchantments); }
 
     private Set<GenericEnchantmentTarget> getTargets(ItemStack item) {
         Set<GenericEnchantmentTarget> retVal = new HashSet<>();
