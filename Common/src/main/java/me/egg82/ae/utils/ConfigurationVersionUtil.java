@@ -36,7 +36,7 @@ public class ConfigurationVersionUtil {
 
     private static void to11(ConfigurationNode config) {
         // Add ignore
-        config.getNode("add-enchants").setValue(Boolean.FALSE);
+        config.getNode("enchant-chance").setValue(0.0d);
 
         // Version
         config.getNode("version").setValue(1.1d);

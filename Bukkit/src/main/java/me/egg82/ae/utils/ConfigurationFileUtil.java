@@ -40,10 +40,11 @@ public class ConfigurationFileUtil {
             logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Debug " + ChatColor.WHITE + "enabled");
         }
 
-        boolean addEnchants = config.getNode("add-enchants").getBoolean(false);
+        double enchantChance = config.getNode("enchant-chance").getDouble(0.0d);
+        enchantChance = Math.max(0.0d, Math.min(1.0d, enchantChance)); // Clamp value
 
         if (debug) {
-            if (addEnchants) {
+            if (enchantChance > 0.0d) {
                 logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom enchants to vanilla enchanting mechanics.");
             } else {
                 logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Skipping vanilla enchanting mechanics for custom enchants.");
@@ -52,7 +53,7 @@ public class ConfigurationFileUtil {
 
         CachedConfigValues cachedValues = CachedConfigValues.builder()
                 .debug(debug)
-                .addEnchants(addEnchants)
+                .enchantChance(enchantChance)
                 .build();
 
         ServiceLocator.register(config);

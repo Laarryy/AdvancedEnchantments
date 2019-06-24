@@ -6,8 +6,8 @@ public class CachedConfigValues {
     private boolean debug = false;
     public boolean getDebug() { return debug; }
 
-    private boolean addEnchants = false;
-    public boolean getAddEnchants() { return addEnchants; }
+    private double enchantChance = 0.0d;
+    public double getEnchantChance() { return enchantChance; }
 
     public static CachedConfigValues.Builder builder() { return new CachedConfigValues.Builder(); }
 
@@ -21,8 +21,8 @@ public class CachedConfigValues {
             return this;
         }
 
-        public CachedConfigValues.Builder addEnchants(boolean value) {
-            values.addEnchants = value;
+        public CachedConfigValues.Builder enchantChance(double value) {
+            values.enchantChance = value;
             return this;
         }
 

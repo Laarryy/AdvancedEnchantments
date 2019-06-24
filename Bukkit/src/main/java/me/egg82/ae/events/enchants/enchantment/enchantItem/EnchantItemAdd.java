@@ -18,7 +18,7 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
 
     public void accept(EnchantItemEvent event) {
         Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
-        if (!cachedConfig.isPresent() || !cachedConfig.get().getAddEnchants()) {
+        if (!cachedConfig.isPresent() || cachedConfig.get().getEnchantChance() == 0.0d) {
             return;
         }
 
@@ -29,7 +29,7 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
         BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
 
         for (Map.Entry<GenericEnchantment, Integer> kvp : currentEnchants.entrySet()) {
-            if (Math.random() >= 0.05) {
+            if (Math.random() < cachedConfig.get().getEnchantChance()) {
                 int tries = 0;
                 AdvancedEnchantment newEnchant;
                 do {
@@ -41,7 +41,10 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
                     // We don't want enchants that conflict with enchants currently on the item
                     // We don't want enchants that conflict with Bukkit enchants that will be applied (except the one we're replacing)
                     // We don't want enchants that conflict with other new enchants
-                } while ((newEnchant.isCurse() || !newEnchant.canEnchant(item) || conflicts(newEnchant, currentEnchants, kvp.getKey()) || conflicts(newEnchant, newEnchants)) && tries < 100);
+                    if (!newEnchant.isCurse() && newEnchant.canEnchant(item) && !conflicts(newEnchant, currentEnchants, kvp.getKey()) && !conflicts(newEnchant, newEnchants)) {
+                        break;
+                    }
+                } while (tries < 100);
 
                 if (tries >= 100) {
                     // Too many tries (and failures) - skip this one
@@ -50,7 +53,8 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
 
                 // This all works because we're iterating through a copy of the map
                 event.getEnchantsToAdd().remove((Enchantment) kvp.getKey().getConcrete());
-                newEnchants.put(newEnchant, Math.max(Math.min(kvp.getValue(), newEnchant.getMaxLevel()), newEnchant.getMinLevel())); // Clamp to min/max
+                int newLevel = Math.max(newEnchant.getMinLevel(), Math.min(newEnchant.getMaxLevel(), kvp.getValue())); // Clamp value;
+                newEnchants.put(newEnchant, newLevel);
             }
         }
 
