@@ -2,6 +2,7 @@ package me.egg82.ae.utils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.extended.Configuration;
 import ninja.egg82.service.ServiceLocator;
@@ -18,6 +19,8 @@ import org.yaml.snakeyaml.DumperOptions;
 
 public class ConfigurationFileUtil {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationFileUtil.class);
+
+    private static final DecimalFormat format = new DecimalFormat(".##");
 
     private ConfigurationFileUtil() {}
 
@@ -45,7 +48,7 @@ public class ConfigurationFileUtil {
 
         if (debug) {
             if (enchantChance > 0.0d) {
-                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom enchants to vanilla enchanting mechanics.");
+                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom enchants to vanilla enchanting mechanics with a " + format.format(enchantChance * 100.0d) + "% chance.");
             } else {
                 logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Skipping vanilla enchanting mechanics for custom enchants.");
             }
