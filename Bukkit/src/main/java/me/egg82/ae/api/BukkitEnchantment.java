@@ -15,7 +15,7 @@ public class BukkitEnchantment extends GenericEnchantment {
             return null;
         }
 
-        return enchants.computeIfAbsent(enchant.getKey().getKey(), k -> new BukkitEnchantment(enchant));
+        return enchants.computeIfAbsent(enchant.getName(), k -> new BukkitEnchantment(enchant));
     }
 
     private Enchantment enchant;
