@@ -32,6 +32,7 @@ import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowMultishot
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
+import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
@@ -59,6 +60,7 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -74,6 +76,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.slf4j.Logger;
@@ -218,6 +221,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemAdd().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemRewrite(plugin).accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory() instanceof AnvilInventory).filter(e -> e.getRawSlot() == e.getView().convertSlot(e.getRawSlot())).filter(e -> e.getRawSlot() == 2).filter(e -> e.getCurrentItem() != null && e.getCurrentItem().getType() != Material.AIR).handler(e -> new InventoryClickAnvilRewrite(plugin).accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
