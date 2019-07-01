@@ -268,6 +268,8 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.stickiness")).handler(e -> new PlayerItemHeldStickiness().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getStickiness().containsKey(e.getPlayer().getUniqueId())).handler(e -> new PlayerItemHeldStickinessCancel().accept(e)));
 
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getEntity(), "ae.curse.treason")).handler(e -> new EntityDamageByEntityTreason().accept(e)));
+
         events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> {
