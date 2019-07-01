@@ -34,6 +34,7 @@ import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdhere
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
+import me.egg82.ae.events.enchants.player.playerInteract.PlayerInteractHoeArtisan;
 import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
@@ -228,6 +229,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.disarming")).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.explosive")).handler(e -> new BlockBreakExplosive().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getArtisan().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new BlockBreakArtisan().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerInteractEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.hasBlock()).filter(e -> !CollectionProvider.getArtisan().contains(e.getClickedBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new PlayerInteractHoeArtisan().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.mirage")).handler(e -> new PlayerAnimationMirage(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.multishot")).handler(e -> new EntityShootBowMultishot().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.poisonous")).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
