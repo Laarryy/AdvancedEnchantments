@@ -1,13 +1,11 @@
 package me.egg82.ae.tasks;
 
-import java.util.List;
 import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
-import me.egg82.ae.services.entity.EntityDamageHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.LocationUtil;
 import ninja.egg82.service.ServiceLocator;
@@ -15,7 +13,6 @@ import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.*;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;

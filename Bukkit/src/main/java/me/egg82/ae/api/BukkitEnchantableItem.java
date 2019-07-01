@@ -163,6 +163,9 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         cache.invalidate(item);
 
         ItemMeta meta = getMeta(item);
+        if (meta == null) {
+            return;
+        }
 
         List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore());
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
