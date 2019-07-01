@@ -13,22 +13,28 @@ import me.egg82.ae.utils.ItemDurabilityUtil;
 import me.egg82.ae.utils.LocationUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
+public class EntityShootBowBurst implements Consumer<EntityShootBowEvent> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    public EntityShootBowMultishot() { }
+    private final Plugin plugin;
+
+    public EntityShootBowBurst(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void accept(EntityShootBowEvent event) {
         EntityItemHandler entityItemHandler;
@@ -46,8 +52,8 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         int level;
         boolean hasFiery;
         try {
-            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.MULTISHOT, enchantableMainHand);
-            level = api.getMaxLevel(AdvancedEnchantment.MULTISHOT, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.BURST, enchantableMainHand);
+            level = api.getMaxLevel(AdvancedEnchantment.BURST, enchantableMainHand);
             hasFiery = api.anyHasEnchantment(AdvancedEnchantment.FIERY, enchantableMainHand); // Fiery compatibility
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
@@ -59,32 +65,21 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         }
 
         Vector velocity = event.getProjectile().getVelocity();
-        double speed = velocity.length();
-        Vector direction = new Vector(velocity.getX() / speed, velocity.getY() / speed, velocity.getZ() / speed);
-
-        // Higher = less "spray"
-        // Lower = more "spray"
-        double spray = 10.5d;
-
         Location eyeLocation = event.getEntity().getEyeLocation();
 
-        for (int i = 0; i < level * 2; i++) {
-            Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
-            p.setVelocity(
-                    new Vector(
-                            direction.getX() + (Math.random() - 0.5) / spray,
-                            direction.getY() + (Math.random() - 0.5) / spray,
-                            direction.getZ() + (Math.random() - 0.5) / spray
-                    ).normalize().multiply(speed)
-            );
+        for (int i = 0; i < level; i++) {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
+                p.setVelocity(velocity);
 
-            if (hasFiery) {
-                CollectionProvider.getFiery().add(p.getUniqueId()); // Fiery compatibility
-            }
+                if (hasFiery) {
+                    CollectionProvider.getFiery().add(p.getUniqueId()); // Fiery compatibility
+                }
+            }, 5L * i);
         }
 
         if (!(event.getEntity() instanceof Player) || ((Player) event.getEntity()).getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), level * 2, event.getEntity().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), level, event.getEntity().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getEntity(), null);
             }
         }

@@ -16,6 +16,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment BEHEADING = new BeheadingEnchantment();
     public static final AdvancedEnchantment BLEEDING = new BleedingEnchantment();
     public static final AdvancedEnchantment BLINDING = new BlindingEnchantment();
+    public static final AdvancedEnchantment BURST = new BurstEnchantment();
     public static final AdvancedEnchantment CHARGING = new ChargingEnchantment();
     public static final AdvancedEnchantment DISARMING = new DisarmingEnchantment();
     public static final AdvancedEnchantment EXPLOSIVE = new ExplosiveEnchantment();
