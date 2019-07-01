@@ -22,6 +22,9 @@ public class CollectionProvider {
     private static ExpiringMap<UUID, Integer> stickiness = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Integer> getStickiness() { return stickiness; }
 
+    private static ExpiringMap<UUID, Integer> rampage = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
+    public static ExpiringMap<UUID, Integer> getRampage() { return rampage; }
+
     private static Set<Location> explosive = new HashSet<>();
     public static Set<Location> getExplosive() { return explosive; }
 
