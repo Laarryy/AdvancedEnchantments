@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.xml.xpath.XPathExpressionException;
 import me.egg82.ae.api.ExternalBukkitEnchantableItem;
+import me.egg82.ae.utils.BukkitEnvironmentUtil;
 import me.egg82.ae.utils.LogUtil;
 import ninja.egg82.maven.Artifact;
 import ninja.egg82.maven.Scope;
@@ -38,7 +39,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
     public BukkitBootstrap() {
         super();
-        isBukkit = Bukkit.getName().equals("Bukkit") || Bukkit.getName().equals("CraftBukkit");
+        isBukkit = BukkitEnvironmentUtil.getEnvironment() == BukkitEnvironmentUtil.Environment.BUKKIT;
     }
 
     @Override
