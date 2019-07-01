@@ -18,6 +18,12 @@ public class BukkitEnchantment extends GenericEnchantment {
         return enchants.computeIfAbsent(enchant.getName(), k -> new BukkitEnchantment(enchant));
     }
 
+    private static final BukkitEnchantment MENDING = fromEnchant(Enchantment.MENDING);
+
+    static {
+        MENDING.conflicts.add(AdvancedEnchantment.PROFICIENCY);
+    }
+
     private Enchantment enchant;
 
     private BukkitEnchantment(Enchantment enchant) {

@@ -26,6 +26,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment MIRAGE = new MirageEnchantment();
     public static final AdvancedEnchantment MULTISHOT = new MultishotEnchantment();
     public static final AdvancedEnchantment POISONOUS = new PoisonousEnchantment();
+    public static final AdvancedEnchantment PROFICIENCY = new ProficiencyEnchantment();
     public static final AdvancedEnchantment RAMPAGE = new RampageEnchantment();
     public static final AdvancedEnchantment REPAIRING = new RepairingEnchantment();
     public static final AdvancedEnchantment SMELTING = new SmeltingEnchantment();

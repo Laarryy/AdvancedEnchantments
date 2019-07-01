@@ -64,8 +64,6 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
             return;
         }
 
-        event.setCancelled(true);
-
         Location dropLoc = event.getBlock().getLocation();
         dropLoc.add(0.5d, 0.5d, 0.5d);
 
@@ -100,7 +98,11 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
             }
         }
 
-        event.getBlock().setType(Material.AIR, true);
+        if (isSmelted) {
+            // Don't drop exp
+            event.setCancelled(true);
+            event.getBlock().setType(Material.AIR, true);
+        }
 
         if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
             entityItemHandler.setItemInMainHand(event.getPlayer(), null);
