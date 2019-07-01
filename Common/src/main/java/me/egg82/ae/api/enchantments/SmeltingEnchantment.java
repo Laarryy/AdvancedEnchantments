@@ -8,5 +8,6 @@ public class SmeltingEnchantment extends AdvancedEnchantment {
     public SmeltingEnchantment() {
         super(UUID.randomUUID(), "smelting", "Smelting", false, 1, 1);
         targets.add(AdvancedEnchantmentTarget.TOOL);
+        conflicts.add(AdvancedEnchantment.STILLNESS);
     }
 }

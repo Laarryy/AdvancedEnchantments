@@ -17,10 +17,7 @@ import java.util.logging.Level;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
-import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakArtisan;
-import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakExplosive;
-import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakFreezingCancel;
-import me.egg82.ae.events.enchants.block.blockBreak.BlockBreakSmelting;
+import me.egg82.ae.events.enchants.block.blockBreak.*;
 import me.egg82.ae.events.enchants.block.blockPlace.BlockPlaceFreezingCancel;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemAdd;
 import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemRewrite;
@@ -236,6 +233,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.rampage")).handler(e -> new EntityDamageByEntityRampage().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.rampage")).handler(e -> new EntityDeathRampage().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.smelting")).handler(e -> new BlockBreakSmelting().accept(e))); // This should be registered after artisan & explosive, for compatibility
+        events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.stillness")).handler(e -> new BlockBreakStillness().accept(e))); // This should be registered after artisan & explosive, for compatibility
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.thunderous")).handler(e -> new EntityDamageByEntityThunderous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.tornado")).handler(e -> new EntityDamageByEntityTornado(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.vampiric")).handler(e -> new EntityDamageByEntityVampiric().accept(e)));

@@ -29,6 +29,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment RAMPAGE = new RampageEnchantment();
     public static final AdvancedEnchantment REPAIRING = new RepairingEnchantment();
     public static final AdvancedEnchantment SMELTING = new SmeltingEnchantment();
+    public static final AdvancedEnchantment STILLNESS = new StillnessEnchantment();
     public static final AdvancedEnchantment THUNDEROUS = new ThunderousEnchantment();
     public static final AdvancedEnchantment TORNADO = new TornadoEnchantment();
     public static final AdvancedEnchantment VAMPIRIC = new VampiricEnchantment();
