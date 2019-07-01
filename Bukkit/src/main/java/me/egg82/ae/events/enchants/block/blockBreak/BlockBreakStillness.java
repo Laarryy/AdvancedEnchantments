@@ -8,8 +8,10 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.ItemDurabilityUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -51,5 +53,11 @@ public class BlockBreakStillness implements Consumer<BlockBreakEvent> {
         // This enchant does have the potential to break quite a lot, so.. Sparingly.
         event.setCancelled(true);
         event.getBlock().setType(Material.AIR, false);
+
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), 1, event.getPlayer().getLocation())) {
+                entityItemHandler.setItemInMainHand(event.getPlayer(), null);
+            }
+        }
     }
 }

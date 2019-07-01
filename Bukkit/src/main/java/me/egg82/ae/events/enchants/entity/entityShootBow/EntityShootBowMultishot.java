@@ -84,7 +84,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         }
 
         if (!(event.getEntity() instanceof Player) || ((Player) event.getEntity()).getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), level * 2, event.getEntity().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, mainHand.get(), level * 2, event.getEntity().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getEntity(), null);
             }
         }

@@ -84,7 +84,7 @@ public class BlockBreakArtisan implements Consumer<BlockBreakEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), blockLocations.size() - 1, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), blockLocations.size() - 1, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

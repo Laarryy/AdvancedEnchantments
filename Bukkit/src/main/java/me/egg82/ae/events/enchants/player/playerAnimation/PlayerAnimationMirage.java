@@ -71,7 +71,7 @@ public class PlayerAnimationMirage implements Consumer<PlayerAnimationEvent> {
         }
 
         if (raise(blocks) && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), 1, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), 1, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

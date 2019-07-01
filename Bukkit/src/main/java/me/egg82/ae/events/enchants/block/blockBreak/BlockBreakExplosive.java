@@ -110,7 +110,7 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(mainHand.get(), blockCount, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), blockCount, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

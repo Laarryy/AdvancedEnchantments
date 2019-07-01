@@ -34,6 +34,7 @@ import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdhere
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
+import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
 import me.egg82.ae.events.enchants.player.playerMove.PlayerMoveFreezingCancel;
@@ -267,6 +268,11 @@ public class AdvancedEnchantments {
             }
             return false;
         }).handler(e -> new InventoryMoveItemAdherence().accept(e)));
+
+        try {
+            Class.forName("org.bukkit.event.player.PlayerItemDamageEvent");
+            events.add(BukkitEvents.subscribe(plugin, PlayerItemDamageEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.decay")).handler(e -> new PlayerItemDamageDecay().accept(e)));
+        } catch (ClassNotFoundException ignored) {}
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntity() instanceof LivingEntity).filter(e -> ((LivingEntity) e.getEntity()).getEquipment() != null).filter(e -> canUseEnchant(e.getEntity(), "ae.curse.ender")).handler(e -> new EntityDamageByEntityEnder().accept(e)));
         try {

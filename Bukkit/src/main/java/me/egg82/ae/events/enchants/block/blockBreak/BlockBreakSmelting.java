@@ -102,7 +102,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
 
         event.getBlock().setType(Material.AIR, true);
 
-        if (!ItemDurabilityUtil.removeDurability(mainHand.get(), (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
+        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
             entityItemHandler.setItemInMainHand(event.getPlayer(), null);
         }
     }
