@@ -66,22 +66,23 @@ public class ItemDurabilityUtil {
         return true;
     }
 
-    public static void addDurability(ItemStack item, int durabilityToAdd) {
+    public static boolean addDurability(ItemStack item, int durabilityToAdd) {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null.");
         }
 
         if (durabilityToAdd == 0) {
-            return;
+            return false;
         }
 
         int oldDurability = item.getDurability();
         short newDurability = (short) Math.max(0, oldDurability - durabilityToAdd);
 
         if (newDurability == oldDurability) {
-            return;
+            return false;
         }
 
         item.setDurability(newDurability);
+        return true;
     }
 }

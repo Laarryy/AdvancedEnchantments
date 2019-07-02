@@ -68,6 +68,8 @@ public class TaskRepairing implements Runnable {
             return;
         }
 
-        ItemDurabilityUtil.addDurability((ItemStack) item.getConcrete(), level);
+        if (ItemDurabilityUtil.addDurability((ItemStack) item.getConcrete(), level)) {
+            BukkitEnchantableItem.forceCache((ItemStack) item.getConcrete(), item);
+        }
     }
 }

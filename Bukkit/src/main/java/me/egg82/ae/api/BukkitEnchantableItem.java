@@ -23,6 +23,8 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return cache.get(item, k -> new BukkitEnchantableItem(item)).clone(item);
     }
 
+    public static void forceCache(ItemStack item, BukkitEnchantableItem enchantableItem) { cache.put(item, enchantableItem); }
+
     private ItemStack item;
 
     private BukkitEnchantableItem(ItemStack item) {
