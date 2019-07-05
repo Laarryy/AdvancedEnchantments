@@ -8,7 +8,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.EnumFilter;
 import me.egg82.ae.services.entity.EntityItemHandler;
@@ -24,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,11 @@ public class PlayerInteractHoeArtisan implements Consumer<PlayerInteractEvent> {
         coarseDirtMaterial = m.isPresent() ? m.get() : null;
     }
 
-    public PlayerInteractHoeArtisan() { }
+    private final Plugin plugin;
+
+    public PlayerInteractHoeArtisan(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void accept(PlayerInteractEvent event) {
         EntityItemHandler entityItemHandler;
@@ -65,7 +69,7 @@ public class PlayerInteractHoeArtisan implements Consumer<PlayerInteractEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         int level;
@@ -121,7 +125,7 @@ public class PlayerInteractHoeArtisan implements Consumer<PlayerInteractEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), blockLocations.size() - 1, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockLocations.size() - 1, event.getPlayer().getLocation(), plugin)) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

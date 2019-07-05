@@ -6,7 +6,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
@@ -19,6 +18,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,11 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    public EntityShootBowMultishot() { }
+    private final Plugin plugin;
+
+    public EntityShootBowMultishot(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void accept(EntityShootBowEvent event) {
         EntityItemHandler entityItemHandler;
@@ -40,7 +44,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getEntity());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         int level;
@@ -84,7 +88,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         }
 
         if (!(event.getEntity() instanceof Player) || ((Player) event.getEntity()).getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, mainHand.get(), level * 2, event.getEntity().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, enchantableMainHand, level * 2, event.getEntity().getLocation(), plugin)) {
                 entityItemHandler.setItemInMainHand(event.getEntity(), null);
             }
         }

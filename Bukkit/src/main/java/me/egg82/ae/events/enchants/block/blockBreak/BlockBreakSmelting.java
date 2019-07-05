@@ -9,7 +9,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
 import ninja.egg82.service.ServiceLocator;
@@ -21,6 +20,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,15 +29,21 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    private List<FurnaceRecipe> recipes = new ArrayList<>();
+    private static final List<FurnaceRecipe> recipes = new ArrayList<>();
 
-    public BlockBreakSmelting() {
+    static {
         for (Iterator<Recipe> i = Bukkit.recipeIterator(); i.hasNext();) {
             Recipe r = i.next();
             if (r instanceof FurnaceRecipe) {
                 recipes.add((FurnaceRecipe) r);
             }
         }
+    }
+
+    private final Plugin plugin;
+
+    public BlockBreakSmelting(Plugin plugin) {
+        this.plugin = plugin;
     }
 
     public void accept(BlockBreakEvent event) {
@@ -50,7 +56,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         try {
@@ -104,7 +110,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
             event.getBlock().setType(Material.AIR, true);
         }
 
-        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
+        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, (isSmelted) ? 2 : 1, event.getPlayer().getLocation(), plugin)) {
             entityItemHandler.setItemInMainHand(event.getPlayer(), null);
         }
     }

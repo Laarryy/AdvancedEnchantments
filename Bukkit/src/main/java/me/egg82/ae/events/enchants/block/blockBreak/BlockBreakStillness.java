@@ -6,7 +6,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
 import ninja.egg82.service.ServiceLocator;
@@ -15,6 +14,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,11 @@ public class BlockBreakStillness implements Consumer<BlockBreakEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    public BlockBreakStillness() { }
+    private final Plugin plugin;
+
+    public BlockBreakStillness(Plugin plugin) {
+        this.plugin = plugin;
+    }
 
     public void accept(BlockBreakEvent event) {
         EntityItemHandler entityItemHandler;
@@ -35,7 +39,7 @@ public class BlockBreakStillness implements Consumer<BlockBreakEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         try {
@@ -55,7 +59,7 @@ public class BlockBreakStillness implements Consumer<BlockBreakEvent> {
         event.getBlock().setType(Material.AIR, false);
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), 1, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, 1, event.getPlayer().getLocation(), plugin)) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

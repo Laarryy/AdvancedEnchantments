@@ -6,7 +6,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
@@ -46,7 +45,7 @@ public class EntityShootBowBurst implements Consumer<EntityShootBowEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getEntity());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         int level;
@@ -79,7 +78,7 @@ public class EntityShootBowBurst implements Consumer<EntityShootBowEvent> {
         }
 
         if (!(event.getEntity() instanceof Player) || ((Player) event.getEntity()).getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, mainHand.get(), level, event.getEntity().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, enchantableMainHand, level, event.getEntity().getLocation(), plugin)) {
                 entityItemHandler.setItemInMainHand(event.getEntity(), null);
             }
         }

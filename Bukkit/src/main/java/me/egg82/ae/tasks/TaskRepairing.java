@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,13 @@ public class TaskRepairing implements Runnable {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
+    private final Plugin plugin;
+
     private EntityItemHandler entityItemHandler;
 
-    public TaskRepairing() {
+    public TaskRepairing(Plugin plugin) {
+        this.plugin = plugin;
+
         try {
             entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
         } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
@@ -68,8 +73,6 @@ public class TaskRepairing implements Runnable {
             return;
         }
 
-        if (ItemDurabilityUtil.addDurability((ItemStack) item.getConcrete(), level)) {
-            BukkitEnchantableItem.forceCache((ItemStack) item.getConcrete(), item);
-        }
+        ItemDurabilityUtil.addDurability(item, level, plugin);
     }
 }

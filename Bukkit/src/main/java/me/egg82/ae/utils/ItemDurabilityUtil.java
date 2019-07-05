@@ -1,12 +1,15 @@
 package me.egg82.ae.utils;
 
 import java.util.Optional;
+
+import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.services.sound.SoundLookup;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 public class ItemDurabilityUtil {
     private ItemDurabilityUtil() { }
@@ -29,60 +32,71 @@ public class ItemDurabilityUtil {
         }
     }
 
-    public static boolean removeDurability(ItemStack item, int durabilityToRemove, Location soundLocation) {
-        return removeDurability(null, item, durabilityToRemove, soundLocation);
+    public static boolean removeDurability(BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation, Plugin plugin) {
+        return removeDurability(null, item, durabilityToRemove, soundLocation, plugin);
     }
 
-    public static boolean removeDurability(Player player, ItemStack item, int durabilityToRemove, Location soundLocation) {
+    public static boolean removeDurability(Player player, BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation, Plugin plugin) {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null.");
+        }
+        if (plugin == null) {
+            throw new IllegalArgumentException("plugin cannot be null.");
         }
 
         if (durabilityToRemove == 0) {
             return true;
         }
 
+        ItemStack i = (ItemStack) item.getConcrete();
+
         if (player != null && hasItemBreakEvent) {
-            org.bukkit.event.player.PlayerItemDamageEvent event = new org.bukkit.event.player.PlayerItemDamageEvent(player, item, durabilityToRemove);
+            org.bukkit.event.player.PlayerItemDamageEvent event = new org.bukkit.event.player.PlayerItemDamageEvent(player, i, durabilityToRemove);
             Bukkit.getPluginManager().callEvent(event);
 
             if (event.isCancelled()) {
-                return false;
+                return true;
             }
 
             durabilityToRemove = event.getDamage();
         }
 
-        short durability = item.getDurability();
-        if (durability >= item.getType().getMaxDurability() - durabilityToRemove) {
+        short durability = i.getDurability();
+        if (durability >= i.getType().getMaxDurability() - durabilityToRemove) {
             if (soundLocation != null) {
                 soundLocation.getWorld().playSound(soundLocation, breakSound, 1.0f, 1.0f);
             }
             return false;
         }
 
-        item.setDurability((short) (item.getDurability() + durabilityToRemove));
+        i.setDurability((short) (i.getDurability() + durabilityToRemove));
+        Bukkit.getScheduler().runTaskLater(plugin, () -> BukkitEnchantableItem.forceCache(i, item), 1L);
 
         return true;
     }
 
-    public static boolean addDurability(ItemStack item, int durabilityToAdd) {
+    public static void addDurability(BukkitEnchantableItem item, int durabilityToAdd, Plugin plugin) {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null.");
         }
-
-        if (durabilityToAdd == 0) {
-            return false;
+        if (plugin == null) {
+            throw new IllegalArgumentException("plugin cannot be null.");
         }
 
-        int oldDurability = item.getDurability();
+        if (durabilityToAdd == 0) {
+            return;
+        }
+
+        ItemStack i = (ItemStack) item.getConcrete();
+
+        int oldDurability = i.getDurability();
         short newDurability = (short) Math.max(0, oldDurability - durabilityToAdd);
 
         if (newDurability == oldDurability) {
-            return false;
+            return;
         }
 
-        item.setDurability(newDurability);
-        return true;
+        i.setDurability(newDurability);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> BukkitEnchantableItem.forceCache(i, item), 1L);
     }
 }

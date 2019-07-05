@@ -6,7 +6,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
-import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.core.FakeBlockData;
 import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
@@ -49,7 +48,7 @@ public class PlayerAnimationMirage implements Consumer<PlayerAnimationEvent> {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
-        GenericEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
 
         boolean hasEnchantment;
         int level;
@@ -71,7 +70,7 @@ public class PlayerAnimationMirage implements Consumer<PlayerAnimationEvent> {
         }
 
         if (raise(blocks) && event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), mainHand.get(), 1, event.getPlayer().getLocation())) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, 1, event.getPlayer().getLocation(), plugin)) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }
