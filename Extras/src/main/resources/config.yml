@@ -1,0 +1,21 @@
+# When true, logs some extra output to the console so you can see if/why things might be failing
+debug: false
+
+stats:
+  # Whether or not to send anonymous usage statistics to bStats
+  # True: Send anonymous stats; let the author know how well the plugin is doing and how it's used!
+  # False: Do not send stats and make the author sad :(
+  usage: true
+  # Whether or not to send anonymous errors to the author
+  # True: Send errors anonymously to GameAnalytics so the author can fix them!
+  # False: Do not send errors and wonder why any bugs you encounter haven't been fixed
+  errors: true
+
+update:
+  # Whether or not to automatically check for updates and notify the console if found
+  check: true
+  # Whether or not to notify players with the ae.admin permission node
+  notify: true
+
+# Config version, no touchy plz
+version: 1.0

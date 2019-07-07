@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>advancedenchantments-bukkit</artifactId>
+    <artifactId>advancedenchantments-extras</artifactId>
     <version>4.12.13</version>
 
     <build>
@@ -182,18 +182,6 @@
         </dependency>
 
         <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>taskchain-bukkit</artifactId>
-            <version>3.7.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-paper</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>event-chain-bukkit</artifactId>
             <version>1.0.9</version>
@@ -233,12 +221,6 @@
             <artifactId>slf4bukkit</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>org.mineskin</groupId>
-            <artifactId>java-client</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.bstats</groupId>
@@ -251,23 +233,17 @@
             <version>4.5.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>4.4.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.packetwrapper</groupId>
-            <artifactId>PacketWrapper</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>me.egg82</groupId>
             <artifactId>advancedenchantments-common</artifactId>
             <version>4.12.13</version>
+        </dependency>
+        <dependency>
+            <groupId>me.egg82</groupId>
+            <artifactId>advancedenchantments-bukkit</artifactId>
+            <version>4.12.13</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

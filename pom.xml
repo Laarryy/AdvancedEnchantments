@@ -22,5 +22,6 @@
     <modules>
         <module>Common</module>
         <module>Bukkit</module>
+        <module>Extras</module>
     </modules>
 </project>

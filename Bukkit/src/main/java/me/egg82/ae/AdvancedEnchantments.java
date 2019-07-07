@@ -300,6 +300,7 @@ public class AdvancedEnchantments {
     private boolean canUseEnchant(Object obj, String node) { return !(obj instanceof Player) || ((Player) obj).hasPermission(node); }
 
     private void loadTasks() {
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAntigravity(), 0L, 60L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskFreezing(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskMagnetic(), 0L, 3L));
