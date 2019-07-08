@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import me.egg82.ae.core.ItemData;
+import me.egg82.ae.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
@@ -12,8 +13,12 @@ import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BukkitEnchantableItem extends GenericEnchantableItem {
+    private static Logger logger = LoggerFactory.getLogger(BukkitEnchantableItem.class);
+
     private static Cache<ItemData, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
 
     public static BukkitEnchantableItem fromItemStack(ItemStack item) {
@@ -32,13 +37,22 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
     private static ItemData getItemData(ItemStack item) {
         ItemMeta meta = getMeta(item);
-        return new ItemData(meta.getEnchants(), meta.getLore());
+        if (meta == null) {
+            return new ItemData();
+        }
+
+        return new ItemData(meta.getEnchants(), meta.hasLore() ? meta.getLore() : null);
     }
 
     private ItemStack item;
 
     private BukkitEnchantableItem(ItemStack item) {
         super(item);
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Creating BukkitEnchantableItem for " + item);
+        }
+
         this.item = item;
         targets.addAll(getTargets(item));
         enchantments.putAll(getBukkitEnchantments(item));
@@ -58,6 +72,9 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         Set<GenericEnchantmentTarget> retVal = new HashSet<>();
         for (EnchantmentTarget target : EnchantmentTarget.values()) {
             if (target.includes(item)) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Found target for " + item.getType() + ": " + target.name());
+                }
                 retVal.add(BukkitEnchantmentTarget.fromEnchantmentTarget(target));
             }
         }
@@ -67,6 +84,9 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     private Map<GenericEnchantment, Integer> getBukkitEnchantments(ItemStack item) {
         Map<GenericEnchantment, Integer> retVal = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Found Bukkit enchant for " + item.getType() + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+            }
             retVal.put(BukkitEnchantment.fromEnchant(kvp.getKey()), kvp.getValue());
         }
         return retVal;
@@ -98,6 +118,9 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
                 continue;
             }
 
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Found AE enchant for " + item.getType() + ": " + enchant.get().getName() + " " + getNumerals(level.get()));
+            }
             retVal.put(enchant.get(), level.get());
         }
 
@@ -157,49 +180,83 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     public void setEnchantmentLevel(GenericEnchantment enchantment, int level) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Setting enchant level for " + item + ": " + enchantment.getName() + " " + getNumerals(level));
+        }
         super.setEnchantmentLevel(enchantment, level);
         rewriteMeta();
     }
 
     public void addEnchantment(GenericEnchantment enchantment) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Adding enchant for " + item + ": " + enchantment.getName() + " " + getNumerals(enchantment.getMinLevel()));
+        }
         super.addEnchantment(enchantment);
         rewriteMeta();
     }
 
     public void removeEnchantment(GenericEnchantment enchantment) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Removing enchant for " + item + ": " + enchantment.getName());
+        }
         super.removeEnchantment(enchantment);
         rewriteMeta();
     }
 
     public void rewriteMeta() {
-        cache.invalidate(item);
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Rewriting meta for " + item);
+        }
+
+        cache.invalidate(getItemData(item));
 
         ItemMeta meta = getMeta(item);
         if (meta == null) {
             return;
         }
 
-        List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore());
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Resetting meta for " + item);
+        }
+
+        List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore()); // Remove all custom enchants from lore, we'll put them back later
+        // Remove any Bukkit enchants that don't exist on the item any more
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             if (!enchantments.containsKey(BukkitEnchantment.fromEnchant(kvp.getKey()))) {
                 meta.removeEnchant(kvp.getKey());
             }
         }
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Rebuilding meta for " + item);
+        }
+
+        // Re-build enchant lists and lore
         Set<BukkitEnchantment> bukkitEnchants = new HashSet<>();
         Set<GenericEnchantment> otherEnchants = new HashSet<>();
 
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
             if (kvp.getKey() instanceof BukkitEnchantment) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Setting Bukkit enchant for " + item + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                }
                 bukkitEnchants.add((BukkitEnchantment) kvp.getKey());
                 meta.addEnchant((Enchantment) kvp.getKey().getConcrete(), kvp.getValue(), true);
             } else {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Setting AE enchant for " + item + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                }
                 otherEnchants.add(kvp.getKey());
                 // Only add AE enchants to lore
                 lore.add((kvp.getKey().isCurse() ? ChatColor.RED : ChatColor.GRAY) + kvp.getKey().getFriendlyName() + " " + getNumerals(kvp.getValue()));
             }
         }
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Ensuring shiny meta for " + item);
+        }
+
+        // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
         boolean hasBukkitEnchants = false;
         boolean hasHackyEnchant = false;
         for (BukkitEnchantment bukkitEnchant : bukkitEnchants) {
@@ -242,6 +299,8 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
         meta.setLore(lore);
         item.setItemMeta(meta);
+
+        forceCache(item, this);
     }
 
     private List<String> stripEnchants(List<String> lore) {

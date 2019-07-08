@@ -1,5 +1,6 @@
 package me.egg82.ae.core;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -8,6 +9,11 @@ import org.bukkit.enchantments.Enchantment;
 public class ItemData {
     private final Map<Enchantment, Integer> enchantments;
     private final List<String> lore;
+
+    public ItemData() {
+        enchantments = new HashMap<>();
+        lore = null;
+    }
 
     public ItemData(Map<Enchantment, Integer> enchantments, List<String> lore) {
         this.enchantments = enchantments;
