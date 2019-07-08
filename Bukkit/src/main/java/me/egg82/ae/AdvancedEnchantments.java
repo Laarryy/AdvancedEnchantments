@@ -32,8 +32,10 @@ import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowMultishot
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
+import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
+import me.egg82.ae.events.enchants.inventory.prepareAnvil.PrepareAnvilRewrite;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.events.enchants.player.playerFish.PlayerFishProficiency;
 import me.egg82.ae.events.enchants.player.playerInteract.PlayerInteractHoeArtisan;
@@ -73,9 +75,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -221,6 +221,13 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemAdd().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemRewrite(plugin).accept(e)));
+
+        try {
+            Class.forName("org.bukkit.event.inventory.PrepareAnvilEvent");
+            events.add(BukkitEvents.subscribe(plugin, PrepareAnvilEvent.class, EventPriority.HIGH).handler(e -> new PrepareAnvilRewrite(plugin).accept(e)));
+        } catch (ClassNotFoundException ignored) {
+            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.ANVIL).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickAnvilRewrite(plugin).accept(e)));
+        }
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));

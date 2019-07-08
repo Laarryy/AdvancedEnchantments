@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import me.egg82.ae.core.ItemData;
+import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -256,7 +257,6 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Ensuring shiny meta for " + item.getType());
         }
 
-        // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
         boolean hasBukkitEnchants = false;
         boolean hasHackyEnchant = false;
         for (BukkitEnchantment bukkitEnchant : bukkitEnchants) {
@@ -267,38 +267,59 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
 
-        if (hasBukkitEnchants) {
+        /*if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             if (hasHackyEnchant) {
                 enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
                 meta.removeEnchant(Enchantment.DURABILITY);
+                meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
                 hasHackyEnchant = false;
             }
-            meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
-        } else {
-            if (!otherEnchants.isEmpty() && !hasHackyEnchant) {
-                enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
-                meta.addEnchant(Enchantment.DURABILITY, 0, true);
-                hasHackyEnchant = true;
-            }
 
-            if (hasHackyEnchant) {
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+
+            if (!hasBukkitEnchants) {
                 if (!otherEnchants.isEmpty()) {
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                    ProtocolLibHook.setGlowing(item);
                 } else {
+                    ProtocolLibHook.removeGlowing(item);
+                }
+            }
+        } else {*/
+            // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
+            if (hasBukkitEnchants) {
+                if (hasHackyEnchant) {
                     enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
                     meta.removeEnchant(Enchantment.DURABILITY);
                     hasHackyEnchant = false;
                 }
+                meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
+            } else {
+                if (!otherEnchants.isEmpty() && !hasHackyEnchant) {
+                    enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
+                    meta.addEnchant(Enchantment.DURABILITY, 0, true);
+                    hasHackyEnchant = true;
+                }
+
+                if (hasHackyEnchant) {
+                    if (!otherEnchants.isEmpty()) {
+                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                        meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                    } else {
+                        enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
+                        meta.removeEnchant(Enchantment.DURABILITY);
+                        hasHackyEnchant = false;
+                    }
+                }
             }
-        }
 
-        if (!hasHackyEnchant) {
-            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
+            if (!hasHackyEnchant) {
+                meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+            }
 
-        meta.setLore(lore);
-        item.setItemMeta(meta);
+            meta.setLore(lore);
+            item.setItemMeta(meta);
+        //}
 
         forceCache(item, this);
     }

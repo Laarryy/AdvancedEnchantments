@@ -13,6 +13,8 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.ChunkCoordIntPair;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import me.egg82.ae.core.ChunkData;
@@ -24,6 +26,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +58,26 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 }
             }
         }).start();
+    }
+
+    public static void setGlowing(ItemStack item) {
+        if (item == null) {
+            return;
+        }
+
+        NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
+        compound.put("Enchantments", NbtFactory.ofList(""));
+        NbtFactory.setItemTag(item, compound);
+    }
+
+    public static void removeGlowing(ItemStack item) {
+        if (item == null) {
+            return;
+        }
+
+        NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
+        compound.remove("Enchantments");
+        NbtFactory.setItemTag(item, compound);
     }
 
     public void cancel() {
