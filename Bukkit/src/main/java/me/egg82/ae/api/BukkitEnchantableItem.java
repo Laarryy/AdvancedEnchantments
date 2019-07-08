@@ -205,7 +205,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
     public void rewriteMeta() {
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Rewriting meta for " + item);
+            logger.info("Rewriting meta for " + item.getType());
         }
 
         cache.invalidate(getItemData(item));
@@ -216,7 +216,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Resetting meta for " + item);
+            logger.info("Resetting meta for " + item.getType());
         }
 
         List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore()); // Remove all custom enchants from lore, we'll put them back later
@@ -228,7 +228,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Rebuilding meta for " + item);
+            logger.info("Rebuilding meta for " + item.getType());
         }
 
         // Re-build enchant lists and lore
@@ -238,13 +238,13 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
             if (kvp.getKey() instanceof BukkitEnchantment) {
                 if (ConfigUtil.getDebugOrFalse()) {
-                    logger.info("Setting Bukkit enchant for " + item + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                    logger.info("Setting Bukkit enchant for " + item.getType() + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
                 }
                 bukkitEnchants.add((BukkitEnchantment) kvp.getKey());
                 meta.addEnchant((Enchantment) kvp.getKey().getConcrete(), kvp.getValue(), true);
             } else {
                 if (ConfigUtil.getDebugOrFalse()) {
-                    logger.info("Setting AE enchant for " + item + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                    logger.info("Setting AE enchant for " + item.getType() + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
                 }
                 otherEnchants.add(kvp.getKey());
                 // Only add AE enchants to lore
@@ -253,7 +253,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Ensuring shiny meta for " + item);
+            logger.info("Ensuring shiny meta for " + item.getType());
         }
 
         // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
