@@ -42,7 +42,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             return new ItemData();
         }
 
-        return new ItemData(meta.getEnchants(), meta.hasLore() ? meta.getLore() : null);
+        return new ItemData(meta.getEnchants(), meta.hasLore() ? meta.getLore() : null, getTargets(item));
     }
 
     private ItemStack item;
@@ -69,7 +69,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
     private BukkitEnchantableItem clone(ItemStack item) { return new BukkitEnchantableItem(item, targets, enchantments); }
 
-    private Set<GenericEnchantmentTarget> getTargets(ItemStack item) {
+    private static Set<GenericEnchantmentTarget> getTargets(ItemStack item) {
         Set<GenericEnchantmentTarget> retVal = new HashSet<>();
         for (EnchantmentTarget target : EnchantmentTarget.values()) {
             if (target.includes(item)) {
@@ -82,7 +82,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal;
     }
 
-    private Map<GenericEnchantment, Integer> getBukkitEnchantments(ItemStack item) {
+    private static Map<GenericEnchantment, Integer> getBukkitEnchantments(ItemStack item) {
         Map<GenericEnchantment, Integer> retVal = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             if (ConfigUtil.getDebugOrFalse()) {
@@ -93,7 +93,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal;
     }
 
-    private Map<GenericEnchantment, Integer> getAdvancedEnchantments(ItemStack item) {
+    private static Map<GenericEnchantment, Integer> getAdvancedEnchantments(ItemStack item) {
         Map<GenericEnchantment, Integer> retVal = new HashMap<>();
 
         ItemMeta meta = item.getItemMeta();
@@ -128,7 +128,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal;
     }
 
-    private Optional<Integer> getLevel(String numerals) {
+    private static Optional<Integer> getLevel(String numerals) {
         numerals = numerals.toUpperCase().replaceAll("[^MDCLXVIO]", "");
         if (numerals.isEmpty()) {
             return Optional.empty();
@@ -159,7 +159,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return Optional.of(retVal);
     }
 
-    private int getValue(char c) {
+    private static int getValue(char c) {
         switch (c) {
             case 'I':
                 return 1;
@@ -324,7 +324,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         forceCache(item, this);
     }
 
-    private List<String> stripEnchants(List<String> lore) {
+    private static List<String> stripEnchants(List<String> lore) {
         List<String> retVal = new ArrayList<>();
 
         for (String line : lore) {
@@ -356,7 +356,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return meta;
     }
 
-    private String getNumerals(int level) {
+    private static String getNumerals(int level) {
         if (level <= 0) {
             return "O";
         }
