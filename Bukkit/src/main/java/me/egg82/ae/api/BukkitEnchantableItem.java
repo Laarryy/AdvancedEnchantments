@@ -4,11 +4,14 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.egg82.ae.core.ItemData;
 import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.inventory.ItemFlag;
@@ -21,6 +24,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     private static Logger logger = LoggerFactory.getLogger(BukkitEnchantableItem.class);
 
     private static Cache<ItemData, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
+    private static LoadingCache<Material, Set<GenericEnchantmentTarget>> targetCache = Caffeine.newBuilder().build(k -> getTargetsExpensive(k));
 
     public static BukkitEnchantableItem fromItemStack(ItemStack item) {
         if (item == null) {
@@ -42,7 +46,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             return new ItemData();
         }
 
-        return new ItemData(meta.getEnchants(), meta.hasLore() ? meta.getLore() : null, getTargets(item));
+        return new ItemData(meta.getEnchants(), meta.hasLore() ? meta.getLore() : null, targetCache.get(item.getType()));
     }
 
     private ItemStack item;
@@ -55,7 +59,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         this.item = item;
-        targets.addAll(getTargets(item));
+        targets.addAll(targetCache.get(item.getType()));
         enchantments.putAll(getBukkitEnchantments(item));
         enchantments.putAll(getAdvancedEnchantments(item));
     }
@@ -69,12 +73,12 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
     private BukkitEnchantableItem clone(ItemStack item) { return new BukkitEnchantableItem(item, targets, enchantments); }
 
-    private static Set<GenericEnchantmentTarget> getTargets(ItemStack item) {
+    private static Set<GenericEnchantmentTarget> getTargetsExpensive(Material material) {
         Set<GenericEnchantmentTarget> retVal = new HashSet<>();
         for (EnchantmentTarget target : EnchantmentTarget.values()) {
-            if (target.includes(item)) {
+            if (target.includes(material)) {
                 if (ConfigUtil.getDebugOrFalse()) {
-                    logger.info("Found target for " + item.getType() + ": " + target.name());
+                    logger.info("Found target for " + material + ": " + target.name());
                 }
                 retVal.add(BukkitEnchantmentTarget.fromEnchantmentTarget(target));
             }
