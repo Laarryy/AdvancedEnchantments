@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
-import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,11 +39,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
         }
     }
 
-    private final Plugin plugin;
-
-    public BlockBreakSmelting(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public BlockBreakSmelting() { }
 
     public void accept(BlockBreakEvent event) {
         EntityItemHandler entityItemHandler;
@@ -110,7 +105,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
             event.getBlock().setType(Material.AIR, true);
         }
 
-        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, (isSmelted) ? 2 : 1, event.getPlayer().getLocation(), plugin)) {
+        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
             entityItemHandler.setItemInMainHand(event.getPlayer(), null);
         }
     }

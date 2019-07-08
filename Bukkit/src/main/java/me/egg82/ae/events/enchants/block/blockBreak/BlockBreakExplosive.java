@@ -22,7 +22,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,11 +30,7 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    private final Plugin plugin;
-
-    public BlockBreakExplosive(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public BlockBreakExplosive() { }
 
     public void accept(BlockBreakEvent event) {
         EntityItemHandler entityItemHandler;
@@ -114,7 +109,7 @@ public class BlockBreakExplosive implements Consumer<BlockBreakEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockCount, event.getPlayer().getLocation(), plugin)) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockCount, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

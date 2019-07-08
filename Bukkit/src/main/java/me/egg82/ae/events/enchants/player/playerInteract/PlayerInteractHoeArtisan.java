@@ -23,7 +23,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +52,7 @@ public class PlayerInteractHoeArtisan implements Consumer<PlayerInteractEvent> {
         coarseDirtMaterial = m.isPresent() ? m.get() : null;
     }
 
-    private final Plugin plugin;
-
-    public PlayerInteractHoeArtisan(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public PlayerInteractHoeArtisan() { }
 
     public void accept(PlayerInteractEvent event) {
         EntityItemHandler entityItemHandler;
@@ -125,7 +120,7 @@ public class PlayerInteractHoeArtisan implements Consumer<PlayerInteractEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockLocations.size() - 1, event.getPlayer().getLocation(), plugin)) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockLocations.size() - 1, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

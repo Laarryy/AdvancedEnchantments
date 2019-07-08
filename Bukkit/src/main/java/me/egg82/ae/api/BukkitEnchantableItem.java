@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import me.egg82.ae.core.ItemData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
@@ -13,24 +14,25 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class BukkitEnchantableItem extends GenericEnchantableItem {
-    private static Cache<ItemMeta, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
+    private static Cache<ItemData, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
 
     public static BukkitEnchantableItem fromItemStack(ItemStack item) {
         if (item == null) {
             return null;
         }
 
-        if (item.hasItemMeta()) {
-            return cache.get(item.getItemMeta(), k -> new BukkitEnchantableItem(item)).clone(item);
-        }
-
-        return new BukkitEnchantableItem(item);
+        return cache.get(getItemData(item), k -> new BukkitEnchantableItem(item)).clone(item);
     }
 
     public static void forceCache(ItemStack item, BukkitEnchantableItem enchantableItem) {
         if (item.hasItemMeta()) {
-            cache.put(item.getItemMeta(), enchantableItem);
+            cache.put(getItemData(item), enchantableItem);
         }
+    }
+
+    private static ItemData getItemData(ItemStack item) {
+        ItemMeta meta = getMeta(item);
+        return new ItemData(meta.getEnchants(), meta.getLore());
     }
 
     private ItemStack item;
@@ -265,7 +267,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal;
     }
 
-    private ItemMeta getMeta(ItemStack item) {
+    private static ItemMeta getMeta(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
             meta = Bukkit.getItemFactory().getItemMeta(item.getType());
@@ -346,6 +348,6 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     public int hashCode() {
-        return Objects.hash(item.hasItemMeta() ? item.getItemMeta().hashCode() : 0);
+        return Objects.hash(getItemData(item));
     }
 }

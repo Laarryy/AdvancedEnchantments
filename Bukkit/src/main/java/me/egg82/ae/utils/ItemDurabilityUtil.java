@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 public class ItemDurabilityUtil {
     private ItemDurabilityUtil() { }
@@ -32,16 +31,13 @@ public class ItemDurabilityUtil {
         }
     }
 
-    public static boolean removeDurability(BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation, Plugin plugin) {
-        return removeDurability(null, item, durabilityToRemove, soundLocation, plugin);
+    public static boolean removeDurability(BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation) {
+        return removeDurability(null, item, durabilityToRemove, soundLocation);
     }
 
-    public static boolean removeDurability(Player player, BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation, Plugin plugin) {
+    public static boolean removeDurability(Player player, BukkitEnchantableItem item, int durabilityToRemove, Location soundLocation) {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null.");
-        }
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null.");
         }
 
         if (durabilityToRemove == 0) {
@@ -70,17 +66,13 @@ public class ItemDurabilityUtil {
         }
 
         i.setDurability((short) (i.getDurability() + durabilityToRemove));
-        Bukkit.getScheduler().runTaskLater(plugin, () -> BukkitEnchantableItem.forceCache(i, item), 1L);
 
         return true;
     }
 
-    public static void addDurability(BukkitEnchantableItem item, int durabilityToAdd, Plugin plugin) {
+    public static void addDurability(BukkitEnchantableItem item, int durabilityToAdd) {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null.");
-        }
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin cannot be null.");
         }
 
         if (durabilityToAdd == 0) {
@@ -97,6 +89,5 @@ public class ItemDurabilityUtil {
         }
 
         i.setDurability(newDurability);
-        Bukkit.getScheduler().runTaskLater(plugin, () -> BukkitEnchantableItem.forceCache(i, item), 1L);
     }
 }

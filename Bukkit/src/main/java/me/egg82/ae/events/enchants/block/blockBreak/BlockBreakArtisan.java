@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,11 +27,7 @@ public class BlockBreakArtisan implements Consumer<BlockBreakEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    private final Plugin plugin;
-
-    public BlockBreakArtisan(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public BlockBreakArtisan() { }
 
     public void accept(BlockBreakEvent event) {
         EntityItemHandler entityItemHandler;
@@ -88,7 +83,7 @@ public class BlockBreakArtisan implements Consumer<BlockBreakEvent> {
         }
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockLocations.size() - 1, event.getPlayer().getLocation(), plugin)) {
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, blockLocations.size() - 1, event.getPlayer().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getPlayer(), null);
             }
         }

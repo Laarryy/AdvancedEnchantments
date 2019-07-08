@@ -18,7 +18,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +27,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
 
     private EnchantAPI api = EnchantAPI.getInstance();
 
-    private final Plugin plugin;
-
-    public EntityShootBowMultishot(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public EntityShootBowMultishot() { }
 
     public void accept(EntityShootBowEvent event) {
         EntityItemHandler entityItemHandler;
@@ -88,7 +83,7 @@ public class EntityShootBowMultishot implements Consumer<EntityShootBowEvent> {
         }
 
         if (!(event.getEntity() instanceof Player) || ((Player) event.getEntity()).getGameMode() != GameMode.CREATIVE) {
-            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, enchantableMainHand, level * 2, event.getEntity().getLocation(), plugin)) {
+            if (!ItemDurabilityUtil.removeDurability(event.getEntity() instanceof Player ? (Player) event.getEntity() : null, enchantableMainHand, level * 2, event.getEntity().getLocation())) {
                 entityItemHandler.setItemInMainHand(event.getEntity(), null);
             }
         }
