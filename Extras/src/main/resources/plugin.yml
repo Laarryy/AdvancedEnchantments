@@ -1,6 +1,6 @@
 name: AdvancedEnchantmentsExtras
 main: me.egg82.aee.BukkitBootstrap
-version: 4.12.13
+version: 4.12.14
 author: egg82
 api-version: 1.13
 description: Better Enchantments & Curses

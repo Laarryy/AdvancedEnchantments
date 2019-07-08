@@ -13,17 +13,25 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class BukkitEnchantableItem extends GenericEnchantableItem {
-    private static Cache<ItemStack, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
+    private static Cache<ItemMeta, BukkitEnchantableItem> cache = Caffeine.newBuilder().expireAfterAccess(5L, TimeUnit.MINUTES).build();
 
     public static BukkitEnchantableItem fromItemStack(ItemStack item) {
         if (item == null) {
             return null;
         }
 
-        return cache.get(item, k -> new BukkitEnchantableItem(item)).clone(item);
+        if (item.hasItemMeta()) {
+            return cache.get(item.getItemMeta(), k -> new BukkitEnchantableItem(item)).clone(item);
+        }
+
+        return new BukkitEnchantableItem(item);
     }
 
-    public static void forceCache(ItemStack item, BukkitEnchantableItem enchantableItem) { cache.put(item, enchantableItem); }
+    public static void forceCache(ItemStack item, BukkitEnchantableItem enchantableItem) {
+        if (item.hasItemMeta()) {
+            cache.put(item.getItemMeta(), enchantableItem);
+        }
+    }
 
     private ItemStack item;
 
@@ -338,6 +346,6 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
     }
 
     public int hashCode() {
-        return Objects.hash(item.hashCode());
+        return Objects.hash(item.hasItemMeta() ? item.getItemMeta().hashCode() : 0);
     }
 }
