@@ -1,8 +1,14 @@
 package me.egg82.ae.api;
 
+import me.egg82.ae.utils.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public abstract class GenericEnchantment {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     protected final UUID uuid;
     protected final String name;
     protected final String friendlyName;
@@ -53,16 +59,35 @@ public abstract class GenericEnchantment {
 
     public final Object getConcrete() { return concrete; }
 
-    public boolean conflictsWith(GenericEnchantment other) { return other != null && conflicts.contains(other); }
+    public boolean conflictsWith(GenericEnchantment other) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Checking if enchant " + name + " conflicts with " + (other == null ? "null" : other.name));
+            logger.info("Conflicts: " + (other != null && conflicts.contains(other)));
+            return other != null && conflicts.contains(other);
+        }
+
+        return other != null && conflicts.contains(other);
+    }
 
     public boolean canEnchant(GenericEnchantableItem item) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Checking if enchant " + name + " is compatible with " + (item == null ? "null" : item.getConcrete()));
+        }
+
         if (item == null) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Compatible: false");
+            }
             return false;
         }
 
         boolean good = false;
         for (GenericEnchantmentTarget target : item.getEnchantmentTargets()) {
             if (targets.contains(target)) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Found valid target " + target.getName() + " for enchant " + name);
+                }
+
                 good = true;
                 break;
             }
@@ -71,11 +96,21 @@ public abstract class GenericEnchantment {
         if (good) {
             for (Map.Entry<GenericEnchantment, Integer> enchantment : item.getEnchantments().entrySet()) {
                 if (conflictsWith(enchantment.getKey()) || enchantment.getKey().conflictsWith(this)) {
+                    if (ConfigUtil.getDebugOrFalse()) {
+                        logger.info("Enchant " + name + " conflicts with existing enchant " + enchantment.getKey().name + " on item");
+                    }
                     return false;
                 }
             }
+        } else {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Enchant " + name + " does not have a valid target");
+            }
         }
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Compatible: " + good);
+        }
         return good;
     }
 

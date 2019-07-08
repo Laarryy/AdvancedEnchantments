@@ -59,6 +59,8 @@ public class ConfigurationFileUtil {
                 .enchantChance(enchantChance)
                 .build();
 
+        ConfigUtil.setConfiguration(config, cachedValues);
+
         ServiceLocator.register(config);
         ServiceLocator.register(cachedValues);
     }

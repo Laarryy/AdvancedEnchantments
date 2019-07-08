@@ -7,8 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 import me.egg82.ae.api.curses.*;
 import me.egg82.ae.api.enchantments.*;
+import me.egg82.ae.utils.ConfigUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AdvancedEnchantment extends GenericEnchantment {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private static final Set<AdvancedEnchantment> allEnchantments = new HashSet<>(); // Needs to be set BEFORE the enchants are defined, else NPE
 
     public static final AdvancedEnchantment AERIAL = new AerialEnchantment();
@@ -68,6 +73,11 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
 
     protected AdvancedEnchantment(UUID uuid, String name, String friendlyName, boolean isCurse, int minLevel, int maxLevel) {
         super(uuid, name, friendlyName, isCurse, minLevel, maxLevel, null);
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Adding custom enchantment " + name);
+        }
+
         allEnchantments.add(this);
     }
 }
