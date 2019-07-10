@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
+import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
         Set<GenericEnchantment> removedEnchants = new HashSet<>();
         int retVal = 0;
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantableResultItem.getEnchantments().entrySet()) {
-            if (kvp.getKey() instanceof AdvancedEnchantment && !kvp.getKey().isCurse()) {
+            if (!(kvp.getKey() instanceof BukkitEnchantment) && !kvp.getKey().isCurse()) {
                 removedEnchants.add(kvp.getKey());
                 retVal += 6 * kvp.getValue();
             }
