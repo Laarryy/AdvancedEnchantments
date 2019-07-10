@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.extended.Configuration;
+import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.ConfigurationVersionUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -59,6 +60,8 @@ public class ConfigurationFileUtil {
                 .debug(debug)
                 .enchantChance(enchantChance)
                 .build();
+
+        ConfigUtil.setConfiguration(config, cachedValues);
 
         ServiceLocator.register(config);
         ServiceLocator.register(cachedValues);
