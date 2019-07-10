@@ -14,16 +14,11 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
     public InventoryClickGrindstoneRewrite() { }
 
     public void accept(InventoryClickEvent event) {
-        System.out.println("Grindstone event");
-
         ItemStack resultItem = event.getCurrentItem();
 
         if (resultItem == null || resultItem.getType() == Material.AIR) {
-            System.out.println("resultItem is null");
             return;
         }
-
-        System.out.println("resultItem is not null");
 
         BukkitEnchantableItem enchantableResultItem = BukkitEnchantableItem.fromItemStack(resultItem);
         removeEnchants(enchantableResultItem);
@@ -36,7 +31,6 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
         Set<GenericEnchantment> removedEnchants = new HashSet<>();
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantableResultItem.getEnchantments().entrySet()) {
             if (!kvp.getKey().isCurse()) {
-                System.out.println("Removing enchant " + kvp.getKey().getName());
                 removedEnchants.add(kvp.getKey());
             }
         }
