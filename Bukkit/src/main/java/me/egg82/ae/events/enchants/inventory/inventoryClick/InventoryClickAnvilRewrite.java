@@ -8,15 +8,12 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import me.egg82.ae.services.material.MaterialLookup;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 
 public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent> {
     private static Material enchantedBookMaterial;
@@ -29,40 +26,18 @@ public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent>
         enchantedBookMaterial = m.get();
     }
 
-    private final Plugin plugin;
-
-    public InventoryClickAnvilRewrite(Plugin plugin) {
-        this.plugin = plugin;
-    }
+    public InventoryClickAnvilRewrite() { }
 
     public void accept(InventoryClickEvent event) {
         ItemStack carryoverItem = event.getInventory().getItem(0);
         ItemStack sacrificeItem = event.getInventory().getItem(1);
+        ItemStack resultItem = event.getCurrentItem();
 
-        if (carryoverItem == null || carryoverItem.getType() == Material.AIR || sacrificeItem == null || sacrificeItem.getType() == Material.AIR) {
+        if (carryoverItem == null || carryoverItem.getType() == Material.AIR || sacrificeItem == null || sacrificeItem.getType() == Material.AIR || resultItem == null || resultItem.getType() == Material.AIR) {
             return;
         }
 
-        ItemStack resultItem = null;
-
-        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-            resultItem = event.getCurrentItem();
-        } else if (
-                event.getAction() == InventoryAction.HOTBAR_MOVE_AND_READD
-                        || event.getAction() == InventoryAction.HOTBAR_SWAP
-                        || event.getAction() == InventoryAction.PLACE_ALL
-                        || event.getAction() == InventoryAction.PLACE_ONE
-                        || event.getAction() == InventoryAction.PLACE_SOME
-                        || event.getAction() == InventoryAction.SWAP_WITH_CURSOR
-        ) {
-            resultItem = event.getCursor();
-        }
-
-        if (resultItem == null || resultItem.getType() == Material.AIR) {
-            return;
-        }
-
-        BukkitEnchantableItem enchantableCarryoverItem = BukkitEnchantableItem.fromItemStack(resultItem);
+        BukkitEnchantableItem enchantableResultItem = BukkitEnchantableItem.fromItemStack(resultItem);
 
         if (sacrificeItem.getType() == enchantedBookMaterial) {
             if (!sacrificeItem.hasItemMeta()) {
@@ -73,7 +48,7 @@ public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent>
                 return;
             }
 
-            applyEnchants(toGenericEnchants(meta.getStoredEnchants()), enchantableCarryoverItem);
+            applyEnchants(toGenericEnchants(meta.getStoredEnchants()), enchantableResultItem);
         } else {
             if (!sacrificeItem.hasItemMeta()) {
                 return;
@@ -84,10 +59,11 @@ public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent>
             }
 
             BukkitEnchantableItem enchantableSacrificeItem = BukkitEnchantableItem.fromItemStack(sacrificeItem);
-            applyEnchants(enchantableSacrificeItem.getEnchantments(), enchantableCarryoverItem);
+            applyEnchants(enchantableSacrificeItem.getEnchantments(), enchantableResultItem);
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> enchantableCarryoverItem.rewriteMeta(), 1L);
+        enchantableResultItem.rewriteMeta();
+        event.setCurrentItem((ItemStack) enchantableResultItem.getConcrete());
     }
 
     private void applyEnchants(Map<GenericEnchantment, Integer> enchants, BukkitEnchantableItem enchantableCarryoverItem) {

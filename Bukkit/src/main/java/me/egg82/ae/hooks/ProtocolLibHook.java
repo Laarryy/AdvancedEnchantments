@@ -66,7 +66,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
         }
 
         NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-        compound.put("Enchantments", NbtFactory.ofList(""));
+        compound.put("ench", NbtFactory.ofList(""));
         NbtFactory.setItemTag(item, compound);
     }
 
@@ -76,7 +76,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
         }
 
         NbtCompound compound = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-        compound.remove("Enchantments");
+        compound.remove("ench");
         NbtFactory.setItemTag(item, compound);
     }
 

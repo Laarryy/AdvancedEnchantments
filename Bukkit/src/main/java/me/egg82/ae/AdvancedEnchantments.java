@@ -226,7 +226,7 @@ public class AdvancedEnchantments {
             Class.forName("org.bukkit.event.inventory.PrepareAnvilEvent");
             events.add(BukkitEvents.subscribe(plugin, PrepareAnvilEvent.class, EventPriority.HIGH).handler(e -> new PrepareAnvilRewrite(plugin).accept(e)));
         } catch (ClassNotFoundException ignored) {
-            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.ANVIL).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickAnvilRewrite(plugin).accept(e)));
+            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.ANVIL).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickAnvilRewrite().accept(e)));
         }
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));

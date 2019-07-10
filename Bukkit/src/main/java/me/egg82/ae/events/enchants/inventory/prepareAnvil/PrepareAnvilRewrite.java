@@ -11,6 +11,8 @@ import me.egg82.ae.services.material.MaterialLookup;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -68,7 +70,18 @@ public class PrepareAnvilRewrite implements Consumer<PrepareAnvilEvent> {
         }
 
         event.setResult((ItemStack) enchantableCarryoverItem.getConcrete());
-        Bukkit.getScheduler().runTaskLater(plugin, () -> enchantableCarryoverItem.rewriteMeta(), 1L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            // Rewrite the item meta on the next tick, so the client actually gets the update
+            enchantableCarryoverItem.rewriteMeta();
+            // This event gets triggered (without a corresponding inventory update) when the player resizes their window
+            // Bit of a workaround, but it works I guess
+            for (HumanEntity e : event.getViewers()) {
+                if (!(e instanceof Player)) {
+                    continue;
+                }
+                ((Player) e).updateInventory();
+            }
+        }, 1L);
     }
 
     private void applyEnchants(Map<GenericEnchantment, Integer> enchants, BukkitEnchantableItem enchantableCarryoverItem) {
