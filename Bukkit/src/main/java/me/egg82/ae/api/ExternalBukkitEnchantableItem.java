@@ -59,14 +59,6 @@ public class ExternalBukkitEnchantableItem {
         }
     }
 
-    public static void forceCache(ItemStack item, BukkitEnchantableItem enchantableItem) throws APIException {
-        try {
-            invokeStaticMethod("forceCache", item, enchantableItem);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-            throw new APIException(true, "Could not invoke base method.", ex);
-        }
-    }
-
     public void rewriteMeta() throws APIException {
         try {
             invokeMethod(concrete, "rewriteMeta");
