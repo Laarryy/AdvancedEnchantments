@@ -24,7 +24,7 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
 
         List<AdvancedEnchantment> customEnchants = new ArrayList<>(AdvancedEnchantment.values());
         Map<GenericEnchantment, Integer> currentEnchants = getEnchants(event.getEnchantsToAdd());
-        Map<AdvancedEnchantment, Integer> newEnchants = new HashMap<>();
+        Map<GenericEnchantment, Integer> newEnchants = new HashMap<>();
 
         BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
 
@@ -53,15 +53,13 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
 
                 // This all works because we're iterating through a copy of the map
                 event.getEnchantsToAdd().remove((Enchantment) kvp.getKey().getConcrete());
-                int newLevel = Math.max(newEnchant.getMinLevel(), Math.min(newEnchant.getMaxLevel(), kvp.getValue())); // Clamp value;
+                int newLevel = Math.max(newEnchant.getMinLevel(), Math.min(newEnchant.getMaxLevel(), kvp.getValue())); // Clamp value
                 newEnchants.put(newEnchant, newLevel);
             }
         }
 
         // Add all the new (custom) enchants
-        for (Map.Entry<AdvancedEnchantment, Integer> kvp : newEnchants.entrySet()) {
-            item.setEnchantmentLevel(kvp.getKey(), kvp.getValue());
-        }
+        item.setEnchantmentLevels(newEnchants);
     }
 
     private Map<GenericEnchantment, Integer> getEnchants(Map<Enchantment, Integer> original) {
@@ -86,8 +84,8 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
         return false;
     }
 
-    private boolean conflicts(GenericEnchantment newEnchant, Map<AdvancedEnchantment, Integer> otherEnchants) {
-        for (Map.Entry<AdvancedEnchantment, Integer> kvp : otherEnchants.entrySet()) {
+    private boolean conflicts(GenericEnchantment newEnchant, Map<GenericEnchantment, Integer> otherEnchants) {
+        for (Map.Entry<GenericEnchantment, Integer> kvp : otherEnchants.entrySet()) {
             if (newEnchant.conflictsWith(kvp.getKey()) || kvp.getKey().conflictsWith(newEnchant)) {
                 return true;
             }

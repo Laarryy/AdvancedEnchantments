@@ -21,11 +21,55 @@ public abstract class GenericEnchantableItem {
 
     public int getEnchantmentLevel(GenericEnchantment enchantment) { return enchantment == null ? -1 : enchantments.computeIfAbsent(enchantment, k -> -1); }
 
-    public void setEnchantmentLevel(GenericEnchantment enchantment, int level) { enchantments.compute(enchantment, (k, v) -> level < 0 ? null : level); }
+    public void setEnchantmentLevel(GenericEnchantment enchantment, int level) {
+        if (enchantment == null) {
+            return;
+        }
+        enchantments.compute(enchantment, (k, v) -> level < 0 ? null : level);
+    }
 
-    public void addEnchantment(GenericEnchantment enchantment) { setEnchantmentLevel(enchantment, enchantment.minLevel); }
+    public void setEnchantmentLevels(Map<GenericEnchantment, Integer> enchantments) {
+        if (enchantments == null || enchantments.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
+            this.enchantments.compute(kvp.getKey(), (k, v) -> kvp.getValue() == null || kvp.getValue() < 0 ? null : kvp.getValue());
+        }
+    }
 
-    public void removeEnchantment(GenericEnchantment enchantment) { enchantments.remove(enchantment); }
+    public void addEnchantment(GenericEnchantment enchantment) { setEnchantmentLevel(enchantment, enchantment.getMinLevel()); }
+
+    public void addEnchantments(Collection<GenericEnchantment> enchantments) {
+        if (enchantments == null) {
+            return;
+        }
+
+        Map<GenericEnchantment, Integer> mappedEnchantments = new HashMap<>();
+        for (GenericEnchantment enchantment : enchantments) {
+            if (enchantment != null) {
+                mappedEnchantments.put(enchantment, enchantment.getMinLevel());
+            }
+        }
+        setEnchantmentLevels(mappedEnchantments);
+    }
+
+    public void removeEnchantment(GenericEnchantment enchantment) {
+        if (enchantment == null) {
+            return;
+        }
+        enchantments.remove(enchantment);
+    }
+
+    public void removeEnchantments(Collection<GenericEnchantment> enchantments) {
+        if (enchantments == null || enchantments.isEmpty()) {
+            return;
+        }
+        for (GenericEnchantment enchantment : enchantments) {
+            if (enchantment != null) {
+                this.enchantments.remove(enchantment);
+            }
+        }
+    }
 
     public Map<GenericEnchantment, Integer> getEnchantments() { return ImmutableMap.copyOf(enchantments); }
 

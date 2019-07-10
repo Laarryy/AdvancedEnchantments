@@ -33,6 +33,7 @@ import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
+import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickGrindstoneRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.inventory.prepareAnvil.PrepareAnvilRewrite;
@@ -228,6 +229,11 @@ public class AdvancedEnchantments {
         } catch (ClassNotFoundException ignored) {
             events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.ANVIL).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickAnvilRewrite().accept(e)));
         }
+
+        try {
+            InventoryType.valueOf("GRINDSTONE");
+            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.valueOf("GRINDSTONE")).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickGrindstoneRewrite().accept(e)));
+        } catch (IllegalArgumentException ignored) {}
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));

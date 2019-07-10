@@ -3,6 +3,7 @@ package me.egg82.ae.api;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLClassLoader;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -114,6 +115,14 @@ public class ExternalBukkitEnchantableItem {
         }
     }
 
+    public void setEnchantmentLevels(Map<GenericEnchantment, Integer> enchantments) throws APIException {
+        try {
+            invokeMethod(concrete, "setEnchantmentLevels", enchantments);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
     public void addEnchantment(GenericEnchantment enchantment) throws APIException {
         try {
             invokeMethod(concrete, "addEnchantment", enchantment);
@@ -122,9 +131,25 @@ public class ExternalBukkitEnchantableItem {
         }
     }
 
+    public void addEnchantments(Collection<GenericEnchantment> enchantments) throws APIException {
+        try {
+            invokeMethod(concrete, "addEnchantments", enchantments);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
     public void removeEnchantment(GenericEnchantment enchantment) throws APIException {
         try {
             invokeMethod(concrete, "removeEnchantment", enchantment);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
+    public void removeEnchantments(Collection<GenericEnchantment> enchantments) throws APIException {
+        try {
+            invokeMethod(concrete, "removeEnchantments", enchantments);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
             throw new APIException(true, "Could not invoke base method.", ex);
         }

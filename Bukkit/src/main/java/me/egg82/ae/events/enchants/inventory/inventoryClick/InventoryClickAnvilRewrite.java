@@ -67,17 +67,19 @@ public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent>
     }
 
     private void applyEnchants(Map<GenericEnchantment, Integer> enchants, BukkitEnchantableItem enchantableCarryoverItem) {
+        Map<GenericEnchantment, Integer> newEnchants = new HashMap<>();
+
         // Add all enchants from sacrifice item
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchants.entrySet()) {
             if (enchantableCarryoverItem.hasEnchantment(kvp.getKey())) {
                 // carryover has enchant
                 if (kvp.getValue() > enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey())) {
                     // sacrifice's level is greater, so raise level to sacrifice's level
-                    enchantableCarryoverItem.setEnchantmentLevel(kvp.getKey(), kvp.getValue());
+                    newEnchants.put(kvp.getKey(), kvp.getValue());
                 } else if (kvp.getValue() == enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey())) {
                     // sacrifice's level is equal, so raise level by one (if applicable)
                     if (enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey()) < kvp.getKey().getMaxLevel()) {
-                        enchantableCarryoverItem.setEnchantmentLevel(kvp.getKey(), enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey()) + 1);
+                        newEnchants.put(kvp.getKey(), enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey()) + 1);
                     }
                 }
                 // Do nothing if sacrifice's level is lower
@@ -86,9 +88,11 @@ public class InventoryClickAnvilRewrite implements Consumer<InventoryClickEvent>
 
             if (kvp.getKey().canEnchant(enchantableCarryoverItem)) {
                 // Only add enchants that are compatible
-                enchantableCarryoverItem.setEnchantmentLevel(kvp.getKey(), kvp.getValue());
+                newEnchants.put(kvp.getKey(), kvp.getValue());
             }
         }
+
+        enchantableCarryoverItem.setEnchantmentLevels(newEnchants);
     }
 
     private Map<GenericEnchantment, Integer> toGenericEnchants(Map<Enchantment, Integer> enchants) {

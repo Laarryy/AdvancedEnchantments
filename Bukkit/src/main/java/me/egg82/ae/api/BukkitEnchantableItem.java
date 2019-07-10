@@ -192,6 +192,18 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         rewriteMeta();
     }
 
+    public void setEnchantmentLevels(Map<GenericEnchantment, Integer> enchantments) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            if (enchantments != null) {
+                for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
+                    logger.info("Setting enchant level for " + item + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                }
+            }
+        }
+        super.setEnchantmentLevels(enchantments);
+        rewriteMeta();
+    }
+
     public void addEnchantment(GenericEnchantment enchantment) {
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Adding enchant for " + item + ": " + enchantment.getName() + " " + getNumerals(enchantment.getMinLevel()));
@@ -200,11 +212,35 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         rewriteMeta();
     }
 
+    public void addEnchantments(Collection<GenericEnchantment> enchantments) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            if (enchantments != null) {
+                for (GenericEnchantment enchantment : enchantments) {
+                    logger.info("Adding enchant for " + item + ": " + (enchantment == null ? "null" : enchantment.getName() + getNumerals(enchantment.getMinLevel())));
+                }
+            }
+        }
+        super.addEnchantments(enchantments);
+        rewriteMeta();
+    }
+
     public void removeEnchantment(GenericEnchantment enchantment) {
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Removing enchant for " + item + ": " + enchantment.getName());
+            logger.info("Removing enchant for " + item + ": " + (enchantment == null ? "null" : enchantment.getName()));
         }
         super.removeEnchantment(enchantment);
+        rewriteMeta();
+    }
+
+    public void removeEnchantments(Collection<GenericEnchantment> enchantments) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            if (enchantments != null) {
+                for (GenericEnchantment enchantment : enchantments) {
+                    logger.info("Removing enchant for " + item + ": " + (enchantment == null ? "null" : enchantment.getName()));
+                }
+            }
+        }
+        super.removeEnchantments(enchantments);
         rewriteMeta();
     }
 
