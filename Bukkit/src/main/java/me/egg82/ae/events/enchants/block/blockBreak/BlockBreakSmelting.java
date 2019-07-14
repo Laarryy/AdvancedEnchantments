@@ -92,9 +92,7 @@ public class BlockBreakSmelting implements Consumer<BlockBreakEvent> {
                 break;
             }
 
-            if (!dropped) {
-                event.getPlayer().getWorld().dropItemNaturally(dropLoc, i);
-            } else {
+            if (dropped) {
                 isSmelted = true;
             }
         }
