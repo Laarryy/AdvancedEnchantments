@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
-import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
@@ -28,7 +27,7 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
 
         BukkitEnchantableItem enchantableResultItem = BukkitEnchantableItem.fromItemStack(resultItem);
         int maxExp = removeEnchants(enchantableResultItem);
-        int variation = maxExp - (maxExp / 4);
+        int variation = Math.max(0, maxExp - (maxExp / 4));
 
         enchantableResultItem.rewriteMeta();
         event.setCurrentItem((ItemStack) enchantableResultItem.getConcrete());
@@ -44,7 +43,9 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchantableResultItem.getEnchantments().entrySet()) {
             if (!(kvp.getKey() instanceof BukkitEnchantment) && !kvp.getKey().isCurse()) {
                 removedEnchants.add(kvp.getKey());
-                retVal += 6 * kvp.getValue();
+                if (kvp.getValue() > 0) {
+                    retVal += 6 * kvp.getValue();
+                }
             }
         }
         enchantableResultItem.removeEnchantments(removedEnchants);
