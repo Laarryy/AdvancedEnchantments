@@ -28,6 +28,8 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.mineskin.MineskinClient;
 import org.mineskin.data.Skin;
 import org.mineskin.data.SkinCallback;
+import org.mineskin.data.SkinData;
+import org.mineskin.data.Texture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +81,12 @@ public class PaperSkinInfo implements SkinInfo {
         this.skin = skin;
     }
 
+    public PaperSkinInfo(UUID uuid, String name, String texture, String textureUrl, String textureSignature) {
+        this.uuid = uuid;
+        this.name = name;
+        this.skin = createSkin(uuid, name, texture, textureUrl, textureSignature);
+    }
+
     public UUID getUUID() { return uuid; }
 
     public Skin getSkin() { return skin; }
@@ -104,6 +112,29 @@ public class PaperSkinInfo implements SkinInfo {
 
         retVal.setItemMeta(meta);
 
+        return retVal;
+    }
+
+    private Skin createSkin(UUID uuid, String name, String texture, String textureUrl, String textureSignature) {
+        Skin retVal = new Skin();
+        retVal.id = -1;
+        retVal.name = name;
+        retVal.data = createData(uuid, texture, textureUrl, textureSignature);
+        retVal.timestamp = System.currentTimeMillis();
+        retVal.prvate = false;
+        retVal.views = 0;
+        retVal.accountId = -1;
+        retVal.nextRequest = 0.0d;
+        return retVal;
+    }
+
+    private SkinData createData(UUID uuid, String texture, String textureUrl, String textureSignature) {
+        SkinData retVal = new SkinData();
+        retVal.uuid = uuid;
+        retVal.texture = new Texture();
+        retVal.texture.value = texture;
+        retVal.texture.signature = textureSignature;
+        retVal.texture.url = textureUrl;
         return retVal;
     }
 

@@ -7,6 +7,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.utils.LocationUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
@@ -47,11 +48,12 @@ public class TaskMagnetic implements Runnable {
                 continue;
             }
 
+            Location playerLocation = player.getLocation();
             double distance = 2.5d + level;
 
             for (Entity e : player.getWorld().getNearbyEntities(player.getLocation(), distance, 2.0d, distance)) {
                 if (e instanceof Item || e instanceof ExperienceOrb) {
-                    Vector v = player.getLocation().toVector().subtract(e.getLocation().toVector()).normalize().multiply(level * 0.035d);
+                    Vector v = playerLocation.toVector().subtract(e.getLocation().toVector()).normalize().multiply(level * 0.035d);
                     if (LocationUtil.isFinite(v)) {
                         e.setVelocity(v);
                     }
