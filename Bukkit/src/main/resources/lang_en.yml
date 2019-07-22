@@ -1,0 +1,37 @@
+acf-minecraft:
+  multiple_players_match: "en"
+
+description:
+  reload: "Reloads the plugin."
+
+general:
+  header: "<c2>[</c2><c3>AdvancedEnchantments</c3><c2>]</c2> "
+  enabled: "<c4>Enabled</c4>"
+  disabled: "<c5>Disabled</c5>"
+  load: "<c2>[</c2><c3>Version</c3> {version}<c2>] [</c2>{commands} <c6>Commands</c6><c2>] [</c2>{events} <c7>Events</c7><c2>] [</c2>{tasks} <c8>Tasks</c8><c2>]</c2>"
+  hook_enable: "<c4>Enabling support for</c4> {plugin}"
+  hook_disable: "{plugin} <c2>was not found. Support for it has been disabled.</c2>"
+  update: "(Bukkit) <c3>has an</c3> <c4>update</c4> <c3>available!</c3> New version: <c2>{version}</c2>"
+
+error:
+  internal: "Internal error"
+  no_console: "Console cannot perform this action."
+  enchant_not_found: "Could not get an enchantment from the name provided."
+  no_item: "You are not holding an item."
+
+reload:
+  begin: "<c2>Reloading, please wait..</c2>"
+  end: "<c4>Configuration reloaded!</c4>"
+
+set:
+  error_level_min: "Level cannot be < {level}"
+  error_level_max: "Level cannot be > {level}"
+  error_conflicts: "This enchant conflicts with the item or existing enchants."
+  success_main_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in</c4> main hand<c4>.</c4>"
+  success_off_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in</c4> off hand<c4>.</c4>"
+
+remove:
+  success_main_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> main hand<c4>.</c4>"
+  success_off_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> off hand<c4>.</c4>"
+
+version: 1.0

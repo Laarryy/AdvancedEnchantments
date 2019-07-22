@@ -1,29 +1,28 @@
 package me.egg82.ae.commands.internal;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.taskchain.TaskChain;
+import me.egg82.ae.enums.Message;
 import me.egg82.ae.utils.ConfigurationFileUtil;
-import me.egg82.ae.utils.LogUtil;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
 public class ReloadCommand implements Runnable {
     private final Plugin plugin;
     private final TaskChain<?> chain;
-    private final CommandSender sender;
+    private final CommandIssuer issuer;
 
-    public ReloadCommand(Plugin plugin, TaskChain<?> chain, CommandSender sender) {
+    public ReloadCommand(Plugin plugin, TaskChain<?> chain, CommandIssuer issuer) {
         this.plugin = plugin;
         this.chain = chain;
-        this.sender = sender;
+        this.issuer = issuer;
     }
 
     public void run() {
-        sender.sendMessage(LogUtil.getHeading() + ChatColor.YELLOW + "Reloading, please wait..");
+        issuer.sendInfo(Message.RELOAD__BEGIN);
 
         chain
                 .async(() -> ConfigurationFileUtil.reloadConfig(plugin))
-                .sync(() -> sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Configuration reloaded!"))
+                .sync(() -> issuer.sendInfo(Message.RELOAD__END))
                 .execute();
     }
 }

@@ -1,13 +1,12 @@
 package me.egg82.ae.commands.internal;
 
+import co.aikar.commands.CommandIssuer;
 import java.util.Optional;
 import me.egg82.ae.api.*;
+import me.egg82.ae.enums.Message;
 import me.egg82.ae.services.entity.EntityItemHandler;
-import me.egg82.ae.utils.LogUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +16,11 @@ import org.slf4j.LoggerFactory;
 public class RemoveCommand implements Runnable {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final CommandSender sender;
+    private final CommandIssuer issuer;
     private final String enchant;
 
-    public RemoveCommand(CommandSender sender, String enchant) {
-        this.sender = sender;
+    public RemoveCommand(CommandIssuer issuer, String enchant) {
+        this.issuer = issuer;
         this.enchant = enchant;
     }
 
@@ -29,12 +28,12 @@ public class RemoveCommand implements Runnable {
         Optional<GenericEnchantment> en = getEnchantment(enchant);
 
         if (!en.isPresent()) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Could not get an enchantment from the name provided.");
+            issuer.sendError(Message.ERROR__ENCHANT_NOT_FOUND);
             return;
         }
 
-        if (!(sender instanceof LivingEntity)) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Could not get the item to enchant.");
+        if (!(issuer.getIssuer() instanceof LivingEntity)) {
+            issuer.sendError(Message.ERROR__NO_CONSOLE);
             return;
         }
 
@@ -43,26 +42,24 @@ public class RemoveCommand implements Runnable {
             entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
         } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
             logger.error(ex.getMessage(), ex);
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Internal error.");
+            issuer.sendError(Message.ERROR__INTERNAL);
             return;
         }
 
-        LivingEntity e = (LivingEntity) sender;
-
-        Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(e);
-        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(e);
+        Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(issuer.getIssuer());
+        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(issuer.getIssuer());
 
         Optional<GenericEnchantableItem> enchantableMainHand = Optional.ofNullable(mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null);
         Optional<GenericEnchantableItem> enchantableOffHand = Optional.ofNullable(offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null);
 
         if (enchantableMainHand.isPresent()) {
             enchantableMainHand.get().removeEnchantment(en.get());
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully removed \"" + en.get().getFriendlyName() + "\" from item in main hand.");
+            issuer.sendInfo(Message.REMOVE__SUCCESS_MAIN_HAND, "{name}", en.get().getFriendlyName());
         } else if (enchantableOffHand.isPresent()) {
             enchantableOffHand.get().removeEnchantment(en.get());
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully removed \"" + en.get().getFriendlyName() + "\" from item in off hand.");
+            issuer.sendInfo(Message.REMOVE__SUCCESS_OFF_HAND, "{name}", en.get().getFriendlyName());
         } else {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You are not holding anything to remove enchantments from.");
+            issuer.sendError(Message.ERROR__NO_ITEM);
         }
     }
 

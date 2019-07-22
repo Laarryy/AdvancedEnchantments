@@ -2,6 +2,7 @@ package me.egg82.ae.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import co.aikar.taskchain.TaskChainFactory;
 import me.egg82.ae.commands.internal.ReloadCommand;
@@ -24,8 +25,8 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("ae.admin")
     @Description("Reloads the plugin.")
-    public void onReload(CommandSender sender) {
-        new ReloadCommand(plugin, taskFactory.newChain(), sender).run();
+    public void onReload(CommandIssuer issuer) {
+        new ReloadCommand(plugin, taskFactory.newChain(), issuer).run();
     }
 
     @Subcommand("add|set|enchant")
@@ -33,8 +34,8 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Description("Adds an enchantment (or sets its level) to your currently-held item.")
     @Syntax("<enchant> [level]")
     @CommandCompletion("@enchant")
-    public void onSet(CommandSender sender, String enchant, @Optional String level) {
-        new SetCommand(sender, enchant, level).run();
+    public void onSet(CommandIssuer issuer, String enchant, @Optional String level) {
+        new SetCommand(issuer, enchant, level).run();
     }
 
     @Subcommand("remove|delete")
@@ -42,8 +43,8 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Description("Removes an enchantment from your currently-held item.")
     @Syntax("<enchant>")
     @CommandCompletion("@enchant")
-    public void onRemove(CommandSender sender, String enchant) {
-        new RemoveCommand(sender, enchant).run();
+    public void onRemove(CommandIssuer issuer, String enchant) {
+        new RemoveCommand(issuer, enchant).run();
     }
 
     @CatchUnknown @Default

@@ -1,13 +1,12 @@
 package me.egg82.ae.commands.internal;
 
+import co.aikar.commands.CommandIssuer;
 import java.util.Optional;
 import me.egg82.ae.api.*;
+import me.egg82.ae.enums.Message;
 import me.egg82.ae.services.entity.EntityItemHandler;
-import me.egg82.ae.utils.LogUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -17,12 +16,12 @@ import org.slf4j.LoggerFactory;
 public class SetCommand implements Runnable {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final CommandSender sender;
+    private final CommandIssuer issuer;
     private final String enchant;
     private final String level;
 
-    public SetCommand(CommandSender sender, String enchant, String level) {
-        this.sender = sender;
+    public SetCommand(CommandIssuer issuer, String enchant, String level) {
+        this.issuer = issuer;
         this.enchant = enchant;
         this.level = level;
     }
@@ -31,23 +30,23 @@ public class SetCommand implements Runnable {
         Optional<GenericEnchantment> en = getEnchantment(enchant);
 
         if (!en.isPresent()) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Could not get an enchantment from the name provided.");
+            issuer.sendError(Message.ERROR__ENCHANT_NOT_FOUND);
             return;
         }
 
         int l = level == null ? en.get().getMinLevel() : Integer.parseInt(level);
 
         if (l < en.get().getMinLevel()) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Level cannot be < " + en.get().getMinLevel());
+            issuer.sendError(Message.SET__ERROR_LEVEL_MIN, "{level}", String.valueOf(en.get().getMinLevel()));
             return;
         }
         if (l > en.get().getMaxLevel()) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Level cannot be > " + en.get().getMaxLevel());
+            issuer.sendError(Message.SET__ERROR_LEVEL_MAX, "{level}", String.valueOf(en.get().getMaxLevel()));
             return;
         }
 
-        if (!(sender instanceof LivingEntity)) {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Could not get the item to enchant.");
+        if (!(issuer.getIssuer() instanceof LivingEntity)) {
+            issuer.sendError(Message.ERROR__NO_CONSOLE);
             return;
         }
 
@@ -56,36 +55,34 @@ public class SetCommand implements Runnable {
             entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
         } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
             logger.error(ex.getMessage(), ex);
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "Internal error.");
+            issuer.sendError(Message.ERROR__INTERNAL);
             return;
         }
 
-        LivingEntity e = (LivingEntity) sender;
-
-        Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(e);
-        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(e);
+        Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(issuer.getIssuer());
+        Optional<ItemStack> offHand = entityItemHandler.getItemInOffHand(issuer.getIssuer());
 
         Optional<GenericEnchantableItem> enchantableMainHand = Optional.ofNullable(mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null);
         Optional<GenericEnchantableItem> enchantableOffHand = Optional.ofNullable(offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null);
 
         if (enchantableMainHand.isPresent()) {
             if (!en.get().canEnchant(enchantableMainHand.get())) {
-                sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You cannot enchant that item with this enchantment.");
+                issuer.sendError(Message.SET__ERROR_CONFLICTS);
                 return;
             }
 
             enchantableMainHand.get().setEnchantmentLevel(en.get(), l);
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully set \"" + en.get().getFriendlyName() + "\" to " + l + " for item in main hand.");
+            issuer.sendInfo(Message.SET__SUCCESS_MAIN_HAND, "{name}", en.get().getFriendlyName(), "{level}", String.valueOf(l));
         } else if (enchantableOffHand.isPresent()) {
             if (!en.get().canEnchant(enchantableOffHand.get())) {
-                sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You cannot enchant that item with this enchantment.");
+                issuer.sendError(Message.SET__ERROR_CONFLICTS);
                 return;
             }
 
             enchantableOffHand.get().setEnchantmentLevel(en.get(), l);
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.GREEN + "Successfully set \"" + en.get().getFriendlyName() + "\" to " + l + " for item in off hand.");
+            issuer.sendInfo(Message.SET__SUCCESS_OFF_HAND, "{name}", en.get().getFriendlyName(), "{level}", String.valueOf(l));
         } else {
-            sender.sendMessage(LogUtil.getHeading() + ChatColor.DARK_RED + "You are not holding anything to enchant.");
+            issuer.sendError(Message.ERROR__NO_ITEM);
         }
     }
 

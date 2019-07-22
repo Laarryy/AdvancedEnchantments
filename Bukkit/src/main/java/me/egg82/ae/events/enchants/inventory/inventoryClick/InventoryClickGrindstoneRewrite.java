@@ -32,8 +32,8 @@ public class InventoryClickGrindstoneRewrite implements Consumer<InventoryClickE
         enchantableResultItem.rewriteMeta();
         event.setCurrentItem((ItemStack) enchantableResultItem.getConcrete());
 
-        if (event.getWhoClicked() instanceof Player) {
-            ((Player) event.getWhoClicked()).giveExp(rand.nextInt(maxExp + variation) + (maxExp - variation));
+        if (event.getWhoClicked() instanceof Player && maxExp + variation > 0) {
+            ((Player) event.getWhoClicked()).giveExp(Math.max(1, rand.nextInt(maxExp + variation) + (maxExp - variation)));
         }
     }
 
