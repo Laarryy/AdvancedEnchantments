@@ -25,11 +25,9 @@ import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathProficiency;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathRampage;
 import me.egg82.ae.events.enchants.entity.entityShootBow.*;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
-import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitMarkingArrow;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
-import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.events.enchants.player.playerFish.PlayerFishProficiency;
 import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
@@ -262,11 +260,11 @@ public class AdvancedEnchantments {
         eventHolders.add(new ExplosiveEvents(plugin));
         eventHolders.add(new FieryEvents(plugin));
         eventHolders.add(new FreezingEvents(plugin));
+        eventHolders.add(new MarkingEvents(plugin));
+        eventHolders.add(new MirageEvents(plugin));
+        eventHolders.add(new MultishotEvents(plugin));
+        eventHolders.add(new PoisonousEvents(plugin));
 
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).handler(e -> new EntityDamageByEntityMarking().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.mirage")).handler(e -> new PlayerAnimationMirage(plugin).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.multishot")).handler(e -> new EntityShootBowMultishot().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.poisonous")).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.proficiency")).handler(e -> new BlockBreakProficiency().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.proficiency")).handler(e -> new EntityDeathProficiency().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.rampage")).handler(e -> new EntityDamageByEntityRampage().accept(e)));
@@ -276,13 +274,6 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.thunderous")).handler(e -> new EntityDamageByEntityThunderous().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.tornado")).handler(e -> new EntityDamageByEntityTornado(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.vampiric")).handler(e -> new EntityDamageByEntityVampiric().accept(e)));
-
-        events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.marking")).handler(e -> new EntityShootBowMarking().accept(e)));
-        try {
-            Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
-            events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitMarkingArrow().accept(e)));
-        } catch (ClassNotFoundException ignored) {}
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getDamager().getUniqueId())).handler(e -> new EntityDamageByEntityMarkingArrow().accept(e)));
 
         try {
             Class.forName("org.bukkit.event.player.PlayerFishEvent");
