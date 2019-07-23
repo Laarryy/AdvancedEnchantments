@@ -1,22 +1,40 @@
-package me.egg82.ae.events.enchants.enchantment.enchantItem;
+package me.egg82.ae.events;
 
 import java.util.*;
-import java.util.function.Consumer;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.utils.ConfigUtil;
+import ninja.egg82.events.BukkitEventFilters;
+import ninja.egg82.events.BukkitEvents;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.plugin.Plugin;
 
-public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
+public class EnchantingTableEvents extends EventHolder {
+    private final Plugin plugin;
     private final Random rand = new Random();
 
-    public EnchantItemAdd() { }
+    public EnchantingTableEvents(Plugin plugin) {
+        this.plugin = plugin;
 
-    public void accept(EnchantItemEvent event) {
+        events.add(
+                BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::addEnchants)
+        );
+        events.add(
+                BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(this::rewriteItem)
+        );
+    }
+
+    private void addEnchants(EnchantItemEvent event) {
         Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
         if (!cachedConfig.isPresent() || cachedConfig.get().getEnchantChance() == 0.0d) {
             return;
@@ -93,5 +111,12 @@ public class EnchantItemAdd implements Consumer<EnchantItemEvent> {
         }
 
         return false;
+    }
+
+    private void rewriteItem(EnchantItemEvent event) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
+            item.rewriteMeta();
+        }, 1L);
     }
 }

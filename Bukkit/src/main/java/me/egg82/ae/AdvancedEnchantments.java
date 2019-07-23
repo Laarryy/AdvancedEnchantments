@@ -17,11 +17,10 @@ import java.util.logging.Level;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.enums.Message;
-import me.egg82.ae.events.PlayerLoginUpdateNotifyHandler;
+import me.egg82.ae.events.*;
+import me.egg82.ae.events.enchants.AerialEvents;
 import me.egg82.ae.events.enchants.block.blockBreak.*;
 import me.egg82.ae.events.enchants.block.blockPlace.BlockPlaceFreezingCancel;
-import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemAdd;
-import me.egg82.ae.events.enchants.enchantment.enchantItem.EnchantItemRewrite;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathProficiency;
@@ -32,11 +31,8 @@ import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitMarkingArrow;
 import me.egg82.ae.events.enchants.entity.projectileLaunch.ProjectileLaunchEnsnaringCancel;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
-import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
-import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickGrindstoneRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
-import me.egg82.ae.events.enchants.inventory.prepareAnvil.PrepareAnvilRewrite;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.events.enchants.player.playerFish.PlayerFishProficiency;
 import me.egg82.ae.events.enchants.player.playerInteract.PlayerInteractHoeArtisan;
@@ -76,7 +72,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
@@ -93,6 +88,7 @@ public class AdvancedEnchantments {
     private TaskChainFactory taskFactory;
     private PaperCommandManager commandManager;
 
+    private List<EventHolder> eventHolders = new ArrayList<>();
     private List<BukkitEventSubscriber<?>> events = new ArrayList<>();
     private List<Integer> tasks = new ArrayList<>();
 
@@ -141,11 +137,16 @@ public class AdvancedEnchantments {
         loadHooks();
         loadMetrics();
 
+        int numEvents = events.size();
+        for (EventHolder eventHolder : eventHolders) {
+            numEvents += eventHolder.numEvents();
+        }
+
         consoleCommandIssuer.sendInfo(Message.GENERAL__ENABLED);
         consoleCommandIssuer.sendInfo(Message.GENERAL__LOAD,
                 "{version}", plugin.getDescription().getVersion(),
                 "{commands}", String.valueOf(commandManager.getRegisteredRootCommands().size()),
-                "{events}", String.valueOf(events.size()),
+                "{events}", String.valueOf(numEvents),
                 "{tasks}", String.valueOf(tasks.size())
         );
 
@@ -161,6 +162,10 @@ public class AdvancedEnchantments {
         }
         tasks.clear();
 
+        for (EventHolder eventHolder : eventHolders) {
+            eventHolder.cancel();
+        }
+        eventHolders.clear();
         for (BukkitEventSubscriber<?> event : events) {
             event.cancel();
         }
@@ -250,22 +255,13 @@ public class AdvancedEnchantments {
 
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemAdd().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EnchantItemRewrite(plugin).accept(e)));
 
-        try {
-            Class.forName("org.bukkit.event.inventory.PrepareAnvilEvent");
-            events.add(BukkitEvents.subscribe(plugin, PrepareAnvilEvent.class, EventPriority.HIGH).handler(e -> new PrepareAnvilRewrite(plugin).accept(e)));
-        } catch (ClassNotFoundException ignored) {
-            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.ANVIL).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickAnvilRewrite().accept(e)));
-        }
+        eventHolders.add(new EnchantingTableEvents(plugin));
+        eventHolders.add(new AnvilEvents(plugin));
+        eventHolders.add(new GrindstoneEvents(plugin));
 
-        try {
-            InventoryType.valueOf("GRINDSTONE");
-            events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.HIGH).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getInventory().getType() == InventoryType.valueOf("GRINDSTONE")).filter(e -> InventoryUtil.getClickedInventory(e) == e.getView().getTopInventory()).filter(e -> e.getRawSlot() == 2).handler(e -> new InventoryClickGrindstoneRewrite().accept(e)));
-        } catch (IllegalArgumentException ignored) {}
+        eventHolders.add(new AerialEvents(plugin));
 
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> !e.getDamager().isOnGround()).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial")).handler(e -> new EntityDamageByEntityAerial().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.bleeding")).handler(e -> new EntityDamageByEntityBleeding().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.blinding")).handler(e -> new EntityDamageByEntityBlinding().accept(e)));

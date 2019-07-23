@@ -249,8 +249,6 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Rewriting meta for " + item.getType());
         }
 
-        cache.invalidate(getItemData(item));
-
         ItemMeta meta = getMeta(item);
         if (meta == null) {
             return;

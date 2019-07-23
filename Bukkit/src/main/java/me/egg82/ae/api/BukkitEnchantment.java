@@ -24,16 +24,18 @@ public class BukkitEnchantment extends GenericEnchantment {
         return enchants.computeIfAbsent(enchant.getName(), k -> new BukkitEnchantment(enchant));
     }
 
-    private static final BukkitEnchantment MENDING = fromEnchant(Enchantment.MENDING);
+    private static final BukkitEnchantment MENDING = fromEnchant(Enchantment.getByName("MENDING"));
 
     static {
-        MENDING.conflicts.add(AdvancedEnchantment.PROFICIENCY);
+        if (MENDING != null) {
+            MENDING.conflicts.add(AdvancedEnchantment.PROFICIENCY);
+        }
     }
 
     private Enchantment enchant;
 
     private BukkitEnchantment(Enchantment enchant) {
-        super(UUID.randomUUID(), enchant.getName(), normalizeName(enchant.getName()), enchant.isCursed(), enchant.getStartLevel(), enchant.getMaxLevel(), enchant);
+        super(UUID.randomUUID(), enchant.getName(), normalizeName(enchant.getName()), enchant.getName().toLowerCase().endsWith("_curse"), enchant.getStartLevel(), enchant.getMaxLevel(), enchant);
         this.enchant = enchant;
     }
 
