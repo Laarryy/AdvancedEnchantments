@@ -19,6 +19,9 @@ import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.events.*;
 import me.egg82.ae.events.enchants.AerialEvents;
+import me.egg82.ae.events.enchants.ArtisanEvents;
+import me.egg82.ae.events.enchants.BeheadingEvents;
+import me.egg82.ae.events.enchants.BleedingEvents;
 import me.egg82.ae.events.enchants.block.blockBreak.*;
 import me.egg82.ae.events.enchants.block.blockPlace.BlockPlaceFreezingCancel;
 import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
@@ -35,7 +38,6 @@ import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherenc
 import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
 import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.events.enchants.player.playerFish.PlayerFishProficiency;
-import me.egg82.ae.events.enchants.player.playerInteract.PlayerInteractHoeArtisan;
 import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
@@ -261,16 +263,15 @@ public class AdvancedEnchantments {
         eventHolders.add(new GrindstoneEvents(plugin));
 
         eventHolders.add(new AerialEvents(plugin));
+        eventHolders.add(new ArtisanEvents(plugin));
+        eventHolders.add(new BeheadingEvents(plugin));
+        eventHolders.add(new BleedingEvents(plugin));
 
-        events.add(BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL).filter(e -> e.getEntity().getKiller() != null).filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading")).handler(e -> new EntityDeathBeheading(plugin).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.bleeding")).handler(e -> new EntityDamageByEntityBleeding().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.blinding")).handler(e -> new EntityDamageByEntityBlinding().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.burst")).handler(e -> new EntityShootBowBurst(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof Player).filter(e -> ((Player) e.getDamager()).isSprinting()).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.charging")).handler(e -> new EntityDamageByEntityCharging().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.disarming")).handler(e -> new EntityDamageByEntityDisarming().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.explosive")).handler(e -> new BlockBreakExplosive().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getArtisan().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new BlockBreakArtisan().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, PlayerInteractEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.hasBlock()).filter(e -> !CollectionProvider.getArtisan().contains(e.getClickedBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new PlayerInteractHoeArtisan().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).handler(e -> new EntityDamageByEntityMarking().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.mirage")).handler(e -> new PlayerAnimationMirage(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.multishot")).handler(e -> new EntityShootBowMultishot().accept(e)));

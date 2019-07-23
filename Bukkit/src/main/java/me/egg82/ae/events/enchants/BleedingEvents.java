@@ -1,11 +1,13 @@
 package me.egg82.ae.events.enchants;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
+import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
@@ -17,15 +19,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class AerialEvents extends EventHolder {
-    public AerialEvents(Plugin plugin) {
+public class BleedingEvents extends EventHolder {
+    public BleedingEvents(Plugin plugin) {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(this::townyIgnoreCancelled)
-                        .filter(e -> !e.getDamager().isOnGround())
                         .filter(e -> e.getDamager() instanceof LivingEntity)
-                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial"))
+                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.bleeding"))
                         .handler(this::damage)
         );
     }
@@ -47,19 +48,21 @@ public class AerialEvents extends EventHolder {
         boolean hasEnchantment;
         int level;
         try {
-            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.AERIAL, enchantableMainHand);
-            level = api.getMaxLevel(AdvancedEnchantment.AERIAL, enchantableMainHand);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.BLEEDING, enchantableMainHand);
+            level = api.getMaxLevel(AdvancedEnchantment.BLEEDING, enchantableMainHand);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
         }
 
-        if (!hasEnchantment) {
+        if (!hasEnchantment || level <= 0) {
             return;
         }
 
-        double damage = event.getDamage();
-        damage += damage - (damage / (level + 0.3333333333333334d));
-        event.setDamage(damage);
+        if (Math.random() > 0.08 * level) {
+            return;
+        }
+
+        CollectionProvider.getBleeding().put(event.getEntity().getUniqueId(), level * (event.getFinalDamage() * 0.15), 3500L, TimeUnit.MILLISECONDS);
     }
 }
