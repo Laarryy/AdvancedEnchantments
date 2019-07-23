@@ -30,6 +30,7 @@ import me.egg82.ae.events.enchants.entity.entityShootBow.*;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitMarkingArrow;
+import me.egg82.ae.events.enchants.entity.projectileLaunch.ProjectileLaunchEnsnaringCancel;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickGrindstoneRewrite;
@@ -43,6 +44,7 @@ import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
 import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
 import me.egg82.ae.events.enchants.player.playerMove.PlayerMoveFreezingCancel;
+import me.egg82.ae.events.enchants.player.playerTeleport.PlayerTeleportEnsnaringCancel;
 import me.egg82.ae.events.enchants.player.playerTeleport.PlayerTeleportFreezingCancel;
 import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.hooks.PlayerAnalyticsHook;
@@ -68,16 +70,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.Plugin;
@@ -296,8 +296,12 @@ public class AdvancedEnchantments {
             events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitFiery().accept(e)));
             events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitMarkingArrow().accept(e)));
         } catch (ClassNotFoundException ignored) {}
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getDamager().getUniqueId())).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityDamageByEntityFiery().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getDamager().getUniqueId())).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).handler(e -> new EntityDamageByEntityFiery().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getDamager().getUniqueId())).handler(e -> new EntityDamageByEntityMarkingArrow().accept(e)));
+
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.ensnaring")).handler(e -> new EntityDamageByEntityEnsnaring().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, ProjectileLaunchEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getEntityType() == EntityType.ENDER_PEARL).filter(e -> e.getEntity().getShooter() instanceof LivingEntity).filter(e -> CollectionProvider.getEnsnaring().containsKey(((LivingEntity) e.getEntity().getShooter()).getUniqueId())).handler(e -> new ProjectileLaunchEnsnaringCancel().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, PlayerTeleportEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getEnsnaring().containsKey(e.getPlayer().getUniqueId())).handler(e -> new PlayerTeleportEnsnaringCancel().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.freezing")).handler(e -> new EntityDamageByEntityFreezing().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> CollectionProvider.getFreezing().containsKey(e.getDamager().getUniqueId())).handler(e -> new EntityDamageByEntityFreezingCancel().accept(e)));

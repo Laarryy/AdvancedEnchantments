@@ -1,9 +1,6 @@
 package me.egg82.ae.services;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import me.egg82.ae.core.FakeBlockData;
@@ -16,6 +13,9 @@ public class CollectionProvider {
 
     private static ExpiringMap<UUID, Double> bleeding = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getBleeding() { return bleeding; }
+
+    private static ExpiringMap<UUID, Integer> ensnaring = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
+    public static ExpiringMap<UUID, Integer> getEnsnaring() { return ensnaring; }
 
     private static ExpiringMap<UUID, Double> freezing = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getFreezing() { return freezing; }
@@ -35,8 +35,8 @@ public class CollectionProvider {
     private static Set<UUID> fiery = new HashSet<>();
     public static Set<UUID> getFiery() { return fiery; }
 
-    private static ConcurrentMap<UUID, Integer> markingArrows = new ConcurrentHashMap<>();
-    public static ConcurrentMap<UUID, Integer> getMarkingArrows() { return markingArrows; }
+    private static Map<UUID, Integer> markingArrows = new HashMap<>();
+    public static Map<UUID, Integer> getMarkingArrows() { return markingArrows; }
 
     private static ExpiringMap<UUID, Double> marking = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getMarking() { return marking; }
