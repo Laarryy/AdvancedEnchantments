@@ -1,6 +1,7 @@
 package me.egg82.ae.services;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +34,12 @@ public class CollectionProvider {
 
     private static Set<UUID> fiery = new HashSet<>();
     public static Set<UUID> getFiery() { return fiery; }
+
+    private static ConcurrentMap<UUID, Integer> markingArrows = new ConcurrentHashMap<>();
+    public static ConcurrentMap<UUID, Integer> getMarkingArrows() { return markingArrows; }
+
+    private static ExpiringMap<UUID, Double> marking = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
+    public static ExpiringMap<UUID, Double> getMarking() { return marking; }
 
     private static ConcurrentMap<Location, FakeBlockData> fakeBlocks = new ConcurrentHashMap<>();
     public static ConcurrentMap<Location, FakeBlockData> getFakeBlocks() { return fakeBlocks; }

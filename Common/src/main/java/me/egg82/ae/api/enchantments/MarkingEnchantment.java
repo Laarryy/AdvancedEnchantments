@@ -1,0 +1,13 @@
+package me.egg82.ae.api.enchantments;
+
+import java.util.Arrays;
+import java.util.UUID;
+import me.egg82.ae.api.AdvancedEnchantment;
+import me.egg82.ae.api.AdvancedEnchantmentTarget;
+
+public class MarkingEnchantment extends AdvancedEnchantment {
+    public MarkingEnchantment() {
+        super(UUID.randomUUID(), "marking", "Marking", false, 1, 5);
+        targets.addAll(Arrays.asList(AdvancedEnchantmentTarget.BOW, AdvancedEnchantmentTarget.CROSSBOW));
+    }
+}

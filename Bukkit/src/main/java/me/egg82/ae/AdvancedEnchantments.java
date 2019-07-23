@@ -26,12 +26,10 @@ import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathBeheading;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathProficiency;
 import me.egg82.ae.events.enchants.entity.entityDeath.EntityDeathRampage;
-import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowBurst;
-import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFiery;
-import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowFreezingCancel;
-import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowMultishot;
+import me.egg82.ae.events.enchants.entity.entityShootBow.*;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
 import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitFiery;
+import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitMarkingArrow;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAnvilRewrite;
 import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickGrindstoneRewrite;
@@ -277,6 +275,7 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.explosive")).handler(e -> new BlockBreakExplosive().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !CollectionProvider.getArtisan().contains(e.getBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new BlockBreakArtisan().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerInteractEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.hasBlock()).filter(e -> !CollectionProvider.getArtisan().contains(e.getClickedBlock().getLocation())).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.artisan")).handler(e -> new PlayerInteractHoeArtisan().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityDamageByEntityMarking().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING).filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.mirage")).handler(e -> new PlayerAnimationMirage(plugin).accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.multishot")).handler(e -> new EntityShootBowMultishot().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.poisonous")).handler(e -> new EntityDamageByEntityPoisonous().accept(e)));
@@ -291,11 +290,14 @@ public class AdvancedEnchantments {
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.vampiric")).handler(e -> new EntityDamageByEntityVampiric().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.fiery")).handler(e -> new EntityShootBowFiery().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.marking")).handler(e -> new EntityShootBowMarking().accept(e)));
         try {
             Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
             events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitFiery().accept(e)));
+            events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getEntity().getUniqueId())).handler(e -> new ProjectileHitMarkingArrow().accept(e)));
         } catch (ClassNotFoundException ignored) {}
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getFiery().remove(e.getDamager().getUniqueId())).filter(BukkitEventFilters.ignoreCancelled()).handler(e -> new EntityDamageByEntityFiery().accept(e)));
+        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getDamager().getUniqueId())).handler(e -> new EntityDamageByEntityMarkingArrow().accept(e)));
 
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.freezing")).handler(e -> new EntityDamageByEntityFreezing().accept(e)));
         events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> CollectionProvider.getFreezing().containsKey(e.getDamager().getUniqueId())).handler(e -> new EntityDamageByEntityFreezingCancel().accept(e)));

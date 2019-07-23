@@ -29,6 +29,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment FIERY = new FieryEnchantment();
     public static final AdvancedEnchantment FREEZING = new FreezingEnchantment();
     public static final AdvancedEnchantment MAGNETIC = new MagneticEnchantment();
+    public static final AdvancedEnchantment MARKING = new MarkingEnchantment();
     public static final AdvancedEnchantment MIRAGE = new MirageEnchantment();
     public static final AdvancedEnchantment MULTISHOT = new MultishotEnchantment();
     public static final AdvancedEnchantment POISONOUS = new PoisonousEnchantment();
