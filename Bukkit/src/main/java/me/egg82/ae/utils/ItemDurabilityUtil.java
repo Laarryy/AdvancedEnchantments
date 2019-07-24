@@ -1,7 +1,6 @@
 package me.egg82.ae.utils;
 
 import java.util.Optional;
-
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.services.sound.SoundLookup;
 import org.bukkit.Bukkit;

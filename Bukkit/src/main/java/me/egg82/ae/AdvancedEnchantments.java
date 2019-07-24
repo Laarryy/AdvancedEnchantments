@@ -19,28 +19,17 @@ import me.egg82.ae.commands.AdvancedEnchantmentsCommand;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.events.*;
 import me.egg82.ae.events.enchants.*;
-import me.egg82.ae.events.enchants.block.blockBreak.*;
-import me.egg82.ae.events.enchants.entity.entityDamageByEntity.*;
-import me.egg82.ae.events.enchants.entity.projectileHit.ProjectileHitEnder;
-import me.egg82.ae.events.enchants.inventory.inventoryClick.InventoryClickAdherence;
-import me.egg82.ae.events.enchants.inventory.inventoryDrag.InventoryDragAdherence;
-import me.egg82.ae.events.enchants.inventory.inventoryMoveItem.InventoryMoveItemAdherence;
-import me.egg82.ae.events.enchants.player.playerItemDamage.PlayerItemDamageDecay;
-import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickiness;
-import me.egg82.ae.events.enchants.player.playerItemHeld.PlayerItemHeldStickinessCancel;
 import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.hooks.PlayerAnalyticsHook;
 import me.egg82.ae.hooks.PluginHook;
 import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.hooks.TownyHook;
-import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.GameAnalyticsErrorHandler;
 import me.egg82.ae.services.PluginMessageFormatter;
 import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.tasks.*;
 import me.egg82.ae.utils.*;
-import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -49,16 +38,10 @@ import ninja.egg82.updater.SpigotUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.*;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.slf4j.Logger;
@@ -265,49 +248,16 @@ public class AdvancedEnchantments {
         eventHolders.add(new SmeltingEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new StillnessEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new ThunderousEvents(plugin));
+        eventHolders.add(new TornadoEvents(plugin));
+        eventHolders.add(new VampiricEvents(plugin));
 
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.tornado")).handler(e -> new EntityDamageByEntityTornado(plugin).accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.vampiric")).handler(e -> new EntityDamageByEntityVampiric().accept(e)));
-
-        events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.stickiness")).handler(e -> new PlayerItemHeldStickiness().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> CollectionProvider.getStickiness().containsKey(e.getPlayer().getUniqueId())).handler(e -> new PlayerItemHeldStickinessCancel().accept(e)));
-
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getEntity(), "ae.curse.treason")).handler(e -> new EntityDamageByEntityTreason().accept(e)));
-
-        events.add(BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryClickAdherence().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> !e.getWhoClicked().hasPermission("ae.admin")).handler(e -> new InventoryDragAdherence().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> {
-            if (e.getSource().getViewers().isEmpty()) {
-                return false;
-            }
-            if (e.getSource().getViewers().get(0).hasPermission("ae.admin")) {
-                return true;
-            }
-            return false;
-        }).handler(e -> new InventoryMoveItemAdherence().accept(e)));
-
-        try {
-            Class.forName("org.bukkit.event.player.PlayerItemDamageEvent");
-            events.add(BukkitEvents.subscribe(plugin, PlayerItemDamageEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.decay")).handler(e -> new PlayerItemDamageDecay().accept(e)));
-        } catch (ClassNotFoundException ignored) {}
-
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getEntity() instanceof LivingEntity).filter(e -> ((LivingEntity) e.getEntity()).getEquipment() != null).filter(e -> canUseEnchant(e.getEntity(), "ae.curse.ender")).handler(e -> new EntityDamageByEntityEnder().accept(e)));
-        try {
-            Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
-            events.add(BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL).filter(e -> e.getHitEntity() != null).filter(e -> e.getHitEntity() instanceof LivingEntity).filter(e -> ((LivingEntity) e.getHitEntity()).getEquipment() != null).filter(e -> canUseEnchant(e.getHitEntity(), "ae.curse.ender")).handler(e -> new ProjectileHitEnder().accept(e)));
-        } catch (ClassNotFoundException ignored) {}
-
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.curse.leeching")).handler(e -> new EntityDamageByEntityLeeching().accept(e)));
-        events.add(BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW).filter(BukkitEventFilters.ignoreCancelled()).filter(this::townyIgnoreCancelled).filter(e -> e.getDamager() instanceof LivingEntity).filter(e -> canUseEnchant(e.getDamager(), "ae.curse.pacifism")).handler(e -> new EntityDamageByEntityPacifismCancel().accept(e)));
-    }
-
-    private boolean canUseEnchant(Object obj, String node) { return !(obj instanceof Player) || ((Player) obj).hasPermission(node); }
-
-    private boolean townyIgnoreCancelled(EntityDamageByEntityEvent event) {
-        try {
-            TownyHook townyHook = ServiceLocator.get(TownyHook.class);
-            return townyHook.ignoreCancelled(event);
-        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ignored) { return true; }
+        eventHolders.add(new AdherenceEvents(plugin));
+        eventHolders.add(new DecayEvents(plugin));
+        eventHolders.add(new EnderEvents(plugin));
+        eventHolders.add(new LeechingEvents(plugin));
+        eventHolders.add(new PacifismEvents(plugin));
+        eventHolders.add(new StickinessEvents(plugin));
+        eventHolders.add(new TreasonEvents(plugin));
     }
 
     private void loadTasks() {

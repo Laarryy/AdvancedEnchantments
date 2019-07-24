@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
 import ninja.egg82.reflect.PackageFilter;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 
 public class BukkitVersionUtil {
     private static final Object versionLock = new Object();

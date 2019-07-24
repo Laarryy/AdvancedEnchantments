@@ -1,7 +1,6 @@
 package me.egg82.ae.core;
 
 import java.util.*;
-
 import me.egg82.ae.api.GenericEnchantmentTarget;
 import org.bukkit.enchantments.Enchantment;
 

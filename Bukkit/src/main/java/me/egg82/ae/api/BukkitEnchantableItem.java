@@ -2,12 +2,10 @@ package me.egg82.ae.api;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import me.egg82.ae.core.ItemData;
-import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.utils.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

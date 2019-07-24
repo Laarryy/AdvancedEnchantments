@@ -1,6 +1,8 @@
 package me.egg82.ae.events;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;

@@ -6,7 +6,6 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.core.FakeBlockData;
 import me.egg82.ae.events.EventHolder;
-import me.egg82.ae.events.enchants.player.playerAnimation.PlayerAnimationMirage;
 import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.BlockUtil;
