@@ -36,12 +36,14 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment POISONOUS = new PoisonousEnchantment();
     public static final AdvancedEnchantment PROFICIENCY = new ProficiencyEnchantment();
     public static final AdvancedEnchantment RAMPAGE = new RampageEnchantment();
+    public static final AdvancedEnchantment REAPING = new ReapingEnchantment();
     public static final AdvancedEnchantment REPAIRING = new RepairingEnchantment();
     public static final AdvancedEnchantment SMELTING = new SmeltingEnchantment();
     public static final AdvancedEnchantment STILLNESS = new StillnessEnchantment();
     public static final AdvancedEnchantment THUNDEROUS = new ThunderousEnchantment();
     public static final AdvancedEnchantment TORNADO = new TornadoEnchantment();
     public static final AdvancedEnchantment VAMPIRIC = new VampiricEnchantment();
+    public static final AdvancedEnchantment VORPAL = new VorpalEnchantment();
 
     public static final AdvancedEnchantment ADHERENCE_CURSE = new AdherenceCurse();
     public static final AdvancedEnchantment CALLING_CURSE = new CallingCurse();

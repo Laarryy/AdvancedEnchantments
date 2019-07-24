@@ -22,6 +22,9 @@ error:
   enchant_not_found: "Could not get an enchantment from the name provided."
   no_item: "You are not holding an item."
 
+player:
+  soul_vanished: "The soul vanished!"
+
 reload:
   begin: "<c2>Reloading, please wait..</c2>"
   end: "<c4>Configuration reloaded!</c4>"

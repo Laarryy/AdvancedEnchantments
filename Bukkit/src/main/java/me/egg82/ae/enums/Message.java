@@ -17,6 +17,8 @@ public enum Message implements MessageKeyProvider {
     ERROR__ENCHANT_NOT_FOUND,
     ERROR__NO_ITEM,
 
+    PLAYER__SOUL_VANISHED,
+
     RELOAD__BEGIN,
     RELOAD__END,
 
