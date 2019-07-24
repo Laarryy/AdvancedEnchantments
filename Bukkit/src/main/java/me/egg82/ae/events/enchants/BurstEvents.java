@@ -5,7 +5,6 @@ import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
-import me.egg82.ae.events.enchants.entity.entityShootBow.EntityShootBowBurst;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
@@ -35,7 +34,7 @@ public class BurstEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.burst"))
-                        .handler(e -> new EntityShootBowBurst(plugin).accept(e))
+                        .handler(this::shoot)
         );
     }
 
