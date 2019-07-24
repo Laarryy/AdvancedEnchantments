@@ -57,6 +57,7 @@ public class EnchantingTableEvents extends EventHolder {
 
                     // We don't want curses
                     // We don't want enchants we don't have perms to use
+                    // We don't want enchants that conflict with the item
                     // We don't want enchants that conflict with enchants currently on the item
                     // We don't want enchants that conflict with Bukkit enchants that will be applied (except the one we're replacing)
                     // We don't want enchants that conflict with other new enchants
