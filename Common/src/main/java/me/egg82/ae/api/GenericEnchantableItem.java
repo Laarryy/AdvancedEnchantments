@@ -6,6 +6,7 @@ import java.util.*;
 public abstract class GenericEnchantableItem {
     protected Object concrete;
 
+    protected int souls = 0;
     protected final Set<GenericEnchantmentTarget> targets = new HashSet<>();
     protected final Map<GenericEnchantment, Integer> enchantments = new HashMap<>();
 
@@ -72,6 +73,10 @@ public abstract class GenericEnchantableItem {
     }
 
     public Map<GenericEnchantment, Integer> getEnchantments() { return ImmutableMap.copyOf(enchantments); }
+
+    public int getSouls() { return souls; }
+
+    public void setSouls(int souls) { this.souls = souls; }
 
     public boolean equals(Object o) {
         if (this == o) return true;

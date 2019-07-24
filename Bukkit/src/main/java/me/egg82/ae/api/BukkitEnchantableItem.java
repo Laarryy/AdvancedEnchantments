@@ -60,16 +60,18 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         targets.addAll(targetCache.get(item.getType()));
         enchantments.putAll(getBukkitEnchantments(item));
         enchantments.putAll(getAdvancedEnchantments(item));
+        souls = getNumSouls(item);
     }
 
-    private BukkitEnchantableItem(ItemStack item, Set<GenericEnchantmentTarget> targets, Map<GenericEnchantment, Integer> enchantments) {
+    private BukkitEnchantableItem(ItemStack item, Set<GenericEnchantmentTarget> targets, Map<GenericEnchantment, Integer> enchantments, int souls) {
         super(item);
         this.item = item;
         this.targets.addAll(targets);
         this.enchantments.putAll(enchantments);
+        this.souls = souls;
     }
 
-    private BukkitEnchantableItem clone(ItemStack item) { return new BukkitEnchantableItem(item, targets, enchantments); }
+    private BukkitEnchantableItem clone(ItemStack item) { return new BukkitEnchantableItem(item, targets, enchantments, souls); }
 
     private static Set<GenericEnchantmentTarget> getTargetsExpensive(Material material) {
         Set<GenericEnchantmentTarget> retVal = new HashSet<>();
@@ -128,6 +130,37 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         return retVal;
+    }
+
+    private static int getNumSouls(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null || !meta.hasLore()) {
+            return 0;
+        }
+
+        for (String line : meta.getLore()) {
+            line = ChatColor.stripColor(line).trim();
+            String[] split = line.split("\\s+");
+            if (split.length <= 1) {
+                continue;
+            }
+
+            if (!split[0].equals("Souls:")) {
+                continue;
+            }
+
+            Optional<Integer> level = getLevel(split[split.length - 1]);
+            if (!level.isPresent()) {
+                continue;
+            }
+
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Found soul num for " + item.getType() + ": " + getNumerals(level.get()));
+            }
+            return level.get();
+        }
+
+        return 0;
     }
 
     private static Optional<Integer> getLevel(String numerals) {
@@ -242,6 +275,17 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         rewriteMeta();
     }
 
+    public void setSouls(int souls) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Setting souls for " + item + ": " + souls);
+        }
+
+        if (souls != this.souls) {
+            super.setSouls(souls);
+            rewriteMeta();
+        }
+    }
+
     public void rewriteMeta() {
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Rewriting meta for " + item.getType());
@@ -256,7 +300,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Resetting meta for " + item.getType());
         }
 
-        List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchants(meta.getLore()); // Remove all custom enchants from lore, we'll put them back later
+        List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchantsAndSouls(meta.getLore()); // Remove all custom enchants from lore, we'll put them back later
         // Remove any Bukkit enchants that don't exist on the item any more
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             if (!enchantments.containsKey(BukkitEnchantment.fromEnchant(kvp.getKey()))) {
@@ -289,6 +333,10 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
 
+        if (souls > 0) {
+            lore.add(ChatColor.GRAY + "Souls: " + getNumerals(souls));
+        }
+
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Ensuring shiny meta for " + item.getType());
         }
@@ -315,7 +363,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             item.setItemMeta(meta);
 
             if (!hasBukkitEnchants) {
-                if (!otherEnchants.isEmpty()) {
+                if (!otherEnchants.isEmpty() || souls > 0) {
                     ProtocolLibHook.setGlowing(item);
                 } else {
                     ProtocolLibHook.removeGlowing(item);
@@ -331,14 +379,14 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
                 }
                 meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
             } else {
-                if (!otherEnchants.isEmpty() && !hasHackyEnchant) {
+                if ((!otherEnchants.isEmpty() || souls > 0) && !hasHackyEnchant) {
                     enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
                     meta.addEnchant(Enchantment.DURABILITY, 0, true);
                     hasHackyEnchant = true;
                 }
 
                 if (hasHackyEnchant) {
-                    if (!otherEnchants.isEmpty()) {
+                    if (!otherEnchants.isEmpty() || souls > 0) {
                         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                         meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
                     } else {
@@ -360,7 +408,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         forceCache(item, this);
     }
 
-    private static List<String> stripEnchants(List<String> lore) {
+    private static List<String> stripEnchantsAndSouls(List<String> lore) {
         List<String> retVal = new ArrayList<>();
 
         for (String line : lore) {
@@ -368,6 +416,10 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             String[] split = newLine.split("\\s+");
             if (split.length <= 1) {
                 retVal.add(line);
+                continue;
+            }
+
+            if (split[0].equals("Souls:")) {
                 continue;
             }
 

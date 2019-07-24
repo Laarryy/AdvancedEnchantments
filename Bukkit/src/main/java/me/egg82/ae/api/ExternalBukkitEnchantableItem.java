@@ -147,6 +147,22 @@ public class ExternalBukkitEnchantableItem {
         }
     }
 
+    public int getSouls() throws APIException {
+        try {
+            return (Integer) invokeMethod(concrete, "getSouls");
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
+    public void setSouls(int souls) throws APIException {
+        try {
+            invokeMethod(concrete, "setSouls", souls);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
+            throw new APIException(true, "Could not invoke base method.", ex);
+        }
+    }
+
     public Map<GenericEnchantment, Integer> getEnchantments() throws APIException {
         try {
             return (Map<GenericEnchantment, Integer>) invokeMethod(concrete, "getEnchantments");

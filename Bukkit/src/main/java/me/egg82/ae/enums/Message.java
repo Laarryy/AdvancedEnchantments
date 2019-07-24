@@ -27,7 +27,11 @@ public enum Message implements MessageKeyProvider {
     SET__SUCCESS_OFF_HAND,
 
     REMOVE__SUCCESS_MAIN_HAND,
-    REMOVE__SUCCESS_OFF_HAND;
+    REMOVE__SUCCESS_OFF_HAND,
+
+    SOULS__ERROR_MIN,
+    SOULS__SUCCESS_MAIN_HAND,
+    SOULS__SUCCESS_OFF_HAND;
 
     private final MessageKey key = MessageKey.of(name().toLowerCase().replace("__", "."));
     public MessageKey getMessageKey() { return key; }

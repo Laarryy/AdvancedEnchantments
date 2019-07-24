@@ -3,6 +3,9 @@ acf-minecraft:
 
 description:
   reload: "Reloads the plugin."
+  set: "Adds an enchantment (or sets its level) to your currently-held item."
+  remove: "Removes an enchantment from your currently-held item."
+  souls: "Sets the number of souls on an item"
 
 general:
   header: "<c2>[</c2><c3>AdvancedEnchantments</c3><c2>]</c2> "
@@ -34,4 +37,9 @@ remove:
   success_main_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> main hand<c4>.</c4>"
   success_off_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> off hand<c4>.</c4>"
 
-version: 1.0
+souls:
+  error_min: "Souls cannot be < 0"
+  success_main_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> main hand<c4>.</c4>"
+  success_off_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> off hand<c4>.</c4>"
+
+version: 1.1

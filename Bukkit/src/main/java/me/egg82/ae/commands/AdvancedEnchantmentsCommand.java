@@ -8,6 +8,7 @@ import co.aikar.taskchain.TaskChainFactory;
 import me.egg82.ae.commands.internal.ReloadCommand;
 import me.egg82.ae.commands.internal.RemoveCommand;
 import me.egg82.ae.commands.internal.SetCommand;
+import me.egg82.ae.commands.internal.SoulsCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -24,14 +25,14 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
 
     @Subcommand("reload")
     @CommandPermission("ae.admin")
-    @Description("Reloads the plugin.")
+    @Description("{@@description.reload}")
     public void onReload(CommandIssuer issuer) {
         new ReloadCommand(plugin, taskFactory.newChain(), issuer).run();
     }
 
     @Subcommand("add|set|enchant")
     @CommandPermission("ae.admin")
-    @Description("Adds an enchantment (or sets its level) to your currently-held item.")
+    @Description("{@@description.set}")
     @Syntax("<enchant> [level]")
     @CommandCompletion("@enchant")
     public void onSet(CommandIssuer issuer, String enchant, @Optional String level) {
@@ -40,11 +41,19 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
 
     @Subcommand("remove|delete")
     @CommandPermission("ae.admin")
-    @Description("Removes an enchantment from your currently-held item.")
+    @Description("{@@description.remove}")
     @Syntax("<enchant>")
     @CommandCompletion("@enchant")
     public void onRemove(CommandIssuer issuer, String enchant) {
         new RemoveCommand(issuer, enchant).run();
+    }
+
+    @Subcommand("souls|soul")
+    @CommandPermission("ae.admin")
+    @Description("{@@description.souls}")
+    @Syntax("<num>")
+    public void onSouls(CommandIssuer issuer, int souls) {
+        new SoulsCommand(issuer, souls).run();
     }
 
     @CatchUnknown @Default
