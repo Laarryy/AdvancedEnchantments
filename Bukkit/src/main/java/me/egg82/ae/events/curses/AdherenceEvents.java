@@ -1,4 +1,4 @@
-package me.egg82.ae.events.enchants;
+package me.egg82.ae.events.curses;
 
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;

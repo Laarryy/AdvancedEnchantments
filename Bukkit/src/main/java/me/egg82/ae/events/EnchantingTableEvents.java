@@ -117,7 +117,7 @@ public class EnchantingTableEvents extends EventHolder {
     private void rewriteItem(EnchantItemEvent event) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
-            item.rewriteMeta();
+            item.rewriteEnchantMeta();
         }, 1L);
     }
 }

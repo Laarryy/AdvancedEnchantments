@@ -220,7 +220,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Setting enchant level for " + item + ": " + enchantment.getName() + " " + getNumerals(level));
         }
         super.setEnchantmentLevel(enchantment, level);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void setEnchantmentLevels(Map<GenericEnchantment, Integer> enchantments) {
@@ -232,7 +232,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
         super.setEnchantmentLevels(enchantments);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void addEnchantment(GenericEnchantment enchantment) {
@@ -240,7 +240,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Adding enchant for " + item + ": " + enchantment.getName() + " " + getNumerals(enchantment.getMinLevel()));
         }
         super.addEnchantment(enchantment);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void addEnchantments(Collection<GenericEnchantment> enchantments) {
@@ -252,7 +252,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
         super.addEnchantments(enchantments);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void removeEnchantment(GenericEnchantment enchantment) {
@@ -260,7 +260,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             logger.info("Removing enchant for " + item + ": " + (enchantment == null ? "null" : enchantment.getName()));
         }
         super.removeEnchantment(enchantment);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void removeEnchantments(Collection<GenericEnchantment> enchantments) {
@@ -272,7 +272,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
         super.removeEnchantments(enchantments);
-        rewriteMeta();
+        rewriteEnchantMeta();
     }
 
     public void setSouls(int souls) {
@@ -282,13 +282,13 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
 
         if (souls != this.souls) {
             super.setSouls(souls);
-            rewriteMeta();
+            rewriteSoulsMeta();
         }
     }
 
-    public void rewriteMeta() {
+    public void rewriteEnchantMeta() {
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Rewriting meta for " + item.getType());
+            logger.info("Rewriting enchant meta for " + item.getType());
         }
 
         ItemMeta meta = getMeta(item);
@@ -297,7 +297,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Resetting meta for " + item.getType());
+            logger.info("Resetting enchant meta for " + item.getType());
         }
 
         List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripEnchantsAndSouls(meta.getLore()); // Remove all custom enchants from lore, we'll put them back later
@@ -309,10 +309,10 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         }
 
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Rebuilding meta for " + item.getType());
+            logger.info("Rebuilding enchant meta for " + item.getType());
         }
 
-        // Re-build enchant lists and lore
+        // Re-build enchant lists, souls, and lore
         Set<BukkitEnchantment> bukkitEnchants = new HashSet<>();
         Set<GenericEnchantment> otherEnchants = new HashSet<>();
 
@@ -337,6 +337,53 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             lore.add(ChatColor.GRAY + "Souls: " + getNumerals(souls));
         }
 
+        setShinyMeta(meta, lore, bukkitEnchants, otherEnchants);
+
+        forceCache(item, this);
+    }
+
+    public void rewriteSoulsMeta() {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Rewriting soul meta for " + item.getType());
+        }
+
+        ItemMeta meta = getMeta(item);
+        if (meta == null) {
+            return;
+        }
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Resetting soul meta for " + item.getType());
+        }
+
+        List<String> lore = !meta.hasLore() ? new ArrayList<>() : stripSouls(meta.getLore()); // Remove souls from lore, we'll put them back later
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Rebuilding soul meta for " + item.getType());
+        }
+
+        // Re-build enchant lists, souls and lore
+        Set<BukkitEnchantment> bukkitEnchants = new HashSet<>();
+        Set<GenericEnchantment> otherEnchants = new HashSet<>();
+
+        for (Map.Entry<GenericEnchantment, Integer> kvp : enchantments.entrySet()) {
+            if (kvp.getKey() instanceof BukkitEnchantment) {
+                bukkitEnchants.add((BukkitEnchantment) kvp.getKey());
+            } else {
+                otherEnchants.add(kvp.getKey());
+            }
+        }
+
+        if (souls > 0) {
+            lore.add(ChatColor.GRAY + "Souls: " + getNumerals(souls));
+        }
+
+        setShinyMeta(meta, lore, bukkitEnchants, otherEnchants);
+
+        forceCache(item, this);
+    }
+
+    private void setShinyMeta(ItemMeta meta, List<String> lore, Set<BukkitEnchantment> bukkitEnchants, Set<GenericEnchantment> otherEnchants) {
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Ensuring shiny meta for " + item.getType());
         }
@@ -370,42 +417,40 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
                 }
             }
         } else {*/
-            // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
-            if (hasBukkitEnchants) {
-                if (hasHackyEnchant) {
+        // All this does is ensure we have a "shiny" item while keeping the item as "pure" as possible
+        if (hasBukkitEnchants) {
+            if (hasHackyEnchant) {
+                enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
+                meta.removeEnchant(Enchantment.DURABILITY);
+                hasHackyEnchant = false;
+            }
+            meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
+        } else {
+            if ((!otherEnchants.isEmpty() || souls > 0) && !hasHackyEnchant) {
+                enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
+                meta.addEnchant(Enchantment.DURABILITY, 0, true);
+                hasHackyEnchant = true;
+            }
+
+            if (hasHackyEnchant) {
+                if (!otherEnchants.isEmpty() || souls > 0) {
+                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                    meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+                } else {
                     enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
                     meta.removeEnchant(Enchantment.DURABILITY);
                     hasHackyEnchant = false;
                 }
-                meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS, ItemFlag.HIDE_ENCHANTS);
-            } else {
-                if ((!otherEnchants.isEmpty() || souls > 0) && !hasHackyEnchant) {
-                    enchantments.put(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY), 0);
-                    meta.addEnchant(Enchantment.DURABILITY, 0, true);
-                    hasHackyEnchant = true;
-                }
-
-                if (hasHackyEnchant) {
-                    if (!otherEnchants.isEmpty() || souls > 0) {
-                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        meta.removeItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-                    } else {
-                        enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));
-                        meta.removeEnchant(Enchantment.DURABILITY);
-                        hasHackyEnchant = false;
-                    }
-                }
             }
+        }
 
-            if (!hasHackyEnchant) {
-                meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
-            }
+        if (!hasHackyEnchant) {
+            meta.removeItemFlags(ItemFlag.HIDE_ENCHANTS);
+        }
 
-            meta.setLore(lore);
-            item.setItemMeta(meta);
+        meta.setLore(lore);
+        item.setItemMeta(meta);
         //}
-
-        forceCache(item, this);
     }
 
     private static List<String> stripEnchantsAndSouls(List<String> lore) {
@@ -426,6 +471,27 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             String[] enchantName = Arrays.copyOf(split, split.length - 1, String[].class);
             Optional<AdvancedEnchantment> enchant = AdvancedEnchantment.getByName(String.join(" ", enchantName));
             if (enchant.isPresent()) {
+                continue;
+            }
+
+            retVal.add(line);
+        }
+
+        return retVal;
+    }
+
+    private static List<String> stripSouls(List<String> lore) {
+        List<String> retVal = new ArrayList<>();
+
+        for (String line : lore) {
+            String newLine = ChatColor.stripColor(line).trim();
+            String[] split = newLine.split("\\s+");
+            if (split.length <= 1) {
+                retVal.add(line);
+                continue;
+            }
+
+            if (split[0].equals("Souls:")) {
                 continue;
             }
 

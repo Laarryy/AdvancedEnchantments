@@ -94,7 +94,7 @@ public class AnvilEvents extends EventHolder {
         event.setResult((ItemStack) enchantableCarryoverItem.getConcrete());
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             // Rewrite the item meta on the next tick, so the client actually gets the update
-            enchantableCarryoverItem.rewriteMeta();
+            enchantableCarryoverItem.rewriteEnchantMeta();
             // This event gets triggered (without a corresponding inventory update) when the player resizes their window
             // Bit of a workaround, but it works I guess
             for (HumanEntity e : event.getViewers()) {
@@ -177,7 +177,7 @@ public class AnvilEvents extends EventHolder {
             applyEnchants(enchantableSacrificeItem.getEnchantments(), enchantableResultItem);
         }
 
-        enchantableResultItem.rewriteMeta();
+        enchantableResultItem.rewriteEnchantMeta();
         event.setCurrentItem((ItemStack) enchantableResultItem.getConcrete());
     }
 }

@@ -50,6 +50,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment CALLING_CURSE = new CallingCurse();
     public static final AdvancedEnchantment DECAY_CURSE = new DecayCurse();
     public static final AdvancedEnchantment ENDER_CURSE = new EnderCurse();
+    public static final AdvancedEnchantment GROGGINESS_CURSE = new GrogginessCurse();
     public static final AdvancedEnchantment LEECHING_CURSE = new LeechingCurse();
     public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();
     public static final AdvancedEnchantment STICKINESS_CURSE = new StickinessCurse();

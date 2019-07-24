@@ -1,4 +1,4 @@
-package me.egg82.ae.events.enchants;
+package me.egg82.ae.events.curses;
 
 import java.util.Random;
 import me.egg82.ae.APIException;

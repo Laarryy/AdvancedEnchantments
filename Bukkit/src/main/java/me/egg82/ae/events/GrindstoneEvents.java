@@ -46,7 +46,7 @@ public class GrindstoneEvents extends EventHolder {
         int maxExp = removeEnchants(enchantableResultItem);
         int variation = Math.max(0, maxExp - (maxExp / 4));
 
-        enchantableResultItem.rewriteMeta();
+        enchantableResultItem.rewriteEnchantMeta();
         event.setCurrentItem((ItemStack) enchantableResultItem.getConcrete());
 
         if (event.getWhoClicked() instanceof Player && maxExp + variation > 0) {
