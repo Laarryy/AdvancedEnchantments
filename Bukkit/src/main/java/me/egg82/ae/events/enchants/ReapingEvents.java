@@ -28,6 +28,7 @@ public class ReapingEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> e.getEntity().getKiller() != null)
                         .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.reaping"))
+                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.vorpal"))
                         .handler(this::death)
         );
     }
