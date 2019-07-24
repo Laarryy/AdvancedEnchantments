@@ -55,8 +55,8 @@ public class TaskGrogginess implements Runnable {
                 return;
             }
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 61, level, true, false), true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 61, level, true, false), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 61, level - 1, true, false), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 61, level - 1, true, false), true);
         }
     }
 }
