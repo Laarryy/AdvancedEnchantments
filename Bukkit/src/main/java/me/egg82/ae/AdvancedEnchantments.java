@@ -236,6 +236,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new ChargingEvents(plugin));
         eventHolders.add(new DisarmingEvents(plugin));
         eventHolders.add(new EnsnaringEvents(plugin));
+        eventHolders.add(new EtherealEvents(plugin));
         eventHolders.add(new ExplosiveEvents(plugin));
         eventHolders.add(new FieryEvents(plugin));
         eventHolders.add(new FreezingEvents(plugin));

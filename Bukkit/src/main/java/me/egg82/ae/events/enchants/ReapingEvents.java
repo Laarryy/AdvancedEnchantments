@@ -14,7 +14,6 @@ import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -57,44 +56,8 @@ public class ReapingEvents extends EventHolder {
             return;
         }
 
-        Optional<EntityEquipment> equipment = Optional.ofNullable(event.getEntity().getKiller().getEquipment());
-        if (!equipment.isPresent()) {
-            return;
+        if (!tryAddSouls(event.getEntity().getKiller(), 1)) {
+            commandManager.getCommandIssuer(event.getEntity().getKiller()).sendError(Message.PLAYER__SOUL_VANISHED);
         }
-
-        if (tryStore(BukkitEnchantableItem.fromItemStack(equipment.get().getHelmet()))) {
-            return;
-        }
-        if (tryStore(BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate()))) {
-            return;
-        }
-        if (tryStore(BukkitEnchantableItem.fromItemStack(equipment.get().getLeggings()))) {
-            return;
-        }
-        if (tryStore(BukkitEnchantableItem.fromItemStack(equipment.get().getBoots()))) {
-            return;
-        }
-
-        commandManager.getCommandIssuer(event.getEntity().getKiller()).sendError(Message.PLAYER__SOUL_VANISHED);
-    }
-
-    private boolean tryStore(BukkitEnchantableItem item) {
-        int level;
-        try {
-            level = api.getMaxLevel(AdvancedEnchantment.VORPAL, item);
-        } catch (APIException ex) {
-            logger.error(ex.getMessage(), ex);
-            return false;
-        }
-
-        if (level < 0) {
-            return false;
-        }
-
-        if (item.getSouls() < level * 2) {
-            item.setSouls(item.getSouls() + 1);
-            return true;
-        }
-        return false;
     }
 }
