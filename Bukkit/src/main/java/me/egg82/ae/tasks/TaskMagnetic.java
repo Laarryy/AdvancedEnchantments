@@ -53,6 +53,12 @@ public class TaskMagnetic implements Runnable {
 
             for (Entity e : player.getWorld().getNearbyEntities(player.getLocation(), distance, 2.0d, distance)) {
                 if (e instanceof Item || e instanceof ExperienceOrb) {
+                    if (e instanceof Item) {
+                        if (((Item) e).getPickupDelay() > 0) {
+                            continue;
+                        }
+                    }
+
                     Vector v = playerLocation.toVector().subtract(e.getLocation().toVector()).normalize().multiply(level * 0.035d);
                     if (LocationUtil.isFinite(v)) {
                         e.setVelocity(v);
