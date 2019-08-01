@@ -62,7 +62,7 @@ public class AnvilEvents extends EventHolder {
         ItemStack carryoverItem = event.getInventory().getItem(0);
         ItemStack sacrificeItem = event.getInventory().getItem(1);
 
-        if (carryoverItem == null || carryoverItem.getType() == Material.AIR || sacrificeItem == null || sacrificeItem.getType() == Material.AIR || event.getResult() == null || event.getResult().getType() == Material.AIR) {
+        if (carryoverItem == null || carryoverItem.getType() == Material.AIR || carryoverItem.getType() == enchantedBookMaterial || sacrificeItem == null || sacrificeItem.getType() == Material.AIR || event.getResult() == null || event.getResult().getType() == Material.AIR) {
             return;
         }
 
