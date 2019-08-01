@@ -114,7 +114,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         // First
 
-        Artifact.Builder guava = Artifact.builder("com.google.guava", "guava", "27.1-jre", cacheDir)
+        Artifact.Builder guava = Artifact.builder("com.google.guava", "guava", "28.0-jre", cacheDir)
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInjectWait(guava, jarsDir, classLoader, "Google Guava", 1);
 
