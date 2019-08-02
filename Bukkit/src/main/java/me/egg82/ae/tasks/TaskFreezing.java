@@ -1,5 +1,6 @@
 package me.egg82.ae.tasks;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import me.egg82.ae.services.CollectionProvider;
@@ -13,10 +14,11 @@ public class TaskFreezing implements Runnable {
     public TaskFreezing() { }
 
     public void run() {
-        for (Map.Entry<UUID, Double> kvp : CollectionProvider.getFreezing().entrySet()) {
+        for (Iterator<Map.Entry<UUID, Double>> i = CollectionProvider.getFreezing().entrySet().iterator(); i.hasNext();) {
+            Map.Entry<UUID, Double> kvp = i.next();
             Entity e = Bukkit.getEntity(kvp.getKey());
             if (e == null || e.isDead() || !(e instanceof Damageable)) {
-                CollectionProvider.getFreezing().remove(kvp.getKey());
+                i.remove();
                 continue;
             }
             EntityDamageHandler.damage((Damageable) e, kvp.getValue(), EntityDamageEvent.DamageCause.WITHER);
