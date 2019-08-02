@@ -44,7 +44,7 @@ public class TaskAntigravity implements Runnable {
                 return;
             }
 
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 61, level * 2, true, false), true);
+            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 31, level * 2, true, false), true);
         }
     }
 }
