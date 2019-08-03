@@ -65,13 +65,13 @@ public class RemoveCommand implements Runnable {
 
     private Optional<GenericEnchantment> getEnchantment(String enchantment) {
         for (Enchantment e : Enchantment.values()) {
-            if (e.getName().equalsIgnoreCase(enchantment)) {
+            if (e != null && e.getName().equalsIgnoreCase(enchantment)) {
                 return Optional.of(BukkitEnchantment.fromEnchant(e));
             }
         }
 
         for (AdvancedEnchantment e : AdvancedEnchantment.values()) {
-            if (e.getName().equalsIgnoreCase(enchantment)) {
+            if (e != null && e.getName().equalsIgnoreCase(enchantment)) {
                 return Optional.of(e);
             }
         }

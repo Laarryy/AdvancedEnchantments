@@ -55,18 +55,19 @@ public class EnchantingTableEvents extends EventHolder {
                     newEnchant = customEnchants.get(rand.nextInt(customEnchants.size()));
                     tries++;
 
+                    // We don't want nulls
                     // We don't want curses
                     // We don't want enchants we don't have perms to use
                     // We don't want enchants that conflict with the item
                     // We don't want enchants that conflict with enchants currently on the item
                     // We don't want enchants that conflict with Bukkit enchants that will be applied (except the one we're replacing)
                     // We don't want enchants that conflict with other new enchants
-                    if (!newEnchant.isCurse() && event.getEnchanter().hasPermission("ae.enchant." + newEnchant.getName()) && newEnchant.canEnchant(item) && !conflicts(newEnchant, currentEnchants, kvp.getKey()) && !conflicts(newEnchant, newEnchants)) {
+                    if (newEnchant != null && !newEnchant.isCurse() && event.getEnchanter().hasPermission("ae.enchant." + newEnchant.getName()) && newEnchant.canEnchant(item) && !conflicts(newEnchant, currentEnchants, kvp.getKey()) && !conflicts(newEnchant, newEnchants)) {
                         break;
                     }
                 } while (tries < 100);
 
-                if (tries >= 100) {
+                if (newEnchant == null) {
                     // Too many tries (and failures) - skip this one
                     continue;
                 }
