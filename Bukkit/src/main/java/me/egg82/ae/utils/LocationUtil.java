@@ -2,6 +2,7 @@ package me.egg82.ae.utils;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
+import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public class LocationUtil {
@@ -9,7 +10,9 @@ public class LocationUtil {
 
     public static boolean isFinite(Vector vec) {
         try {
-            vec.checkFinite();
+            NumberConversions.checkFinite(vec.getX(), "x not finite");
+            NumberConversions.checkFinite(vec.getY(), "y not finite");
+            NumberConversions.checkFinite(vec.getZ(), "z not finite");
         } catch (IllegalArgumentException ignored) {
             return false;
         }

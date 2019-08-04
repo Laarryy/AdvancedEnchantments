@@ -68,7 +68,11 @@ public class ThunderousEvents extends EventHolder {
 
         event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
         for (int i = 0; i < level - 1; i++) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation()), (i + 1L) * 5L);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                if (!event.getEntity().isDead()) {
+                    event.getEntity().getWorld().strikeLightning(event.getEntity().getLocation());
+                }
+            }, (i + 1L) * 5L);
         }
     }
 }
