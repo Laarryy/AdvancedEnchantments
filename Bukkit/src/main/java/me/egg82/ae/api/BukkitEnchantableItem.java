@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import me.egg82.ae.core.ItemData;
 import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EnchantmentUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -90,7 +91,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         Map<GenericEnchantment, Integer> retVal = new HashMap<>();
         for (Map.Entry<Enchantment, Integer> kvp : item.getEnchantments().entrySet()) {
             if (ConfigUtil.getDebugOrFalse()) {
-                logger.info("Found Bukkit enchant for " + item.getType() + ": " + kvp.getKey().getName() + " " + getNumerals(kvp.getValue()));
+                logger.info("Found Bukkit enchant for " + item.getType() + ": " + EnchantmentUtil.getName(kvp.getKey()) + " " + getNumerals(kvp.getValue()));
             }
             retVal.put(BukkitEnchantment.fromEnchant(kvp.getKey()), kvp.getValue());
         }

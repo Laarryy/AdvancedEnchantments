@@ -5,6 +5,7 @@ import java.util.Optional;
 import me.egg82.ae.api.*;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.EnchantmentUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.enchantments.Enchantment;
@@ -63,7 +64,7 @@ public class SoulsCommand implements Runnable {
 
     private Optional<GenericEnchantment> getEnchantment(String enchantment) {
         for (Enchantment e : Enchantment.values()) {
-            if (e != null && e.getName().equalsIgnoreCase(enchantment)) {
+            if (e != null && EnchantmentUtil.getName(e).equalsIgnoreCase(enchantment)) {
                 return Optional.of(BukkitEnchantment.fromEnchant(e));
             }
         }

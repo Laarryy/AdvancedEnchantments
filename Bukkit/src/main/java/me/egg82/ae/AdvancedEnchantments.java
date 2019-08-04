@@ -194,8 +194,8 @@ public class AdvancedEnchantments {
             String lower = c.getInput().toLowerCase().replace(" ", "_");
             Set<String> enchants = new LinkedHashSet<>();
             for (Enchantment e : Enchantment.values()) {
-                if (e != null && e.getName().toLowerCase().startsWith(lower)) {
-                    enchants.add(e.getName());
+                if (e != null && EnchantmentUtil.getName(e).toLowerCase().startsWith(lower)) {
+                    enchants.add(EnchantmentUtil.getName(e));
                 }
             }
             for (AdvancedEnchantment e : AdvancedEnchantment.values()) {

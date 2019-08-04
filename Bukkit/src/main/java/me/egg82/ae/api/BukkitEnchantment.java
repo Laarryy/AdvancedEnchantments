@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EnchantmentUtil;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ public class BukkitEnchantment extends GenericEnchantment {
             return null;
         }
 
-        return enchants.computeIfAbsent(enchant.getName(), k -> new BukkitEnchantment(enchant));
+        return enchants.computeIfAbsent(EnchantmentUtil.getName(enchant), k -> new BukkitEnchantment(enchant));
     }
 
     private static final BukkitEnchantment MENDING = fromEnchant(Enchantment.getByName("MENDING"));
@@ -34,7 +35,7 @@ public class BukkitEnchantment extends GenericEnchantment {
     private Enchantment enchant;
 
     private BukkitEnchantment(Enchantment enchant) {
-        super(UUID.randomUUID(), enchant.getName(), normalizeName(enchant.getName()), enchant.getName().toLowerCase().endsWith("_curse"), enchant.getStartLevel(), enchant.getMaxLevel(), enchant);
+        super(UUID.randomUUID(), EnchantmentUtil.getName(enchant), normalizeName(EnchantmentUtil.getName(enchant)), EnchantmentUtil.getName(enchant).toLowerCase().endsWith("_curse"), enchant.getStartLevel(), enchant.getMaxLevel(), enchant);
         this.enchant = enchant;
     }
 
