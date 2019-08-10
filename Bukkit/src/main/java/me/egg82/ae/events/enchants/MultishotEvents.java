@@ -17,6 +17,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -70,6 +71,7 @@ public class MultishotEvents extends EventHolder {
         double spray = 10.5d;
 
         Location eyeLocation = event.getEntity().getEyeLocation();
+        boolean isProjectile = event.getProjectile() instanceof Projectile;
 
         for (int i = 0; i < level * 2; i++) {
             Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
@@ -80,6 +82,9 @@ public class MultishotEvents extends EventHolder {
                             direction.getZ() + (Math.random() - 0.5) / spray
                     ).normalize().multiply(speed)
             );
+            if (isProjectile) {
+                ((Projectile) p).setShooter(event.getEntity());
+            }
 
             if (hasFiery) {
                 CollectionProvider.getFiery().add(p.getUniqueId()); // Fiery compatibility

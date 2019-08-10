@@ -18,6 +18,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
@@ -68,11 +69,15 @@ public class BurstEvents extends EventHolder {
 
         Vector velocity = event.getProjectile().getVelocity();
         Location eyeLocation = event.getEntity().getEyeLocation();
+        boolean isProjectile = event.getProjectile() instanceof Projectile;
 
         for (int i = 0; i < level; i++) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
                 p.setVelocity(velocity);
+                if (isProjectile) {
+                    ((Projectile) p).setShooter(event.getEntity());
+                }
 
                 if (hasFiery) {
                     CollectionProvider.getFiery().add(p.getUniqueId()); // Fiery compatibility
