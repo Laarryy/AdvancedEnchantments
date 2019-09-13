@@ -1,9 +1,6 @@
 package me.egg82.ae.events.enchants;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
@@ -57,7 +54,12 @@ public class SmeltingEvents extends EventHolder {
         }
 
         Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(event.getPlayer());
-        BukkitEnchantableItem enchantableMainHand = mainHand.isPresent() ? BukkitEnchantableItem.fromItemStack(mainHand.get()) : null;
+        Collection<ItemStack> droppedItems = mainHand.isPresent() ? event.getBlock().getDrops(mainHand.get()) : new ArrayList<>();
+        if (droppedItems.isEmpty()) {
+            return;
+        }
+
+        BukkitEnchantableItem enchantableMainHand = BukkitEnchantableItem.fromItemStack(mainHand.get());
 
         boolean hasEnchantment;
         try {
@@ -76,7 +78,7 @@ public class SmeltingEvents extends EventHolder {
 
         boolean isSmelted = false;
 
-        for (ItemStack i : event.getBlock().getDrops(mainHand.get())) {
+        for (ItemStack i : droppedItems) {
             boolean dropped = false;
 
             for (FurnaceRecipe r : recipes) {

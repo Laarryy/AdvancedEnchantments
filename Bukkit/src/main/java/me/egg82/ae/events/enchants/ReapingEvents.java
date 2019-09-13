@@ -9,6 +9,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
@@ -56,7 +57,7 @@ public class ReapingEvents extends EventHolder {
             return;
         }
 
-        if (!tryAddSouls(event.getEntity().getKiller(), 1)) {
+        if (!SoulsUtil.tryAddSouls(event.getEntity().getKiller(), 1)) {
             commandManager.getCommandIssuer(event.getEntity().getKiller()).sendError(Message.PLAYER__SOUL_VANISHED);
         }
     }

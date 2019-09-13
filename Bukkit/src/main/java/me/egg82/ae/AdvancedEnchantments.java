@@ -258,6 +258,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new DecayEvents(plugin));
         eventHolders.add(new EnderEvents(plugin));
         eventHolders.add(new LeechingEvents(plugin));
+        eventHolders.add(new MisfortuneEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new PacifismEvents(plugin));
         eventHolders.add(new StickinessEvents(plugin));
         eventHolders.add(new TreasonEvents(plugin));
@@ -266,12 +267,13 @@ public class AdvancedEnchantments {
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAntigravity(), 0L, 30L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskCalling(), 0L, 40L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskFreezing(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskGrogginess(), 0L, 30L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskMagnetic(), 0L, 3L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskRepairing(), 0L, 100L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskWither(), 0L, 40L));
-        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskCalling(), 0L, 40L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskVoid(), 0L, 100L));
     }
 
     private void loadHooks() {
