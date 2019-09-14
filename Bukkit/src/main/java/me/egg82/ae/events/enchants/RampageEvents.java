@@ -10,6 +10,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -29,13 +30,13 @@ public class RampageEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity)
-                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.rampage"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.rampage"))
                         .handler(this::damage)
         );
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> e.getEntity().getKiller() != null)
-                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.rampage"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.rampage"))
                         .handler(this::death)
         );
     }

@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.LocationUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.entity.LivingEntity;
@@ -24,7 +25,7 @@ public class EnderEvents extends EventHolder {
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> ((LivingEntity) e.getEntity()).getEquipment() != null)
-                        .filter(e -> canUseEnchant(e.getEntity(), "ae.curse.ender"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.curse.ender"))
                         .handler(this::damage)
         );
         try {
@@ -34,7 +35,7 @@ public class EnderEvents extends EventHolder {
                             .filter(e -> e.getHitEntity() != null)
                             .filter(e -> e.getHitEntity() instanceof LivingEntity)
                             .filter(e -> ((LivingEntity) e.getHitEntity()).getEquipment() != null)
-                            .filter(e -> canUseEnchant(e.getHitEntity(), "ae.curse.ender"))
+                            .filter(e -> PermissionUtil.canUseEnchant(e.getHitEntity(), "ae.curse.ender"))
                             .handler(this::hit)
             );
         } catch (ClassNotFoundException ignored) {}

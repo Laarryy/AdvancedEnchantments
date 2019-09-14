@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -23,13 +24,13 @@ public class ProficiencyEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.proficiency"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.proficiency"))
                         .handler(this::blockBreak)
         );
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> e.getEntity().getKiller() != null)
-                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.proficiency"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.proficiency"))
                         .handler(this::death)
         );
         try {

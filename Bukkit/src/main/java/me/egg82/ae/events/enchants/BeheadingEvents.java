@@ -14,6 +14,7 @@ import me.egg82.ae.services.lookup.PlayerInfo;
 import me.egg82.ae.services.lookup.PlayerLookup;
 import me.egg82.ae.services.material.MaterialLookup;
 import me.egg82.ae.services.skin.SkinLookup;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
@@ -55,7 +56,7 @@ public class BeheadingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> e.getEntity().getKiller() != null)
-                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading"))
                         .handler(this::death)
         );
     }

@@ -6,6 +6,7 @@ import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.utils.LocationUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -26,9 +27,13 @@ public class TaskMagnetic implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!PermissionUtil.canUseEnchant(player, "ae.enchant.magnetic")) {
+                continue;
+            }
+
             Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
             if (!equipment.isPresent()) {
-                return;
+                continue;
             }
 
             int level;

@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -23,7 +24,7 @@ public class StillnessEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.stillness"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.stillness"))
                         .handler(this::blockBreak)
         );
     }

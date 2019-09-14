@@ -4,6 +4,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.utils.InventoryUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.event.EventPriority;
@@ -19,12 +20,14 @@ public class AdherenceEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getWhoClicked(), "ae.curse.adherence"))
                         .filter(e -> !e.getWhoClicked().hasPermission("ae.admin"))
                         .handler(this::click)
         );
         events.add(
                 BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getWhoClicked(), "ae.curse.adherence"))
                         .filter(e -> !e.getWhoClicked().hasPermission("ae.admin"))
                         .handler(this::drag)
         );
@@ -35,6 +38,9 @@ public class AdherenceEvents extends EventHolder {
                         .filter(e -> {
                             if (e.getSource().getViewers().isEmpty()) {
                                 return false;
+                            }
+                            if (!PermissionUtil.canUseEnchant(e.getSource().getViewers().get(0), "ae.curse.adherence")) {
+                                return true;
                             }
                             if (e.getSource().getViewers().get(0).hasPermission("ae.admin")) {
                                 return true;

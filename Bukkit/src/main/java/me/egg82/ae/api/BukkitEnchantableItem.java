@@ -84,6 +84,13 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
                 retVal.add(BukkitEnchantmentTarget.fromEnchantmentTarget(target));
             }
         }
+        // Axes as weapons
+        if (material.name().endsWith("_AXE")) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Created target for " + material + ": " + EnchantmentTarget.WEAPON.name());
+            }
+            retVal.add(BukkitEnchantmentTarget.fromEnchantmentTarget(EnchantmentTarget.WEAPON));
+        }
         return retVal;
     }
 

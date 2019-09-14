@@ -7,7 +7,6 @@ import me.egg82.ae.hooks.TownyHook;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
-import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,6 @@ public abstract class EventHolder {
             event.cancel();
         }
     }
-
-    protected final boolean canUseEnchant(Object obj, String node) { return !(obj instanceof Player) || ((Player) obj).hasPermission(node); }
 
     protected final boolean townyIgnoreCancelled(EntityDamageByEntityEvent event) {
         try {

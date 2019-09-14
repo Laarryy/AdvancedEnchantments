@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -26,7 +27,7 @@ public class ChargingEvents extends EventHolder {
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof Player)
                         .filter(e -> ((Player) e.getDamager()).isSprinting())
-                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.charging"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.charging"))
                         .handler(this::damage)
         );
     }

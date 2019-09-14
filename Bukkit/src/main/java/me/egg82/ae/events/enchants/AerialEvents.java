@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -25,7 +26,7 @@ public class AerialEvents extends EventHolder {
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> !e.getDamager().isOnGround())
                         .filter(e -> e.getDamager() instanceof LivingEntity)
-                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.aerial"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.aerial"))
                         .handler(this::damage)
         );
     }

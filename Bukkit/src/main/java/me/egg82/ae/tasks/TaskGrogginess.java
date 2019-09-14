@@ -6,6 +6,7 @@ import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
+import me.egg82.ae.utils.PermissionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
@@ -23,9 +24,13 @@ public class TaskGrogginess implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!PermissionUtil.canUseEnchant(player, "ae.curse.grogginess")) {
+                continue;
+            }
+
             Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
             if (!equipment.isPresent()) {
-                return;
+                continue;
             }
 
             GenericEnchantableItem enchantableHelmet = BukkitEnchantableItem.fromItemStack(equipment.get().getHelmet());
@@ -48,11 +53,11 @@ public class TaskGrogginess implements Runnable {
                         enchantableBoots);
             } catch (APIException ex) {
                 logger.error(ex.getMessage(), ex);
-                return;
+                continue;
             }
 
             if (!hasEnchantment || level <= 0) {
-                return;
+                continue;
             }
 
             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 31, level - 1, true, false), true);

@@ -8,6 +8,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -28,7 +29,7 @@ public class FieryEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.fiery"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.fiery"))
                         .handler(this::shoot)
         );
 

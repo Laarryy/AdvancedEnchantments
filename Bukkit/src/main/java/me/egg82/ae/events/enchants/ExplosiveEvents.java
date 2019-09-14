@@ -11,6 +11,7 @@ import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.ItemDurabilityUtil;
 import me.egg82.ae.utils.LocationUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -32,7 +33,7 @@ public class ExplosiveEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation()))
-                        .filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.explosive"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.explosive"))
                         .handler(this::blockBreak)
         );
     }

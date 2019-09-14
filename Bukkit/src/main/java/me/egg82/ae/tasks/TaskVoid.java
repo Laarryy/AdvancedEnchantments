@@ -7,6 +7,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
@@ -34,9 +35,16 @@ public class TaskVoid implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (
+                    !PermissionUtil.canUseEnchant(player, "ae.curse.void")
+                    || !PermissionUtil.canUseEnchant(player, "ae.curse.vorpal")
+            ) {
+                continue;
+            }
+
             Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
             if (!equipment.isPresent()) {
-                return;
+                continue;
             }
 
             Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(player);
@@ -52,14 +60,14 @@ public class TaskVoid implements Runnable {
             boolean hasEnchantment;
             int level;
             try {
-                hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.WITHER_CURSE,
+                hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.VOID_CURSE,
                         enchantableMainHand,
                         enchantableOffHand,
                         enchantableHelmet,
                         enchantableChestplate,
                         enchantableLeggings,
                         enchantableBoots);
-                level = api.getMaxLevel(AdvancedEnchantment.WITHER_CURSE,
+                level = api.getMaxLevel(AdvancedEnchantment.VOID_CURSE,
                         enchantableMainHand,
                         enchantableOffHand,
                         enchantableHelmet,
@@ -68,15 +76,15 @@ public class TaskVoid implements Runnable {
                         enchantableBoots);
             } catch (APIException ex) {
                 logger.error(ex.getMessage(), ex);
-                return;
+                continue;
             }
 
             if (!hasEnchantment) {
-                return;
+                continue;
             }
 
             if (Math.random() > 0.08 * level) {
-                return;
+                continue;
             }
 
             SoulsUtil.tryRemoveSouls(player, 1);

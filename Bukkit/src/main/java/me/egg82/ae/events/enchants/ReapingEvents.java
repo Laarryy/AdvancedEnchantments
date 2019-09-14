@@ -9,6 +9,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -27,8 +28,8 @@ public class ReapingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> e.getEntity().getKiller() != null)
-                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.reaping"))
-                        .filter(e -> canUseEnchant(e.getEntity().getKiller(), "ae.enchant.vorpal"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.reaping"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.vorpal"))
                         .handler(this::death)
         );
     }

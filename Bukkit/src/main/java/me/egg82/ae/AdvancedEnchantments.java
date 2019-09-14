@@ -249,6 +249,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new RampageEvents(plugin));
         eventHolders.add(new ReapingEvents(plugin, commandManager));
         eventHolders.add(new SmeltingEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
+        eventHolders.add(new SoulboundEvents(plugin));
         eventHolders.add(new StillnessEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new ThunderousEvents(plugin));
         eventHolders.add(new TornadoEvents(plugin));

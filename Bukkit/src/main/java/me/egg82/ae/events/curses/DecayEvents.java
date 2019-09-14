@@ -5,6 +5,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.event.EventPriority;
@@ -18,7 +19,7 @@ public class DecayEvents extends EventHolder {
             events.add(
                     BukkitEvents.subscribe(plugin, PlayerItemDamageEvent.class, EventPriority.NORMAL)
                             .filter(BukkitEventFilters.ignoreCancelled())
-                            .filter(e -> canUseEnchant(e.getPlayer(), "ae.curse.decay"))
+                            .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.curse.decay"))
                             .handler(this::damage)
             );
         } catch (ClassNotFoundException ignored) {}

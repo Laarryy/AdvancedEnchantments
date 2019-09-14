@@ -10,6 +10,7 @@ import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.ItemDurabilityUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -38,7 +39,7 @@ public class MirageEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING)
-                        .filter(e -> canUseEnchant(e.getPlayer(), "ae.enchant.mirage"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.mirage"))
                         .handler(this::swing)
         );
     }

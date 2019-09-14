@@ -7,6 +7,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -27,7 +28,7 @@ public class TreasonEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
-                        .filter(e -> canUseEnchant(e.getEntity(), "ae.curse.treason"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.curse.treason"))
                         .handler(this::damage)
         );
     }

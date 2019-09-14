@@ -7,6 +7,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
@@ -33,9 +34,13 @@ public class TaskRepairing implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!PermissionUtil.canUseEnchant(player, "ae.enchant.repairing")) {
+                continue;
+            }
+
             Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
             if (!equipment.isPresent()) {
-                return;
+                continue;
             }
 
             tryRepair(BukkitEnchantableItem.fromItemStack(equipment.get().getHelmet()));

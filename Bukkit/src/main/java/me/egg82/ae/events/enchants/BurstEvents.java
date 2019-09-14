@@ -9,6 +9,7 @@ import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ItemDurabilityUtil;
 import me.egg82.ae.utils.LocationUtil;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -34,7 +35,7 @@ public class BurstEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(e -> canUseEnchant(e.getEntity(), "ae.enchant.burst"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.burst"))
                         .handler(this::shoot)
         );
     }

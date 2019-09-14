@@ -8,6 +8,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.services.entity.EntityDamageHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
@@ -35,9 +36,13 @@ public class TaskWither implements Runnable {
 
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!PermissionUtil.canUseEnchant(player, "ae.curse.wither")) {
+                continue;
+            }
+
             Optional<EntityEquipment> equipment = Optional.ofNullable(player.getEquipment());
             if (!equipment.isPresent()) {
-                return;
+                continue;
             }
 
             Optional<ItemStack> mainHand = entityItemHandler.getItemInMainHand(player);
@@ -69,11 +74,11 @@ public class TaskWither implements Runnable {
                         enchantableBoots);
             } catch (APIException ex) {
                 logger.error(ex.getMessage(), ex);
-                return;
+                continue;
             }
 
             if (!hasEnchantment || level <= 0) {
-                return;
+                continue;
             }
 
             EntityDamageHandler.damage(player, level / 2.0d, EntityDamageEvent.DamageCause.WITHER);

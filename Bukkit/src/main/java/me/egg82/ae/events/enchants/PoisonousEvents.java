@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -26,7 +27,7 @@ public class PoisonousEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(this::townyIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity)
-                        .filter(e -> canUseEnchant(e.getDamager(), "ae.enchant.poisonous"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.poisonous"))
                         .handler(this::damage)
         );
     }
