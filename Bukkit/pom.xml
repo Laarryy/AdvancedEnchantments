@@ -157,8 +157,8 @@
             <url>http://repo.dmulloy2.net/nexus/repository/snapshots/</url>
         </repository>
         <repository>
-            <id>articdive-repo</id>
-            <url>http://nexus.articdive.de/repository/maven-public/</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
 
         <repository>
@@ -268,9 +268,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames</groupId>
+            <groupId>com.github.TownyAdvanced</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.94.0.5</version>
+            <version>0.94.0.9</version>
             <scope>provided</scope>
         </dependency>
 
