@@ -1,10 +1,9 @@
 package me.egg82.ae.api;
 
+import java.util.*;
 import me.egg82.ae.utils.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public abstract class GenericEnchantment {
     private final Logger logger = LoggerFactory.getLogger(getClass());

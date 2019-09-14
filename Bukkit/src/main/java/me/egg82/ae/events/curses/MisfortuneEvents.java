@@ -1,6 +1,6 @@
 package me.egg82.ae.events.curses;
 
-import java.util.*;
+import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
