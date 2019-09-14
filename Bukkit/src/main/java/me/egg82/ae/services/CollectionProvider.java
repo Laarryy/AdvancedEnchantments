@@ -7,6 +7,7 @@ import me.egg82.ae.core.FakeBlockData;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 public class CollectionProvider {
     private CollectionProvider() {}
@@ -40,6 +41,10 @@ public class CollectionProvider {
 
     private static ExpiringMap<UUID, Double> marking = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getMarking() { return marking; }
+
+    private static Map<UUID, List<ItemStack>> soulbound = new HashMap<>();
+    public static List<ItemStack> getSoulboundItems(UUID uuid) { return soulbound.computeIfAbsent(uuid, v -> new ArrayList<>()); }
+    public static List<ItemStack> getAndClearSoulboundItems(UUID uuid) { return soulbound.remove(uuid); }
 
     private static ConcurrentMap<Location, FakeBlockData> fakeBlocks = new ConcurrentHashMap<>();
     public static ConcurrentMap<Location, FakeBlockData> getFakeBlocks() { return fakeBlocks; }

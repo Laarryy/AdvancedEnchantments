@@ -7,11 +7,14 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
+import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.utils.PermissionUtil;
 import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.events.BukkitEvents;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -21,12 +24,21 @@ public class SoulboundEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.soulbound"))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.vorpal"))
-                        .filter(e -> SoulsUtil.tryRemoveSouls(e.getEntity(), 1))
                         .handler(this::death)
+        );
+
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerRespawnEvent.class, EventPriority.NORMAL)
+                        .handler(this::respawn)
         );
     }
 
     private void death(EntityDeathEvent event) {
+        boolean player = false;
+        if (event.getEntity() instanceof Player) {
+            player = true;
+        }
+
         List<ItemStack> removedItems = new ArrayList<>();
 
         for (ItemStack item : event.getDrops()) {
@@ -40,13 +52,25 @@ public class SoulboundEvents extends EventHolder {
                 continue;
             }
 
-            if (hasEnchantment) {
+            if (hasEnchantment && SoulsUtil.tryRemoveSouls(event.getEntity(), 1)) {
                 removedItems.add(item);
             }
         }
 
         if (!removedItems.isEmpty()) {
+            if (player) {
+                CollectionProvider.getSoulboundItems(event.getEntity().getUniqueId()).addAll(removedItems);
+            }
             event.getDrops().removeAll(removedItems);
         }
+    }
+
+    private void respawn(PlayerRespawnEvent event) {
+        List<ItemStack> items = CollectionProvider.getAndClearSoulboundItems(event.getPlayer().getUniqueId());
+        if (items == null || items.isEmpty()) {
+            return;
+        }
+
+        event.getPlayer().getInventory().addItem(items.toArray(new ItemStack[0]));
     }
 }
