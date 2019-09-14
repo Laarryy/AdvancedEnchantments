@@ -158,7 +158,7 @@
         </repository>
         <repository>
             <id>articdive-repo</id>
-            <url>https://nexus.articdive.de/repository/maven-public/</url>
+            <url>http://nexus.articdive.de/repository/maven-public/</url>
         </repository>
 
         <repository>
