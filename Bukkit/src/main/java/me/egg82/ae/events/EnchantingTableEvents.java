@@ -82,8 +82,7 @@ public class EnchantingTableEvents extends EventHolder {
 
                 // This all works because we're iterating through a copy of the map
                 event.getEnchantsToAdd().remove((Enchantment) kvp.getKey().getConcrete());
-                int newLevel = Math.max(newEnchant.getMinLevel(), Math.min(newEnchant.getMaxLevel(), kvp.getValue())); // Clamp value
-                newEnchants.put(newEnchant, newLevel);
+                newEnchants.put(newEnchant, kvp.getValue());
             }
         }
 
