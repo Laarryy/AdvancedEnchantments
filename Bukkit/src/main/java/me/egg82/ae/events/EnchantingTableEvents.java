@@ -73,6 +73,7 @@ public class EnchantingTableEvents extends EventHolder {
                     ) {
                         break;
                     }
+                    newEnchant = null; // Set enchant to null to prevent adding. The "break" above will skip this
                 } while (tries < 100);
 
                 if (newEnchant == null) {
