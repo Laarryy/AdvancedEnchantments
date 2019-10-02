@@ -19,7 +19,15 @@ public class EnchantingTableEvents extends EventHolder {
     private final Plugin plugin;
     private final Random rand = new Random();
 
+    private double highestWeight = 0;
+    private final NavigableMap<Double, AdvancedEnchantment> customEnchants = new TreeMap<>();
+
     public EnchantingTableEvents(Plugin plugin) {
+        for (AdvancedEnchantment enchant : AdvancedEnchantment.values()) {
+            highestWeight += 1;
+            customEnchants.put(highestWeight, enchant);
+        }
+
         this.plugin = plugin;
 
         events.add(
@@ -40,7 +48,6 @@ public class EnchantingTableEvents extends EventHolder {
             return;
         }
 
-        List<AdvancedEnchantment> customEnchants = new ArrayList<>(AdvancedEnchantment.values());
         Map<GenericEnchantment, Integer> currentEnchants = getEnchants(event.getEnchantsToAdd());
         Map<GenericEnchantment, Integer> newEnchants = new HashMap<>();
 
@@ -52,12 +59,13 @@ public class EnchantingTableEvents extends EventHolder {
                 AdvancedEnchantment newEnchant;
                 do {
                     // Get a new random (custom) enchant to replace the vanilla one
-                    newEnchant = customEnchants.get(rand.nextInt(customEnchants.size()));
+                    newEnchant = getNextEnchant();
                     tries++;
 
                     if (
                             newEnchant != null // We don't want nulls
                             && !newEnchant.isCurse() // We don't want curses
+                            && kvp.getValue() >= newEnchant.getMinLevel() && kvp.getValue() <= newEnchant.getMaxLevel() // We want enchants that fit the level
                             && event.getEnchanter().hasPermission("ae.enchant." + newEnchant.getName()) // We don't want enchants we don't have perms to use
                             && newEnchant.canEnchant(item) // We don't want enchants that conflict with the item, or that conflict with enchants currently on the item
                             && !conflicts(newEnchant, currentEnchants, kvp.getKey()) // We don't want enchants that conflict with Bukkit enchants that will be applied (except the one we're replacing)
@@ -81,6 +89,20 @@ public class EnchantingTableEvents extends EventHolder {
 
         // Add all the new (custom) enchants
         item.setEnchantmentLevels(newEnchants);
+    }
+
+    private AdvancedEnchantment getNextEnchant() {
+        // Select least-recently used enchant with random (weighted random)
+        Map.Entry<Double, AdvancedEnchantment> entry = customEnchants.lowerEntry(rand.nextDouble() * highestWeight);
+        if (entry == null) {
+            return null;
+        }
+
+        // Increase weight (decrease chance) of selected item
+        highestWeight += Math.max(highestWeight, entry.getKey() + 1);
+        customEnchants.remove(entry.getKey(), entry.getValue());
+        customEnchants.put(entry.getKey() + 1, entry.getValue());
+        return entry.getValue();
     }
 
     private Map<GenericEnchantment, Integer> getEnchants(Map<Enchantment, Integer> original) {
