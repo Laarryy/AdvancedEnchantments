@@ -24,6 +24,7 @@ error:
 
 player:
   soul_vanished: "The soul vanished!"
+  silenced: "You have been silenced!"
 
 reload:
   begin: "<c2>Reloading, please wait..</c2>"
@@ -45,4 +46,4 @@ souls:
   success_main_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> main hand<c4>.</c4>"
   success_off_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> off hand<c4>.</c4>"
 
-version: 1.1
+version: 1.2

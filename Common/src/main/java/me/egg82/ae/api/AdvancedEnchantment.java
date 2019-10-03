@@ -55,6 +55,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment LEECHING_CURSE = new LeechingCurse();
     public static final AdvancedEnchantment MISFORTUNE_CURSE = new MisfortuneCurse();
     public static final AdvancedEnchantment PACIFISM_CURSE = new PacifismCurse();
+    public static final AdvancedEnchantment SILENCE_CURSE = new SilenceCurse();
     public static final AdvancedEnchantment STICKINESS_CURSE = new StickinessCurse();
     public static final AdvancedEnchantment TREASON_CURSE = new TreasonCurse();
     public static final AdvancedEnchantment WITHER_CURSE = new WitherCurse();
