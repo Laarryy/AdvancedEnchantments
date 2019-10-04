@@ -16,13 +16,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.plugin.Plugin;
 
-public class FireblazerEvents extends EventHolder {
-    public FireblazerEvents(Plugin plugin) {
+public class TrailblazerEvents extends EventHolder {
+    public TrailblazerEvents(Plugin plugin) {
         events.add(
                 BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !LocationUtil.isBlockEqual(e.getFrom(), e.getTo()))
-                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.fireblazer"))
+                        .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.trailblazer"))
                         .filter(e -> LocationUtil.canIgnite(e.getFrom().getBlock().getType()))
                         .handler(this::move)
         );
@@ -38,7 +38,7 @@ public class FireblazerEvents extends EventHolder {
 
         boolean hasEnchantment;
         try {
-            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.FIREBLAZER, enchantableBoots);
+            hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.TRAILBLAZER, enchantableBoots);
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
             return;
@@ -49,5 +49,8 @@ public class FireblazerEvents extends EventHolder {
         }
 
         event.getFrom().getBlock().setType(Material.FIRE, true);
+        if (event.getPlayer().isSprinting()) {
+            event.getPlayer().setFireTicks(60);
+        }
     }
 }
