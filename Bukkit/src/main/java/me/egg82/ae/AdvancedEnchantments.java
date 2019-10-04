@@ -258,6 +258,7 @@ public class AdvancedEnchantments {
 
         eventHolders.add(new AdherenceEvents(plugin));
         eventHolders.add(new DecayEvents(plugin));
+        eventHolders.add(new EmpathyEvents(plugin));
         eventHolders.add(new EnderEvents(plugin));
         eventHolders.add(new FragilityEvents(plugin));
         eventHolders.add(new LeechingEvents(plugin));
