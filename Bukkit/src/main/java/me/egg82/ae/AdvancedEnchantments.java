@@ -228,6 +228,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new AnvilEvents(plugin));
         eventHolders.add(new GrindstoneEvents(plugin));
 
+        eventHolders.add(new AegisEvents(plugin));
         eventHolders.add(new AerialEvents(plugin));
         eventHolders.add(new ArtisanEvents(plugin));
         eventHolders.add(new BeheadingEvents(plugin));

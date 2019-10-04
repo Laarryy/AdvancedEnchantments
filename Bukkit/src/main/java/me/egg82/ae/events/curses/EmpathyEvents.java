@@ -4,6 +4,7 @@ import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
+import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityDamageHandler;
 import me.egg82.ae.utils.PermissionUtil;
@@ -42,11 +43,13 @@ public class EmpathyEvents extends EventHolder {
                 continue;
             }
 
+            GenericEnchantableItem enchantableChestplate = BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate());
+
             boolean hasEnchantment;
             int level;
             try {
-                hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.EMPATHY_CURSE, BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate()));
-                level = api.getMaxLevel(AdvancedEnchantment.EMPATHY_CURSE, BukkitEnchantableItem.fromItemStack(equipment.get().getChestplate()));
+                hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.EMPATHY_CURSE, enchantableChestplate);
+                level = api.getMaxLevel(AdvancedEnchantment.EMPATHY_CURSE, enchantableChestplate);
             } catch (APIException ex) {
                 logger.error(ex.getMessage(), ex);
                 continue;

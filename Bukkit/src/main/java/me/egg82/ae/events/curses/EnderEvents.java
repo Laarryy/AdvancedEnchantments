@@ -4,6 +4,7 @@ import java.util.Random;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
+import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.utils.BlockUtil;
 import me.egg82.ae.utils.LocationUtil;
@@ -45,20 +46,25 @@ public class EnderEvents extends EventHolder {
         LivingEntity to = (LivingEntity) event.getEntity();
         EntityEquipment equipment = to.getEquipment();
 
+        GenericEnchantableItem enchantableHelmet = BukkitEnchantableItem.fromItemStack(equipment.getHelmet());
+        GenericEnchantableItem enchantableChestplate = BukkitEnchantableItem.fromItemStack(equipment.getChestplate());
+        GenericEnchantableItem enchantableLeggings = BukkitEnchantableItem.fromItemStack(equipment.getLeggings());
+        GenericEnchantableItem enchantableBoots = BukkitEnchantableItem.fromItemStack(equipment.getBoots());
+
         boolean hasEnchantment;
         int level;
         try {
             hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.ENDER_CURSE,
-                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    enchantableHelmet,
+                    enchantableChestplate,
+                    enchantableLeggings,
+                    enchantableBoots
             );
             level = api.getMaxLevel(AdvancedEnchantment.ENDER_CURSE,
-                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    enchantableHelmet,
+                    enchantableChestplate,
+                    enchantableLeggings,
+                    enchantableBoots
             );
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
@@ -80,20 +86,25 @@ public class EnderEvents extends EventHolder {
         LivingEntity to = (LivingEntity) event.getHitEntity();
         EntityEquipment equipment = to.getEquipment();
 
+        GenericEnchantableItem enchantableHelmet = BukkitEnchantableItem.fromItemStack(equipment.getHelmet());
+        GenericEnchantableItem enchantableChestplate = BukkitEnchantableItem.fromItemStack(equipment.getChestplate());
+        GenericEnchantableItem enchantableLeggings = BukkitEnchantableItem.fromItemStack(equipment.getLeggings());
+        GenericEnchantableItem enchantableBoots = BukkitEnchantableItem.fromItemStack(equipment.getBoots());
+
         boolean hasEnchantment;
         int level;
         try {
             hasEnchantment = api.anyHasEnchantment(AdvancedEnchantment.ENDER_CURSE,
-                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    enchantableHelmet,
+                    enchantableChestplate,
+                    enchantableLeggings,
+                    enchantableBoots
             );
             level = api.getMaxLevel(AdvancedEnchantment.ENDER_CURSE,
-                    BukkitEnchantableItem.fromItemStack(equipment.getHelmet()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getChestplate()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getLeggings()),
-                    BukkitEnchantableItem.fromItemStack(equipment.getBoots())
+                    enchantableHelmet,
+                    enchantableChestplate,
+                    enchantableLeggings,
+                    enchantableBoots
             );
         } catch (APIException ex) {
             logger.error(ex.getMessage(), ex);
