@@ -259,6 +259,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new AdherenceEvents(plugin));
         eventHolders.add(new DecayEvents(plugin));
         eventHolders.add(new EnderEvents(plugin));
+        eventHolders.add(new FragilityEvents(plugin));
         eventHolders.add(new LeechingEvents(plugin));
         eventHolders.add(new MisfortuneEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new PacifismEvents(plugin));
