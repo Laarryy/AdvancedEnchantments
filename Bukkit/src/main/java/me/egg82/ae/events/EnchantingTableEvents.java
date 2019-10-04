@@ -99,7 +99,7 @@ public class EnchantingTableEvents extends EventHolder {
         }
 
         // Increase weight (decrease chance) of selected item
-        highestWeight += Math.max(highestWeight, entry.getKey() + 1);
+        highestWeight = Math.max(highestWeight, entry.getKey() + 1);
         customEnchants.remove(entry.getKey(), entry.getValue());
         customEnchants.put(entry.getKey() + 1, entry.getValue());
         return entry.getValue();
