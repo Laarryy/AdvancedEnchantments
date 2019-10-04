@@ -29,6 +29,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment ETHEREAL = new EtherealEnchantment();
     public static final AdvancedEnchantment EXPLOSIVE = new ExplosiveEnchantment();
     public static final AdvancedEnchantment FIERY = new FieryEnchantment();
+    public static final AdvancedEnchantment FIREBLAZER = new FireblazerEnchantment();
     public static final AdvancedEnchantment FREEZING = new FreezingEnchantment();
     public static final AdvancedEnchantment MAGNETIC = new MagneticEnchantment();
     public static final AdvancedEnchantment MARKING = new MarkingEnchantment();

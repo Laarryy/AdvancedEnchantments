@@ -1,12 +1,22 @@
 package me.egg82.ae.utils;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
 public class LocationUtil {
     private LocationUtil() { }
+
+    public static boolean isBlockEqual(Location one, Location two) {
+        return
+                one.getBlockX() == two.getBlockX()
+                && one.getBlockY() == two.getBlockY()
+                && one.getBlockZ() == two.getBlockZ();
+    }
+
+    public static boolean canIgnite(Material type) { return !type.isSolid() && !type.name().contains("WATER") && !type.name().contains("LAVA"); }
 
     public static boolean isFinite(Vector vec) {
         try {

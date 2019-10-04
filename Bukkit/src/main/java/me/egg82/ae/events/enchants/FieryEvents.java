@@ -8,6 +8,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.LocationUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
@@ -88,7 +89,7 @@ public class FieryEvents extends EventHolder {
                         // Need a new loc each time so we don't screw up the math
                         Location l2 = hitBlock.get().getLocation().clone().add(x, y, z);
                         Material type = l2.getBlock().getType();
-                        if (!type.isSolid() && !type.name().contains("WATER") && !type.name().contains("LAVA")) {
+                        if (LocationUtil.canIgnite(type)) {
                             l2.getBlock().setType(Material.FIRE, true);
                         }
                     }

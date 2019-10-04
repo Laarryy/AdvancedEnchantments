@@ -240,6 +240,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new EtherealEvents(plugin));
         eventHolders.add(new ExplosiveEvents(plugin));
         eventHolders.add(new FieryEvents(plugin));
+        eventHolders.add(new FireblazerEvents(plugin));
         eventHolders.add(new FreezingEvents(plugin));
         eventHolders.add(new MarkingEvents(plugin));
         eventHolders.add(new MirageEvents(plugin));
@@ -261,7 +262,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new LeechingEvents(plugin));
         eventHolders.add(new MisfortuneEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new PacifismEvents(plugin));
-        eventHolders.add(new SilenceEvents(plugin));
+        eventHolders.add(new SilenceEvents(plugin, commandManager));
         eventHolders.add(new StickinessEvents(plugin));
         eventHolders.add(new TreasonEvents(plugin));
     }
