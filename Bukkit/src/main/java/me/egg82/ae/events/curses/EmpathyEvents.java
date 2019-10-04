@@ -30,7 +30,7 @@ public class EmpathyEvents extends EventHolder {
 
     private void damageNearby(EntityDamageByEntityEvent event) {
         for (Entity e : event.getEntity().getNearbyEntities(15.0d, 15.0d, 15.0d)) {
-            if (!e.getUniqueId().equals(event.getEntity().getUniqueId()) && !(e instanceof LivingEntity)) {
+            if (e.getUniqueId().equals(event.getEntity().getUniqueId()) || !(e instanceof LivingEntity)) {
                 continue;
             }
 
@@ -38,7 +38,7 @@ public class EmpathyEvents extends EventHolder {
                 continue;
             }
 
-            Optional<EntityEquipment> equipment = Optional.ofNullable(((LivingEntity) event.getEntity()).getEquipment());
+            Optional<EntityEquipment> equipment = Optional.ofNullable(((LivingEntity) e).getEquipment());
             if (!equipment.isPresent()) {
                 continue;
             }
