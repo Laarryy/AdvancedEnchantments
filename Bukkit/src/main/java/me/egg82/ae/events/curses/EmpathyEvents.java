@@ -29,7 +29,7 @@ public class EmpathyEvents extends EventHolder {
 
     private void damageNearby(EntityDamageByEntityEvent event) {
         for (Entity e : event.getEntity().getNearbyEntities(15.0d, 15.0d, 15.0d)) {
-            if (!(e instanceof LivingEntity)) {
+            if (!e.getUniqueId().equals(event.getEntity().getUniqueId()) && !(e instanceof LivingEntity)) {
                 continue;
             }
 
