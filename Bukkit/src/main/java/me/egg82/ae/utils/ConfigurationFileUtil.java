@@ -54,9 +54,20 @@ public class ConfigurationFileUtil {
             }
         }
 
+        boolean bypassUnbreaking = config.getNode("bypass-unbreaking").getBoolean(true);
+
+        if (debug) {
+            if (bypassUnbreaking) {
+                logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Bypassing unbreaking for enchants that consume item durability.");
+            }  else {
+                logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Enforcing unbreaking for enchants that consume item durability.");
+            }
+        }
+
         CachedConfigValues cachedValues = CachedConfigValues.builder()
                 .debug(debug)
                 .enchantChance(enchantChance)
+                .bypassUnbreaking(bypassUnbreaking)
                 .build();
 
         ConfigUtil.setConfiguration(config, cachedValues);

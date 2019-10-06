@@ -9,6 +9,9 @@ public class CachedConfigValues {
     private double enchantChance = 0.0d;
     public double getEnchantChance() { return enchantChance; }
 
+    private boolean bypassUnbreaking = true;
+    public boolean getBypassUnbreaking() { return bypassUnbreaking; }
+
     public static CachedConfigValues.Builder builder() { return new CachedConfigValues.Builder(); }
 
     public static class Builder {
@@ -23,6 +26,11 @@ public class CachedConfigValues {
 
         public CachedConfigValues.Builder enchantChance(double value) {
             values.enchantChance = value;
+            return this;
+        }
+
+        public CachedConfigValues.Builder bypassUnbreaking(boolean value) {
+            values.bypassUnbreaking = value;
             return this;
         }
 

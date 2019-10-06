@@ -1,15 +1,26 @@
 package me.egg82.ae.utils;
 
 import java.util.Optional;
+import java.util.Random;
 import me.egg82.ae.api.BukkitEnchantableItem;
+import me.egg82.ae.extended.CachedConfigValues;
+import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.services.sound.SoundLookup;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ItemDurabilityUtil {
+    private static final Logger logger = LoggerFactory.getLogger(ItemDurabilityUtil.class);
+
+    private static final Random rand = new Random();
+
     private ItemDurabilityUtil() { }
 
     private static Sound breakSound;
@@ -44,6 +55,22 @@ public class ItemDurabilityUtil {
         }
 
         ItemStack i = (ItemStack) item.getConcrete();
+
+        if (i.hasItemMeta() && i.getItemMeta().hasEnchant(Enchantment.DURABILITY)) {
+            Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
+            if (!cachedConfig.isPresent()) {
+                logger.error("Cached config could not be fetched.");
+                return true;
+            }
+
+            if (!cachedConfig.get().getBypassUnbreaking()) {
+                double unbreakingLevel = i.getItemMeta().getEnchantLevel(Enchantment.DURABILITY);
+                double unbreakingChance = EnchantmentTarget.ARMOR.includes(i) ? 1.0d - (0.6d + (0.4d / (unbreakingLevel + 1.0d))) : 1.0d - 1.0d / (unbreakingLevel + 1.0d);
+                if (rand.nextDouble() <= unbreakingChance) {
+                    return true;
+                }
+            }
+        }
 
         if (player != null && hasItemBreakEvent) {
             org.bukkit.event.player.PlayerItemDamageEvent event = new org.bukkit.event.player.PlayerItemDamageEvent(player, i, durabilityToRemove);

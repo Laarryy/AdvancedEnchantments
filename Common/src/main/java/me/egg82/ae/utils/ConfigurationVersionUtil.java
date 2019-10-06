@@ -19,9 +19,9 @@ public class ConfigurationVersionUtil {
         if (config.getNode("version").getDouble(1.0d) == 1.0d) {
             to11(config);
         }
-        /*if (config.getNode("version").getDouble() == 2.0d) {
-            to21(config);
-        }*/
+        if (config.getNode("version").getDouble() == 1.1d) {
+            to12(config);
+        }
 
         if (config.getNode("version").getDouble() != oldVersion) {
             File backupFile = new File(fileOnDisk.getParent(), fileOnDisk.getName() + ".bak");
@@ -42,11 +42,11 @@ public class ConfigurationVersionUtil {
         config.getNode("version").setValue(1.1d);
     }
 
-    /*private static void to21(ConfigurationNode config) {
-        // Add consensus
-        config.getNode("consensus").setValue(-1.0d);
+    private static void to12(ConfigurationNode config) {
+        // Add unbreaking bypass(-bypass?)
+        config.getNode("bypass-unbreaking").setValue(Boolean.TRUE);
 
         // Version
-        config.getNode("version").setValue(2.1d);
-    }*/
+        config.getNode("version").setValue(1.2d);
+    }
 }
