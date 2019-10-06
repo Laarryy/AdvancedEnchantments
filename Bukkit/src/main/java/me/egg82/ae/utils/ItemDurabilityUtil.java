@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.Random;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.extended.CachedConfigValues;
-import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.services.sound.SoundLookup;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
