@@ -19,7 +19,7 @@ public class EnchantingTableEvents extends EventHolder {
     private final Plugin plugin;
     private final Random rand = new Random();
 
-    private double highestWeight = 0;
+    private double highestWeight = 0.0d;
     private final NavigableMap<Double, AdvancedEnchantment> customEnchants = new TreeMap<>();
 
     public EnchantingTableEvents(Plugin plugin) {
@@ -27,6 +27,7 @@ public class EnchantingTableEvents extends EventHolder {
             highestWeight += 1;
             customEnchants.put(highestWeight, enchant);
         }
+        highestWeight += 1;
 
         this.plugin = plugin;
 
@@ -92,8 +93,10 @@ public class EnchantingTableEvents extends EventHolder {
     }
 
     private AdvancedEnchantment getNextEnchant() {
+        double lowestWeight = customEnchants.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
+
         // Select least-recently used enchant with random (weighted random)
-        Map.Entry<Double, AdvancedEnchantment> entry = customEnchants.lowerEntry(rand.nextDouble() * highestWeight);
+        Map.Entry<Double, AdvancedEnchantment> entry = customEnchants.lowerEntry(rand.nextDouble() * (highestWeight - lowestWeight) + lowestWeight);
         if (entry == null) {
             return null;
         }
