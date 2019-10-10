@@ -9,6 +9,9 @@ enchant-chance: 0.0
 # The default is true, which balances the power of the enchants as compared to vanilla
 bypass-unbreaking: true
 
+# Whether or not to enable particle effects
+particles: true
+
 # When true, logs some extra output to the console so you can see if/why things might be failing
 debug: false
 

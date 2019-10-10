@@ -190,6 +190,13 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository("https://nexus.egg82.me/repository/maven-central/");
         buildInject(packetWrapper, jarsDir, classLoader, "PacketWrapper");
 
+        printLatest("EffectLib");
+        Artifact.Builder effectLib = Artifact.builder("de.slikey", "EffectLib", "6.2", cacheDir)
+                .addRepository("https://nexus.egg82.me/repository/elmakers/")
+                .addRepository("http://maven.elmakers.com/repository/")
+                .addRepository("https://nexus.egg82.me/repository/maven-central/");
+        buildInject(effectLib, jarsDir, classLoader, "EffectLib");
+
         // Global
 
         Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.7.0", cacheDir)

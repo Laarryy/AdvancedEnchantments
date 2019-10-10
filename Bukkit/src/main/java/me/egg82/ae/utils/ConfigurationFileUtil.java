@@ -64,10 +64,21 @@ public class ConfigurationFileUtil {
             }
         }
 
+        boolean particles = config.getNode("particles").getBoolean(true);
+
+        if (debug) {
+            if (particles) {
+                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Enabling particles.");
+            }  else {
+                logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Disabling particles.");
+            }
+        }
+
         CachedConfigValues cachedValues = CachedConfigValues.builder()
                 .debug(debug)
                 .enchantChance(enchantChance)
                 .bypassUnbreaking(bypassUnbreaking)
+                .particles(particles)
                 .build();
 
         ConfigUtil.setConfiguration(config, cachedValues);

@@ -46,6 +46,8 @@ public class ConfigurationVersionUtil {
         // Add unbreaking bypass(-bypass?)
         config.getNode("bypass-unbreaking").setValue(Boolean.TRUE);
 
+        config.getNode("particles").setValue(Boolean.TRUE);
+
         // Version
         config.getNode("version").setValue(1.2d);
     }

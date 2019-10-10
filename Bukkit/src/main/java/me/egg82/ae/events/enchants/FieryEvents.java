@@ -1,5 +1,7 @@
 package me.egg82.ae.events.enchants;
 
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.effect.FlameEffect;
 import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
@@ -8,6 +10,7 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.LocationUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
@@ -26,7 +29,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class FieryEvents extends EventHolder {
-    public FieryEvents(Plugin plugin) {
+    private final EffectManager effectManager;
+
+    public FieryEvents(Plugin plugin, EffectManager effectManager) {
+        this.effectManager = effectManager;
+
         events.add(
                 BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -73,6 +80,14 @@ public class FieryEvents extends EventHolder {
 
         if (!hasEnchantment) {
             return;
+        }
+
+        if (ConfigUtil.getParticlesOrFalse()) {
+            FlameEffect effect = new FlameEffect(effectManager);
+            effect.setEntity(event.getProjectile());
+            effect.disappearWithOriginEntity = true;
+            effect.infinite();
+            effect.start();
         }
 
         CollectionProvider.getFiery().add(event.getProjectile().getUniqueId());

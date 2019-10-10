@@ -12,6 +12,9 @@ public class CachedConfigValues {
     private boolean bypassUnbreaking = true;
     public boolean getBypassUnbreaking() { return bypassUnbreaking; }
 
+    private boolean particles = true;
+    public boolean getParticles() { return particles; }
+
     public static CachedConfigValues.Builder builder() { return new CachedConfigValues.Builder(); }
 
     public static class Builder {
@@ -31,6 +34,11 @@ public class CachedConfigValues {
 
         public CachedConfigValues.Builder bypassUnbreaking(boolean value) {
             values.bypassUnbreaking = value;
+            return this;
+        }
+
+        public CachedConfigValues.Builder particles(boolean value) {
+            values.particles = value;
             return this;
         }
 

@@ -8,6 +8,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
@@ -21,6 +22,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class PacifismEvents extends EventHolder {
+    private final Random rand = new Random();
+
     public PacifismEvents(Plugin plugin) {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
@@ -58,7 +61,9 @@ public class PacifismEvents extends EventHolder {
             return;
         }
 
-        event.getEntity().getWorld().spawnParticle(Particle.CRIT, event.getEntity().getLocation().clone().add(0.0d, 1.0d, 0.0d), new Random().nextInt(2) + 3);
+        if (ConfigUtil.getParticlesOrFalse()) {
+            event.getEntity().getWorld().spawnParticle(Particle.CRIT, event.getEntity().getLocation().clone().add(0.0d, 1.0d, 0.0d), rand.nextInt(2) + 3);
+        }
         event.setCancelled(true);
     }
 }

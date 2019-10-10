@@ -6,6 +6,7 @@ import co.aikar.taskchain.TaskChainFactory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import de.slikey.effectlib.EffectManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -55,6 +56,7 @@ public class AdvancedEnchantments {
 
     private TaskChainFactory taskFactory;
     private PaperCommandManager commandManager;
+    private EffectManager effectManager;
 
     private List<EventHolder> eventHolders = new ArrayList<>();
     private List<BukkitEventSubscriber<?>> events = new ArrayList<>();
@@ -118,6 +120,8 @@ public class AdvancedEnchantments {
                 "{tasks}", String.valueOf(tasks.size())
         );
 
+        effectManager = new EffectManager(plugin);
+
         workPool.submit(this::checkUpdate);
     }
 
@@ -141,6 +145,8 @@ public class AdvancedEnchantments {
 
         unloadHooks();
         unloadServices();
+
+        effectManager.dispose();
 
         consoleCommandIssuer.sendInfo(Message.GENERAL__DISABLED);
 
@@ -240,7 +246,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new EnsnaringEvents(plugin));
         eventHolders.add(new EtherealEvents(plugin));
         eventHolders.add(new ExplosiveEvents(plugin));
-        eventHolders.add(new FieryEvents(plugin));
+        eventHolders.add(new FieryEvents(plugin, effectManager));
         eventHolders.add(new FreezingEvents(plugin));
         eventHolders.add(new MarkingEvents(plugin));
         eventHolders.add(new MirageEvents(plugin));

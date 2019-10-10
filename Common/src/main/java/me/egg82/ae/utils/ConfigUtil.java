@@ -31,4 +31,9 @@ public class ConfigUtil {
         Optional<CachedConfigValues> cachedConfig = getCachedConfig();
         return cachedConfig.isPresent() && cachedConfig.get().getDebug();
     }
+
+    public static boolean getParticlesOrFalse() {
+        Optional<CachedConfigValues> cachedConfig = getCachedConfig();
+        return cachedConfig.isPresent() && cachedConfig.get().getParticles();
+    }
 }
