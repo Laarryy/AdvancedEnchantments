@@ -99,6 +99,8 @@ public class AdvancedEnchantments {
 
         consoleCommandIssuer = commandManager.getCommandIssuer(plugin.getServer().getConsoleSender());
 
+        effectManager = new EffectManager(plugin);
+
         loadLanguages();
         loadServices();
         loadCommands();
@@ -119,8 +121,6 @@ public class AdvancedEnchantments {
                 "{events}", String.valueOf(numEvents),
                 "{tasks}", String.valueOf(tasks.size())
         );
-
-        effectManager = new EffectManager(plugin);
 
         workPool.submit(this::checkUpdate);
     }
@@ -270,7 +270,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new FragilityEvents(plugin));
         eventHolders.add(new LeechingEvents(plugin));
         eventHolders.add(new MisfortuneEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
-        eventHolders.add(new PacifismEvents(plugin));
+        eventHolders.add(new PacifismEvents(plugin, effectManager));
         eventHolders.add(new SilenceEvents(plugin, commandManager));
         eventHolders.add(new StickinessEvents(plugin));
         eventHolders.add(new TreasonEvents(plugin));
@@ -278,7 +278,7 @@ public class AdvancedEnchantments {
 
     private void loadTasks() {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskAntigravity(), 0L, 30L));
-        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(), 0L, 20L));
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskBleeding(effectManager), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskCalling(), 0L, 40L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskFreezing(), 0L, 20L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskGrogginess(), 0L, 30L));

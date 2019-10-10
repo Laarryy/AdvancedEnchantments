@@ -1,14 +1,16 @@
 package me.egg82.ae.events.curses;
 
+import de.slikey.effectlib.EffectManager;
 import java.util.Optional;
-import java.util.Random;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
+import me.egg82.ae.effects.ParticleSplashEffect;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EffectUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
@@ -22,9 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class PacifismEvents extends EventHolder {
-    private final Random rand = new Random();
+    private final EffectManager effectManager;
 
-    public PacifismEvents(Plugin plugin) {
+    public PacifismEvents(Plugin plugin, EffectManager effectManager) {
+        this.effectManager = effectManager;
+
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -62,7 +66,8 @@ public class PacifismEvents extends EventHolder {
         }
 
         if (ConfigUtil.getParticlesOrFalse()) {
-            event.getEntity().getWorld().spawnParticle(Particle.CRIT, event.getEntity().getLocation().clone().add(0.0d, 1.0d, 0.0d), rand.nextInt(2) + 3);
+            ParticleSplashEffect effect = new ParticleSplashEffect(effectManager, Particle.CRIT);
+            EffectUtil.start(effect, event.getEntity());
         }
         event.setCancelled(true);
     }

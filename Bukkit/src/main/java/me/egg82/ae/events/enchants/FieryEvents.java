@@ -11,6 +11,7 @@ import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EffectUtil;
 import me.egg82.ae.utils.LocationUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
@@ -84,10 +85,8 @@ public class FieryEvents extends EventHolder {
 
         if (ConfigUtil.getParticlesOrFalse()) {
             FlameEffect effect = new FlameEffect(effectManager);
-            effect.setEntity(event.getProjectile());
-            effect.disappearWithOriginEntity = true;
             effect.infinite();
-            effect.start();
+            EffectUtil.start(effect, event.getProjectile());
         }
 
         CollectionProvider.getFiery().add(event.getProjectile().getUniqueId());
