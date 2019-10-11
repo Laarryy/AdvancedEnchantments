@@ -78,6 +78,8 @@ public class TornadoEvents extends EventHolder {
             effect.tornadoHeight = 3.0f;
             effect.maxTornadoRadius = 2.0f;
             effect.cloudSize = 1.5f;
+            effect.circleParticles = 16;
+            effect.cloudParticles = 20;
             effect.start();
         }
 
