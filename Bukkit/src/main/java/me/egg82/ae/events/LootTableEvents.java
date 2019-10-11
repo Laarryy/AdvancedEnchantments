@@ -47,7 +47,7 @@ public class LootTableEvents extends EventHolder {
         LootTable oldTable = event.getInventory().getLootTable();
         event.getInventory().setLootTable(new CustomLootTable(oldTable, event.getPlayer(), cachedConfig.get().getLootEnchantChance(), cachedConfig.get().getLootCurseChance()), seed);
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> event.getInventory().setLootTable(oldTable), 1L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> event.getInventory().setLootTable(oldTable, seed), 1L);
     }
 
     private class CustomLootTable implements LootTable {
