@@ -3,7 +3,6 @@ package me.egg82.ae;
 import co.aikar.commands.*;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChainFactory;
-import com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -33,7 +32,6 @@ import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.tasks.*;
 import me.egg82.ae.utils.*;
-import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -232,11 +230,7 @@ public class AdvancedEnchantments {
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
 
-        try {
-            Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
-            eventHolders.add(new LootTableEvents(plugin));
-        } catch (ClassNotFoundException ignored) { }
-
+        eventHolders.add(new LootTableEvents(plugin));
         eventHolders.add(new EnchantingTableEvents(plugin));
         eventHolders.add(new AnvilEvents(plugin));
         eventHolders.add(new GrindstoneEvents(plugin));

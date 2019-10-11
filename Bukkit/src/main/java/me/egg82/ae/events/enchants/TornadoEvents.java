@@ -75,9 +75,9 @@ public class TornadoEvents extends EventHolder {
             effect.setLocation(event.getEntity().getLocation());
             effect.tornadoParticle = Particle.SMOKE_NORMAL;
             effect.iterations = 2;
-            effect.tornadoHeight = 3.0f;
-            effect.maxTornadoRadius = 2.0f;
-            effect.cloudSize = 1.5f;
+            effect.tornadoHeight = 1.75f;
+            effect.maxTornadoRadius = 1.25f;
+            effect.cloudSize = 0.75f;
             effect.circleParticles = 16;
             effect.cloudParticles = 20;
             effect.start();

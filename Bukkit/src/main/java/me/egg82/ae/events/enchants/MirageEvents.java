@@ -1,8 +1,6 @@
 package me.egg82.ae.events.enchants;
 
 import de.slikey.effectlib.EffectManager;
-import de.slikey.effectlib.effect.CubeEffect;
-import de.slikey.effectlib.effect.WarpEffect;
 import java.util.*;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;

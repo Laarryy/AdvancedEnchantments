@@ -1,7 +1,9 @@
 package me.egg82.ae.events;
 
 import com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.Random;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.extended.CachedConfigValues;
@@ -26,11 +28,14 @@ public class LootTableEvents extends EventHolder {
     public LootTableEvents(Plugin plugin) {
         this.plugin = plugin;
 
-        events.add(
-                BukkitEvents.subscribe(plugin, LootableInventoryReplenishEvent.class, EventPriority.NORMAL)
-                .filter(BukkitEventFilters.ignoreCancelled())
-                .handler(this::addEnchants)
-        );
+        try {
+            Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+            events.add(
+                    BukkitEvents.subscribe(plugin, LootableInventoryReplenishEvent.class, EventPriority.NORMAL)
+                    .filter(BukkitEventFilters.ignoreCancelled())
+                    .handler(this::addEnchants)
+            );
+        } catch (ClassNotFoundException ignored) { }
     }
 
     public void addEnchants(LootableInventoryReplenishEvent event) {
