@@ -79,7 +79,7 @@ public class LootTableEvents extends EventHolder {
                     int tries = 0;
                     AdvancedEnchantment newEnchant;
                     do {
-                        // Get a new random (custom) enchant to replace the vanilla one
+                        // Get a new random (custom) enchant
                         newEnchant = EnchantmentUtil.getNextEnchant();
                         tries++;
 
@@ -115,13 +115,13 @@ public class LootTableEvents extends EventHolder {
                     int tries = 0;
                     AdvancedEnchantment newEnchant;
                     do {
-                        // Get a new random (custom) enchant to replace the vanilla one
+                        // Get a new random (custom) curse
                         newEnchant = EnchantmentUtil.getNextCurse();
                         tries++;
 
                         if (
                                 newEnchant != null // We don't want nulls
-                                && viewingPlayer.hasPermission("ae.enchant." + newEnchant.getName()) // We don't want enchants we don't have perms to use
+                                && viewingPlayer.hasPermission("ae.curse." + newEnchant.getName()) // We don't want enchants we don't have perms to use
                                 && newEnchant.canEnchant(item) // We don't want enchants that conflict with the item, or that conflict with enchants currently on the item
                         ) {
                             break;
