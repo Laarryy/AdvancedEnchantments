@@ -1,5 +1,7 @@
 package me.egg82.ae.events.enchants;
 
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.effect.TornadoEffect;
 import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
@@ -7,12 +9,14 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -22,9 +26,11 @@ import org.bukkit.util.Vector;
 
 public class TornadoEvents extends EventHolder {
     private final Plugin plugin;
+    private final EffectManager effectManager;
 
-    public TornadoEvents(Plugin plugin) {
+    public TornadoEvents(Plugin plugin, EffectManager effectManager) {
         this.plugin = plugin;
+        this.effectManager = effectManager;
 
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
@@ -62,6 +68,17 @@ public class TornadoEvents extends EventHolder {
 
         if (!hasEnchantment) {
             return;
+        }
+
+        if (ConfigUtil.getParticlesOrFalse()) {
+            TornadoEffect effect = new TornadoEffect(effectManager);
+            effect.setLocation(event.getEntity().getLocation());
+            effect.tornadoParticle = Particle.SMOKE_NORMAL;
+            effect.iterations = 2;
+            effect.tornadoHeight = 3.0f;
+            effect.maxTornadoRadius = 2.0f;
+            effect.cloudSize = 1.5f;
+            effect.start();
         }
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {

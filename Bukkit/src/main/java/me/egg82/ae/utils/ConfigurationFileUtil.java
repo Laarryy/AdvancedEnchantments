@@ -20,7 +20,7 @@ import org.yaml.snakeyaml.DumperOptions;
 public class ConfigurationFileUtil {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationFileUtil.class);
 
-    private static final DecimalFormat format = new DecimalFormat(".##");
+    private static final DecimalFormat format = new DecimalFormat("##0.################");
 
     private ConfigurationFileUtil() {}
 
@@ -74,11 +74,31 @@ public class ConfigurationFileUtil {
             }
         }
 
+        double lootEnchantChance = config.getNode("loot-chance", "enchant").getDouble(0.00045d);
+        lootEnchantChance = Math.max(0.0d, Math.min(1.0d, lootEnchantChance)); // Clamp value
+        double lootCurseChance = config.getNode("loot-chance", "curse").getDouble(0.00126d);
+        lootCurseChance = Math.max(0.0d, Math.min(1.0d, lootCurseChance)); // Clamp value
+
+        if (lootEnchantChance > 0.0d && lootCurseChance > 0.0d) {
+            try {
+                Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Enabling loot table modifications.");
+                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom enchants to loot tables with a " + format.format(lootEnchantChance * 100.0d) + "% chance.");
+                logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom curses to loot tables with a " + format.format(lootCurseChance * 100.0d) + "% chance.");
+            } catch (ClassNotFoundException ignored) {
+                logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Loot table API not found. Disabling loot table modifications.");
+            }
+        } else {
+            logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Skipping loot table modifications.");
+        }
+
         CachedConfigValues cachedValues = CachedConfigValues.builder()
                 .debug(debug)
                 .enchantChance(enchantChance)
                 .bypassUnbreaking(bypassUnbreaking)
                 .particles(particles)
+                .lootEnchantChance(lootEnchantChance)
+                .lootCurseChance(lootCurseChance)
                 .build();
 
         ConfigUtil.setConfiguration(config, cachedValues);

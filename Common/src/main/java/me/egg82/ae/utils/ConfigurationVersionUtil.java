@@ -46,7 +46,12 @@ public class ConfigurationVersionUtil {
         // Add unbreaking bypass(-bypass?)
         config.getNode("bypass-unbreaking").setValue(Boolean.TRUE);
 
+        // Add particles
         config.getNode("particles").setValue(Boolean.TRUE);
+
+        // Add loot chances
+        config.getNode("loot-chance", "enchant").setValue(0.00045d);
+        config.getNode("loot-chance", "curse").setValue(0.00126d);
 
         // Version
         config.getNode("version").setValue(1.2d);

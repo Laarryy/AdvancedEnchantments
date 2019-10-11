@@ -12,6 +12,15 @@ bypass-unbreaking: true
 # Whether or not to enable particle effects
 particles: true
 
+# Defines chances that enchants/curses appear in loot tables
+# 0 = no chance (off), 1 = 100% chance (all items enchanted)
+# NOTE: This requires Paper (or a fork of Paper) that has the loot table API
+loot-chance:
+  # Chance that new enchants appear
+  enchant: 0.00045
+  # Chance that curses appear
+  curse: 0.00126
+
 # When true, logs some extra output to the console so you can see if/why things might be failing
 debug: false
 

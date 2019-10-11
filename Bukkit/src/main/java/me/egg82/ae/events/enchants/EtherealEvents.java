@@ -1,15 +1,21 @@
 package me.egg82.ae.events.enchants;
 
+import de.slikey.effectlib.EffectManager;
+import de.slikey.effectlib.EffectType;
+import de.slikey.effectlib.effect.ShieldEffect;
 import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
+import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EffectUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
+import org.bukkit.Particle;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -17,7 +23,11 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.plugin.Plugin;
 
 public class EtherealEvents extends EventHolder {
-    public EtherealEvents(Plugin plugin) {
+    private final EffectManager effectManager;
+
+    public EtherealEvents(Plugin plugin, EffectManager effectManager) {
+        this.effectManager = effectManager;
+
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
@@ -58,6 +68,17 @@ public class EtherealEvents extends EventHolder {
 
         if (!SoulsUtil.tryRemoveSouls((LivingEntity) event.getEntity(), 1)) {
             return;
+        }
+
+        if (ConfigUtil.getParticlesOrFalse()) {
+            ShieldEffect effect = new ShieldEffect(effectManager);
+            effect.particle = Particle.TOWN_AURA;
+            effect.sphere = true;
+            effect.radius = 1.0d;
+            effect.particles = 35;
+            effect.type = EffectType.INSTANT;
+            effect.iterations = 1;
+            EffectUtil.start(effect, event.getEntity());
         }
 
         event.setCancelled(true);

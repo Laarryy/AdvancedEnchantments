@@ -3,6 +3,7 @@ package me.egg82.ae;
 import co.aikar.commands.*;
 import co.aikar.taskchain.BukkitTaskChainFactory;
 import co.aikar.taskchain.TaskChainFactory;
+import com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.SetMultimap;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -32,6 +33,7 @@ import me.egg82.ae.services.block.FakeBlockHandler;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.tasks.*;
 import me.egg82.ae.utils.*;
+import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -230,6 +232,11 @@ public class AdvancedEnchantments {
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
 
+        try {
+            Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+            eventHolders.add(new LootTableEvents(plugin));
+        } catch (ClassNotFoundException ignored) { }
+
         eventHolders.add(new EnchantingTableEvents(plugin));
         eventHolders.add(new AnvilEvents(plugin));
         eventHolders.add(new GrindstoneEvents(plugin));
@@ -244,12 +251,12 @@ public class AdvancedEnchantments {
         eventHolders.add(new ChargingEvents(plugin));
         eventHolders.add(new DisarmingEvents(plugin));
         eventHolders.add(new EnsnaringEvents(plugin));
-        eventHolders.add(new EtherealEvents(plugin));
+        eventHolders.add(new EtherealEvents(plugin, effectManager));
         eventHolders.add(new ExplosiveEvents(plugin));
         eventHolders.add(new FieryEvents(plugin, effectManager));
         eventHolders.add(new FreezingEvents(plugin));
         eventHolders.add(new MarkingEvents(plugin));
-        eventHolders.add(new MirageEvents(plugin));
+        eventHolders.add(new MirageEvents(plugin, effectManager));
         eventHolders.add(new MultishotEvents(plugin));
         eventHolders.add(new PoisonousEvents(plugin));
         eventHolders.add(new ProficiencyEvents(plugin));
@@ -259,16 +266,16 @@ public class AdvancedEnchantments {
         eventHolders.add(new SoulboundEvents(plugin));
         eventHolders.add(new StillnessEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new ThunderousEvents(plugin));
-        eventHolders.add(new TornadoEvents(plugin));
+        eventHolders.add(new TornadoEvents(plugin, effectManager));
         eventHolders.add(new TrailblazerEvents(plugin));
-        eventHolders.add(new VampiricEvents(plugin));
+        eventHolders.add(new VampiricEvents(plugin, effectManager));
 
         eventHolders.add(new AdherenceEvents(plugin));
         eventHolders.add(new DecayEvents(plugin));
         eventHolders.add(new EmpathyEvents(plugin));
         eventHolders.add(new EnderEvents(plugin));
         eventHolders.add(new FragilityEvents(plugin));
-        eventHolders.add(new LeechingEvents(plugin));
+        eventHolders.add(new LeechingEvents(plugin, effectManager));
         eventHolders.add(new MisfortuneEvents(plugin)); // This should be registered after artisan & explosive, for compatibility
         eventHolders.add(new PacifismEvents(plugin, effectManager));
         eventHolders.add(new SilenceEvents(plugin, commandManager));

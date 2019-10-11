@@ -96,7 +96,7 @@ public abstract class GenericEnchantment {
             for (Map.Entry<GenericEnchantment, Integer> enchantment : item.getEnchantments().entrySet()) {
                 if (conflictsWith(enchantment.getKey()) || enchantment.getKey().conflictsWith(this)) {
                     if (ConfigUtil.getDebugOrFalse()) {
-                        logger.info("Enchant " + name + " conflicts with existing enchant " + enchantment.getKey().name + " on item");
+                        logger.info("Enchant " + name + " conflicts with existing enchant " + enchantment.getKey().name + " on item.");
                     }
                     return false;
                 }

@@ -31,7 +31,7 @@ public class ParticleSplashEffect extends Effect {
     public void onRun() {
         Location location = getLocation();
 
-        int count = RandomUtils.random.nextInt(maxCount - minCount) + minCount;
+        int count = RandomUtils.random.nextInt(maxCount - minCount + 1) + minCount;
         for (int i = 0; i < count; i++) {
             Vector v = RandomUtils.getRandomCircleVector().multiply(RandomUtils.random.nextDouble() * (maxWidth - minWidth) + minWidth);
             v.setY(RandomUtils.random.nextFloat() * (maxHeight - minHeight) + minHeight);

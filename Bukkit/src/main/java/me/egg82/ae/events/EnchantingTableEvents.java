@@ -7,6 +7,7 @@ import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.utils.ConfigUtil;
+import me.egg82.ae.utils.EnchantmentUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
@@ -17,29 +18,14 @@ import org.bukkit.plugin.Plugin;
 
 public class EnchantingTableEvents extends EventHolder {
     private final Plugin plugin;
-    private final Random rand = new Random();
-
-    private double highestWeight = 0.0d;
-    private final NavigableMap<Double, AdvancedEnchantment> customEnchants = new TreeMap<>();
 
     public EnchantingTableEvents(Plugin plugin) {
-        for (AdvancedEnchantment enchant : AdvancedEnchantment.values()) {
-            highestWeight += 1;
-            customEnchants.put(highestWeight, enchant);
-        }
-        highestWeight += 1;
-
         this.plugin = plugin;
 
         events.add(
                 BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(this::addEnchants)
-        );
-        events.add(
-                BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.HIGH)
-                        .filter(BukkitEventFilters.ignoreCancelled())
-                        .handler(this::rewriteItem)
         );
     }
 
@@ -52,20 +38,24 @@ public class EnchantingTableEvents extends EventHolder {
         Map<GenericEnchantment, Integer> currentEnchants = getEnchants(event.getEnchantsToAdd());
         Map<GenericEnchantment, Integer> newEnchants = new HashMap<>();
 
+        boolean rewritten = false;
         BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
 
         for (Map.Entry<GenericEnchantment, Integer> kvp : currentEnchants.entrySet()) {
-            if (Math.random() < cachedConfig.get().getEnchantChance()) {
+            if (Math.random() <= cachedConfig.get().getEnchantChance()) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("[Enchanting Table] Trying to replace vanilla enchant " + kvp.getKey().getName() + " with custom enchant on " + event.getItem());
+                }
+
                 int tries = 0;
                 AdvancedEnchantment newEnchant;
                 do {
                     // Get a new random (custom) enchant to replace the vanilla one
-                    newEnchant = getNextEnchant();
+                    newEnchant = EnchantmentUtil.getNextEnchant();
                     tries++;
 
                     if (
                             newEnchant != null // We don't want nulls
-                            && !newEnchant.isCurse() // We don't want curses
                             && kvp.getValue() >= newEnchant.getMinLevel() && kvp.getValue() <= newEnchant.getMaxLevel() // We want enchants that fit the level
                             && event.getEnchanter().hasPermission("ae.enchant." + newEnchant.getName()) // We don't want enchants we don't have perms to use
                             && newEnchant.canEnchant(item) // We don't want enchants that conflict with the item, or that conflict with enchants currently on the item
@@ -79,33 +69,29 @@ public class EnchantingTableEvents extends EventHolder {
 
                 if (newEnchant == null) {
                     // Too many tries (and failures) - skip this one
+                    if (ConfigUtil.getDebugOrFalse()) {
+                        logger.warn("[Enchanting Table] Could not replace vanilla enchant " + kvp.getKey().getName());
+                    }
                     continue;
                 }
 
+                rewritten = true;
                 // This all works because we're iterating through a copy of the map
                 event.getEnchantsToAdd().remove((Enchantment) kvp.getKey().getConcrete());
                 newEnchants.put(newEnchant, kvp.getValue());
+
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("[Enchanting Table] Successfully replaced vanilla enchant " + kvp.getKey().getName() + " with custom enchant " + newEnchant.getName());
+                }
             }
         }
 
         // Add all the new (custom) enchants
         item.setEnchantmentLevels(newEnchants);
-    }
 
-    private AdvancedEnchantment getNextEnchant() {
-        double lowestWeight = customEnchants.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
-
-        // Select least-recently used enchant with random (weighted random)
-        Map.Entry<Double, AdvancedEnchantment> entry = customEnchants.lowerEntry(rand.nextDouble() * (highestWeight - lowestWeight) + lowestWeight);
-        if (entry == null) {
-            return null;
+        if (rewritten) {
+            Bukkit.getScheduler().runTaskLater(plugin, item::rewriteEnchantMeta, 1L);
         }
-
-        // Increase weight (decrease chance) of selected item
-        highestWeight = Math.max(highestWeight, entry.getKey() + 1);
-        customEnchants.remove(entry.getKey(), entry.getValue());
-        customEnchants.put(entry.getKey() + 1, entry.getValue());
-        return entry.getValue();
     }
 
     private Map<GenericEnchantment, Integer> getEnchants(Map<Enchantment, Integer> original) {
@@ -117,33 +103,46 @@ public class EnchantingTableEvents extends EventHolder {
     }
 
     private boolean conflicts(GenericEnchantment newEnchant, Map<GenericEnchantment, Integer> otherEnchants, GenericEnchantment currentEnchant) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Checking if enchant " + newEnchant.getName() + " is compatible with newly-added vanilla enchants.");
+        }
+
         for (Map.Entry<GenericEnchantment, Integer> kvp : otherEnchants.entrySet()) {
             if (kvp.getKey().equals(currentEnchant)) {
                 continue;
             }
 
             if (newEnchant.conflictsWith(kvp.getKey())) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Enchant " + newEnchant.getName() + " conflicts with other enchant " + kvp.getKey().getName() + " on item.");
+                }
                 return true;
             }
         }
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Compatible: true");
+        }
         return false;
     }
 
     private boolean conflicts(GenericEnchantment newEnchant, Map<GenericEnchantment, Integer> otherEnchants) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Checking if enchant " + newEnchant.getName() + " is compatible with newly-added custom enchants.");
+        }
+
         for (Map.Entry<GenericEnchantment, Integer> kvp : otherEnchants.entrySet()) {
             if (newEnchant.conflictsWith(kvp.getKey()) || kvp.getKey().conflictsWith(newEnchant)) {
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Enchant " + newEnchant.getName() + " conflicts with other enchant " + kvp.getKey().getName() + " on item.");
+                }
                 return true;
             }
         }
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Compatible: true");
+        }
         return false;
-    }
-
-    private void rewriteItem(EnchantItemEvent event) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            BukkitEnchantableItem item = BukkitEnchantableItem.fromItemStack(event.getItem());
-            item.rewriteEnchantMeta();
-        }, 1L);
     }
 }

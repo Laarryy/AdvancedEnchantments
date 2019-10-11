@@ -9,4 +9,12 @@ public class EffectUtil {
         effect.disappearWithOriginEntity = true;
         effect.start();
     }
+
+    public static void start(Effect effect, Entity from, Entity to) {
+        effect.setEntity(from);
+        effect.disappearWithOriginEntity = true;
+        effect.setTargetEntity(to);
+        effect.disappearWithTargetEntity = true;
+        effect.start();
+    }
 }
