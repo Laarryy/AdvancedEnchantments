@@ -53,10 +53,21 @@ public class EnchantmentUtil {
     public static AdvancedEnchantment getNextEnchant() {
         double lowestWeight = customEnchants.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Getting next enchant between " + lowestWeight + " and " + highestEnchantWeight);
+        }
+
         // Select least-recently used enchant with random (weighted random)
         Map.Entry<Double, AdvancedEnchantment> entry = customEnchants.lowerEntry(rand.nextDouble() * (highestEnchantWeight - lowestWeight) + lowestWeight);
         if (entry == null) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.warn("No enchant found between the specified weights.");
+            }
             return null;
+        }
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Got enchant " + entry.getValue().getName() + " at weight " + entry.getKey());
         }
 
         // Increase weight (decrease chance) of selected item
@@ -69,10 +80,21 @@ public class EnchantmentUtil {
     public static AdvancedEnchantment getNextCurse() {
         double lowestWeight = customCurses.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
 
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Getting next curse between " + lowestWeight + " and " + highestEnchantWeight);
+        }
+
         // Select least-recently used enchant with random (weighted random)
         Map.Entry<Double, AdvancedEnchantment> entry = customCurses.lowerEntry(rand.nextDouble() * (highestCurseWeight - lowestWeight) + lowestWeight);
         if (entry == null) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.warn("No curse found between the specified weights.");
+            }
             return null;
+        }
+
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Got curse " + entry.getValue().getName() + " at weight " + entry.getKey());
         }
 
         // Increase weight (decrease chance) of selected item
