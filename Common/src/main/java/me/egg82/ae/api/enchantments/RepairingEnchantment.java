@@ -6,7 +6,7 @@ import me.egg82.ae.api.AdvancedEnchantmentTarget;
 
 public class RepairingEnchantment extends AdvancedEnchantment {
     public RepairingEnchantment() {
-        super(UUID.randomUUID(), "repairing", "Repairing", false, 1, 5);
+        super(UUID.randomUUID(), "repairing", "Repairing", false, 1, 3);
         targets.add(AdvancedEnchantmentTarget.BREAKABLE);
     }
 }

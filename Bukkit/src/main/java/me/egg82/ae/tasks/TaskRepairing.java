@@ -73,6 +73,10 @@ public class TaskRepairing implements Runnable {
             return;
         }
 
+        if (Math.random() <= 0.35d) {
+            return;
+        }
+
         ItemDurabilityUtil.addDurability(item, level);
     }
 }
