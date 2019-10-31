@@ -82,6 +82,7 @@ public class ConfigurationFileUtil {
         if (lootEnchantChance > 0.0d && lootCurseChance > 0.0d) {
             try {
                 Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+                Class.forName("org.bukkit.loot.LootTable");
                 logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Enabling loot table modifications.");
                 logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom enchants to loot tables with a " + format.format(lootEnchantChance * 100.0d) + "% chance.");
                 logger.info(LogUtil.getHeading() + ChatColor.GREEN + "Adding custom curses to loot tables with a " + format.format(lootCurseChance * 100.0d) + "% chance.");

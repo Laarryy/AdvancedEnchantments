@@ -30,6 +30,7 @@ public class LootTableEvents extends EventHolder {
 
         try {
             Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+            Class.forName("org.bukkit.loot.LootTable");
             events.add(
                     BukkitEvents.subscribe(plugin, LootableInventoryReplenishEvent.class, EventPriority.NORMAL)
                     .filter(BukkitEventFilters.ignoreCancelled())
@@ -38,7 +39,7 @@ public class LootTableEvents extends EventHolder {
         } catch (ClassNotFoundException ignored) { }
     }
 
-    public void addEnchants(LootableInventoryReplenishEvent event) {
+    private void addEnchants(LootableInventoryReplenishEvent event) {
         Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
         if (!cachedConfig.isPresent() || (cachedConfig.get().getLootEnchantChance() == 0.0d && cachedConfig.get().getLootCurseChance() == 0.0d)) {
             return;
