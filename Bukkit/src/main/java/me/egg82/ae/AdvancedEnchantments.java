@@ -230,7 +230,12 @@ public class AdvancedEnchantments {
     private void loadEvents() {
         events.add(BukkitEvents.subscribe(plugin, PlayerLoginEvent.class, EventPriority.LOW).handler(e -> new PlayerLoginUpdateNotifyHandler(plugin, commandManager).accept(e)));
 
-        eventHolders.add(new LootTableEvents(plugin));
+        try {
+            // Class check here (for this specific event set) as a hack around some Paper forks which seem to have issues
+            Class.forName("com.destroystokyo.paper.loottable.LootableInventoryReplenishEvent");
+            Class.forName("org.bukkit.loot.LootTable");
+            eventHolders.add(new LootTableEvents(plugin));
+        } catch (ClassNotFoundException ignored) { }
         eventHolders.add(new EnchantingTableEvents(plugin));
         eventHolders.add(new AnvilEvents(plugin));
         eventHolders.add(new GrindstoneEvents(plugin));
