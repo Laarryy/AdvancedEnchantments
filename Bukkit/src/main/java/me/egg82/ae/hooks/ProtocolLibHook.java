@@ -1,7 +1,6 @@
 package me.egg82.ae.hooks;
 
-import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
-import com.comphenix.packetwrapper.WrapperPlayServerMultiBlockChange;
+import com.comphenix.packetwrapper.*;
 import com.comphenix.protocol.AsynchronousManager;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -19,8 +18,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import me.egg82.ae.core.ChunkData;
 import me.egg82.ae.core.FakeBlockData;
+import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.block.FakeBlockHandler;
+import me.egg82.ae.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -42,6 +43,51 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
     public ProtocolLibHook(Plugin plugin) {
         this.plugin = plugin;
 
+        // Fake block events
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.BLOCK_CHANGE) {
+            public void onPacketSending(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                WrapperPlayServerBlockChange packet = new WrapperPlayServerBlockChange(event.getPacket());
+
+                Location location = packet.getBukkitLocation(event.getPlayer().getWorld());
+                FakeBlockData sentData = new FakeBlockData(packet.getBlockData().getType(), (byte) packet.getBlockData().getData());
+                FakeBlockData fakeData = CollectionProvider.getFakeBlocks().get(location);
+                if (fakeData != null && !fakeData.equals(sentData)) {
+                    if (ConfigUtil.getDebugOrFalse()) {
+                        logger.info("Replacing block packet with fake data at " + location);
+                    }
+                    packet.setBlockData(WrappedBlockData.createData(fakeData.getType(), fakeData.getData()));
+                }
+            }
+        }).start();
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
+            public void onPacketSending(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                WrapperPlayServerMultiBlockChange packet = new WrapperPlayServerMultiBlockChange(event.getPacket());
+
+                for (MultiBlockChangeInfo record : packet.getRecords()) {
+                    Location location = record.getLocation(event.getPlayer().getWorld());
+                    FakeBlockData sentData = new FakeBlockData(record.getData().getType(), (byte) record.getData().getData());
+                    FakeBlockData fakeData = CollectionProvider.getFakeBlocks().get(location);
+                    if (fakeData != null && !fakeData.equals(sentData)) {
+                        if (ConfigUtil.getDebugOrFalse()) {
+                            logger.info("Replacing block packet with fake data at " + location);
+                        }
+                        record.setData(WrappedBlockData.createData(fakeData.getType(), fakeData.getData()));
+                    }
+                }
+            }
+        }).start();
+
+        // TODO: Either 1.14 changed this packet's behavior or I'm missing something, because this shouldn't work the way it does
         asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Client.ENTITY_ACTION) {
             public void onPacketReceiving(PacketEvent event) {
                 if (event.isCancelled()) {
@@ -53,8 +99,79 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     return;
                 }
 
-                if (CollectionProvider.getFakeBlocks().containsKey(position.toLocation(event.getPlayer().getWorld()))) {
+                Location location = position.toLocation(event.getPlayer().getWorld());
+                if (CollectionProvider.getFakeBlocks().containsKey(location)) {
+                    if (ConfigUtil.getDebugOrFalse()) {
+                        logger.info("Cancelling interaction packet at " + location);
+                    }
                     event.setCancelled(true);
+                }
+            }
+        }).start();
+
+        // Enchanting table events
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.WINDOW_DATA) {
+            public void onPacketSending(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
+                if (!cachedConfig.isPresent()) {
+                    logger.error("Cached config could not be fetched.");
+                    return;
+                }
+                if (cachedConfig.get().getEnchantChance() > 0.0d) {
+                    return;
+                }
+
+                WrapperPlayServerWindowData packet = new WrapperPlayServerWindowData(event.getPacket());
+                if (packet.getProperty() < 4 || packet.getProperty() > 6) {
+                    return;
+                }
+                if (!CollectionProvider.getEnchantmentWindows().contains(packet.getWindowId())) {
+                    return;
+                }
+
+                if (ConfigUtil.getDebugOrFalse()) {
+                    logger.info("Removing enchanting table visual data from packet.");
+                }
+                packet.setValue(-1);
+            }
+        }).start();
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.CLOSE_WINDOW) {
+            public void onPacketSending(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                WrapperPlayServerCloseWindow packet = new WrapperPlayServerCloseWindow(event.getPacket());
+                CollectionProvider.getEnchantmentWindows().remove(packet.getWindowId());
+            }
+        }).start();
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Client.CLOSE_WINDOW) {
+            public void onPacketReceiving(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                WrapperPlayClientCloseWindow packet = new WrapperPlayClientCloseWindow(event.getPacket());
+                CollectionProvider.getEnchantmentWindows().remove(packet.getWindowId());
+            }
+        }).start();
+
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.OPEN_WINDOW) {
+            public void onPacketSending(PacketEvent event) {
+                if (event.isCancelled()) {
+                    return;
+                }
+
+                WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(event.getPacket());
+                if (packet.getInventoryType().toLowerCase().contains("enchantment")) {
+                    CollectionProvider.getEnchantmentWindows().add(packet.getWindowID());
                 }
             }
         }).start();

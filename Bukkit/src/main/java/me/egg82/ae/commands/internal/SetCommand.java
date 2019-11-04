@@ -20,11 +20,13 @@ public class SetCommand implements Runnable {
     private final CommandIssuer issuer;
     private final String enchant;
     private final String level;
+    private final String force;
 
-    public SetCommand(CommandIssuer issuer, String enchant, String level) {
+    public SetCommand(CommandIssuer issuer, String enchant, String level, String force) {
         this.issuer = issuer;
         this.enchant = enchant;
         this.level = level;
+        this.force = force;
     }
 
     public void run() {
@@ -36,6 +38,7 @@ public class SetCommand implements Runnable {
         }
 
         int l = level == null ? en.get().getMinLevel() : Integer.parseInt(level);
+        boolean f = Boolean.parseBoolean(force);
 
         if (l < en.get().getMinLevel()) {
             issuer.sendError(Message.SET__ERROR_LEVEL_MIN, "{level}", String.valueOf(en.get().getMinLevel()));
@@ -67,7 +70,7 @@ public class SetCommand implements Runnable {
         Optional<GenericEnchantableItem> enchantableOffHand = Optional.ofNullable(offHand.isPresent() ? BukkitEnchantableItem.fromItemStack(offHand.get()) : null);
 
         if (enchantableMainHand.isPresent()) {
-            if (!en.get().canEnchant(enchantableMainHand.get())) {
+            if (!f && !en.get().canEnchant(enchantableMainHand.get())) {
                 issuer.sendError(Message.SET__ERROR_CONFLICTS);
                 return;
             }
@@ -75,7 +78,7 @@ public class SetCommand implements Runnable {
             enchantableMainHand.get().setEnchantmentLevel(en.get(), l);
             issuer.sendInfo(Message.SET__SUCCESS_MAIN_HAND, "{name}", en.get().getFriendlyName(), "{level}", String.valueOf(l));
         } else if (enchantableOffHand.isPresent()) {
-            if (!en.get().canEnchant(enchantableOffHand.get())) {
+            if (!f && !en.get().canEnchant(enchantableOffHand.get())) {
                 issuer.sendError(Message.SET__ERROR_CONFLICTS);
                 return;
             }
@@ -88,15 +91,15 @@ public class SetCommand implements Runnable {
     }
 
     private Optional<GenericEnchantment> getEnchantment(String enchantment) {
-        for (Enchantment e : Enchantment.values()) {
-            if (e != null && EnchantmentUtil.getName(e).equalsIgnoreCase(enchantment)) {
-                return Optional.of(BukkitEnchantment.fromEnchant(e));
-            }
-        }
-
         for (AdvancedEnchantment e : AdvancedEnchantment.values()) {
             if (e != null && e.getName().equalsIgnoreCase(enchantment)) {
                 return Optional.of(e);
+            }
+        }
+
+        for (Enchantment e : Enchantment.values()) {
+            if (e != null && EnchantmentUtil.getName(e).equalsIgnoreCase(enchantment)) {
+                return Optional.of(BukkitEnchantment.fromEnchant(e));
             }
         }
 

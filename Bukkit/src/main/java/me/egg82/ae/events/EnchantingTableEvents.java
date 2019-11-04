@@ -8,11 +8,13 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import me.egg82.ae.extended.CachedConfigValues;
+import me.egg82.ae.services.material.MaterialLookup;
 import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.EnchantmentUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -21,12 +23,23 @@ import org.bukkit.plugin.Plugin;
 public class EnchantingTableEvents extends EventHolder {
     private final Plugin plugin;
 
+    private static Material enchantedBookMaterial;
+
+    static {
+        Optional<Material> m = MaterialLookup.get("ENCHANTED_BOOK");
+        if (!m.isPresent()) {
+            throw new RuntimeException("Could not get enchanted book material.");
+        }
+        enchantedBookMaterial = m.get();
+    }
+
     public EnchantingTableEvents(Plugin plugin) {
         this.plugin = plugin;
 
         events.add(
                 BukkitEvents.subscribe(plugin, EnchantItemEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
+                        .filter(e -> e.getItem().getType() != enchantedBookMaterial) // TODO: Make books work
                         .handler(this::addEnchants)
         );
     }
@@ -86,6 +99,15 @@ public class EnchantingTableEvents extends EventHolder {
                     logger.info("[Enchanting Table] Successfully replaced vanilla enchant " + kvp.getKey().getName() + " with custom enchant " + newEnchant.getName());
                 }
             }
+        }
+
+        // Edge-case, is empty no exp is taken by Bukkit so we have to do it ourselves
+        if (event.getEnchantsToAdd().isEmpty()) {
+            int newLevel = event.getEnchanter().getLevel() - event.getExpLevelCost();
+            if (newLevel < 0) {
+                newLevel = 0;
+            }
+            event.getEnchanter().setLevel(newLevel);
         }
 
         // Add all the new (custom) enchants

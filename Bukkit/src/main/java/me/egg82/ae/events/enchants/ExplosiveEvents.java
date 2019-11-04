@@ -34,6 +34,7 @@ public class ExplosiveEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation()))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.explosive"))
+                        .filter(e -> e.getBlock().getType().isBlock())
                         .handler(this::blockBreak)
         );
     }
@@ -81,6 +82,7 @@ public class ExplosiveEvents extends EventHolder {
 
         int blockCount = 1;
         Location originalLocation = event.getBlock().getLocation();
+        float originalHardness = event.getBlock().getType().getHardness();
 
         for (Block block : blocks) {
             Location location = block.getLocation();
@@ -89,7 +91,7 @@ public class ExplosiveEvents extends EventHolder {
             if (location.equals(originalLocation)) {
                 continue;
             }
-            if (type == Material.AIR || type == Material.BEDROCK || type == Material.BARRIER) {
+            if (!type.isBlock() || type.getHardness() <= 0.0f || type.getHardness() > originalHardness) {
                 continue;
             }
 

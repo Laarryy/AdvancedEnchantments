@@ -9,7 +9,6 @@ import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.utils.PermissionUtil;
-import me.egg82.ae.utils.SoulsUtil;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
@@ -23,7 +22,6 @@ public class SoulboundEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.soulbound"))
-                        .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.vorpal"))
                         .handler(this::death)
         );
 
@@ -52,7 +50,7 @@ public class SoulboundEvents extends EventHolder {
                 continue;
             }
 
-            if (hasEnchantment && SoulsUtil.tryRemoveSouls(event.getEntity(), 1)) {
+            if (hasEnchantment) {
                 removedItems.add(item);
             }
         }

@@ -21,6 +21,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.ItemDespawnEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
@@ -32,6 +34,20 @@ public class MultishotEvents extends EventHolder {
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.multishot"))
                         .handler(this::shoot)
+        );
+
+        events.add(
+                BukkitEvents.subscribe(plugin, PlayerPickupItemEvent.class, EventPriority.LOW)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE)
+                        .filter(e -> CollectionProvider.getMultishot().contains(e.getItem().getUniqueId()))
+                        .handler(e -> e.setCancelled(true))
+        );
+
+        events.add(
+                BukkitEvents.subscribe(plugin, ItemDespawnEvent.class, EventPriority.HIGHEST)
+                        .filter(BukkitEventFilters.ignoreCancelled())
+                        .handler(e -> CollectionProvider.getMultishot().remove(e.getEntity().getUniqueId()))
         );
     }
 
@@ -76,6 +92,7 @@ public class MultishotEvents extends EventHolder {
 
         for (int i = 0; i < level * 2; i++) {
             Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
+            CollectionProvider.getMultishot().add(p.getUniqueId());
             p.setVelocity(
                     new Vector(
                             direction.getX() + (Math.random() - 0.5) / spray,

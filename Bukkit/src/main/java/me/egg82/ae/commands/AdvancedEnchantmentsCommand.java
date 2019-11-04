@@ -33,10 +33,10 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Subcommand("add|set|enchant")
     @CommandPermission("ae.admin")
     @Description("{@@description.set}")
-    @Syntax("<enchant> [level]")
+    @Syntax("<enchant> [level] [force]")
     @CommandCompletion("@enchant")
-    public void onSet(CommandIssuer issuer, String enchant, @Optional String level) {
-        new SetCommand(issuer, enchant, level).run();
+    public void onSet(CommandIssuer issuer, String enchant, @Optional String level, @Default("false") String force) {
+        new SetCommand(issuer, enchant, level, force).run();
     }
 
     @Subcommand("remove|delete")

@@ -75,8 +75,6 @@ public class SmeltingEvents extends EventHolder {
         }
 
         Location dropLoc = event.getBlock().getLocation();
-        dropLoc.add(0.5d, 0.5d, 0.5d);
-
         boolean isSmelted = false;
 
         for (ItemStack i : droppedItems) {

@@ -36,6 +36,9 @@ public class CollectionProvider {
     private static Set<UUID> fiery = new HashSet<>();
     public static Set<UUID> getFiery() { return fiery; }
 
+    private static Set<UUID> multishot = new HashSet<>();
+    public static Set<UUID> getMultishot() { return multishot; }
+
     private static Map<UUID, Integer> markingArrows = new HashMap<>();
     public static Map<UUID, Integer> getMarkingArrows() { return markingArrows; }
 
@@ -48,4 +51,7 @@ public class CollectionProvider {
 
     private static ConcurrentMap<Location, FakeBlockData> fakeBlocks = new ConcurrentHashMap<>();
     public static ConcurrentMap<Location, FakeBlockData> getFakeBlocks() { return fakeBlocks; }
+
+    private static Set<Integer> enchantmentWindows = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    public static Set<Integer> getEnchantmentWindows() { return enchantmentWindows; }
 }
