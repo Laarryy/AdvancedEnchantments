@@ -6,6 +6,7 @@ import me.egg82.ae.api.AdvancedEnchantment;
 import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.entity.EntityItemHandler;
+import me.egg82.ae.services.material.MaterialLookup;
 import me.egg82.ae.utils.ItemDurabilityUtil;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
@@ -26,10 +27,17 @@ import org.bukkit.plugin.Plugin;
 public class SmeltingEvents extends EventHolder {
     private static final List<FurnaceRecipe> recipes = new ArrayList<>();
 
+    private static final Optional<Material> redSand;
+
     static {
+        redSand = MaterialLookup.get("RED_SAND");
+
         for (Iterator<Recipe> i = Bukkit.recipeIterator(); i.hasNext();) {
             Recipe r = i.next();
             if (r instanceof FurnaceRecipe) {
+                if (redSand.isPresent() && ((FurnaceRecipe) r).getInput().getType() == redSand.get()) {
+                    ((FurnaceRecipe) r).setInput(Material.SAND);
+                }
                 recipes.add((FurnaceRecipe) r);
             }
         }
@@ -78,10 +86,15 @@ public class SmeltingEvents extends EventHolder {
         boolean isSmelted = false;
 
         for (ItemStack i : droppedItems) {
+            Material type = i.getType();
+            if (redSand.isPresent() && type == redSand.get()) {
+                type = Material.SAND;
+            }
+
             boolean dropped = false;
 
             for (FurnaceRecipe r : recipes) {
-                if (i.getType() != r.getInput().getType()) {
+                if (type != r.getInput().getType()) {
                     continue;
                 }
 
@@ -108,10 +121,10 @@ public class SmeltingEvents extends EventHolder {
             // Don't drop exp
             event.setCancelled(true);
             event.getBlock().setType(Material.AIR, true);
-        }
 
-        if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
-            entityItemHandler.setItemInMainHand(event.getPlayer(), null);
+            if (!ItemDurabilityUtil.removeDurability(event.getPlayer(), enchantableMainHand, (isSmelted) ? 2 : 1, event.getPlayer().getLocation())) {
+                entityItemHandler.setItemInMainHand(event.getPlayer(), null);
+            }
         }
     }
 }

@@ -21,6 +21,7 @@ import me.egg82.ae.core.FakeBlockData;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.block.FakeBlockHandler;
+import me.egg82.ae.utils.BukkitVersionUtil;
 import me.egg82.ae.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import org.bukkit.Bukkit;
@@ -122,7 +123,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     logger.error("Cached config could not be fetched.");
                     return;
                 }
-                if (cachedConfig.get().getEnchantChance() > 0.0d) {
+                if (cachedConfig.get().getEnchantChance() <= 0.0d) {
                     return;
                 }
 
@@ -163,15 +164,23 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
             }
         }).start();
 
+        boolean is114 = BukkitVersionUtil.isAtLeast("1.14");
         asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.OPEN_WINDOW) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
                 }
 
-                WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(event.getPacket());
-                if (packet.getInventoryType().toLowerCase().contains("enchantment")) {
-                    CollectionProvider.getEnchantmentWindows().add(packet.getWindowID());
+                if (is114) {
+                    Integer windowType = event.getPacket().getIntegers().readSafely(1);
+                    if (windowType == 12) { // TODO: Magic number - enchanting table
+                        CollectionProvider.getEnchantmentWindows().add(event.getPacket().getIntegers().readSafely(0));
+                    }
+                } else {
+                    WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(event.getPacket());
+                    if (packet.getInventoryType().toLowerCase().contains("enchantment")) {
+                        CollectionProvider.getEnchantmentWindows().add(packet.getWindowID());
+                    }
                 }
             }
         }).start();
