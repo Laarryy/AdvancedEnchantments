@@ -75,6 +75,7 @@ public class BurstEvents extends EventHolder {
         for (int i = 0; i < level; i++) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 Entity p = eyeLocation.getWorld().spawn(LocationUtil.getLocationInFront(eyeLocation, 1.0d, false), event.getProjectile().getClass());
+                CollectionProvider.getMultishot().add(p.getUniqueId());
                 p.setVelocity(velocity);
                 if (isProjectile) {
                     ((Projectile) p).setShooter(event.getEntity());
