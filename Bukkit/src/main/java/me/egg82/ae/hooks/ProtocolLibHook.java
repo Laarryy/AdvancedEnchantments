@@ -122,7 +122,8 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 if (!CollectionProvider.getEnchantmentWindows().contains(packet.getWindowId())) {
                     return;
                 }
-                if (packet.getProperty() < 4 || packet.getProperty() > 6) {
+                int property = packet.getProperty();
+                if (property < 4 || property > 6) {
                     return;
                 }
 
@@ -136,7 +137,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 }
 
                 if (ConfigUtil.getDebugOrFalse()) {
-                    logger.info("Removing enchanting table visual data from packet.");
+                    logger.info("Removing enchanting table visual data from packet at property " + property);
                 }
                 packet.setValue(-1);
             }
