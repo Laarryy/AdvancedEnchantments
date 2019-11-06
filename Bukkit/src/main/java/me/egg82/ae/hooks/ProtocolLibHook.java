@@ -118,20 +118,20 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     return;
                 }
 
+                WrapperPlayServerWindowData packet = new WrapperPlayServerWindowData(event.getPacket());
+                if (!CollectionProvider.getEnchantmentWindows().contains(packet.getWindowId())) {
+                    return;
+                }
+                if (packet.getProperty() < 4 || packet.getProperty() > 6) {
+                    return;
+                }
+
                 Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
                 if (!cachedConfig.isPresent()) {
                     logger.error("Cached config could not be fetched.");
                     return;
                 }
                 if (cachedConfig.get().getEnchantChance() <= 0.0d) {
-                    return;
-                }
-
-                WrapperPlayServerWindowData packet = new WrapperPlayServerWindowData(event.getPacket());
-                if (packet.getProperty() < 4 || packet.getProperty() > 6) {
-                    return;
-                }
-                if (!CollectionProvider.getEnchantmentWindows().contains(packet.getWindowId())) {
                     return;
                 }
 
