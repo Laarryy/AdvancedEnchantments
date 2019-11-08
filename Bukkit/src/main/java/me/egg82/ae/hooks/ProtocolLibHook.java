@@ -55,7 +55,8 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 WrapperPlayServerBlockChange packet = new WrapperPlayServerBlockChange(event.getPacket());
 
                 Location location = packet.getBukkitLocation(event.getPlayer().getWorld());
-                FakeBlockData sentData = new FakeBlockData(packet.getBlockData().getType(), (byte) packet.getBlockData().getData());
+                WrappedBlockData data = packet.getBlockData();
+                FakeBlockData sentData = new FakeBlockData(data.getType(), (byte) data.getData());
                 FakeBlockData fakeData = CollectionProvider.getFakeBlocks().get(location);
                 if (fakeData != null && !fakeData.equals(sentData)) {
                     if (ConfigUtil.getDebugOrFalse()) {
@@ -76,7 +77,8 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
 
                 for (MultiBlockChangeInfo record : packet.getRecords()) {
                     Location location = record.getLocation(event.getPlayer().getWorld());
-                    FakeBlockData sentData = new FakeBlockData(record.getData().getType(), (byte) record.getData().getData());
+                    WrappedBlockData data = record.getData();
+                    FakeBlockData sentData = new FakeBlockData(data.getType(), (byte) data.getData());
                     FakeBlockData fakeData = CollectionProvider.getFakeBlocks().get(location);
                     if (fakeData != null && !fakeData.equals(sentData)) {
                         if (ConfigUtil.getDebugOrFalse()) {
@@ -88,31 +90,9 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
             }
         }).start();
 
-        // TODO: Either 1.14 changed this packet's behavior or I'm missing something, because this shouldn't work the way it does
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Client.ENTITY_ACTION) {
-            public void onPacketReceiving(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                BlockPosition position = event.getPacket().getBlockPositionModifier().readSafely(0);
-                if (position == null) {
-                    return;
-                }
-
-                Location location = position.toLocation(event.getPlayer().getWorld());
-                if (CollectionProvider.getFakeBlocks().containsKey(location)) {
-                    if (ConfigUtil.getDebugOrFalse()) {
-                        logger.info("Cancelling interaction packet at " + location);
-                    }
-                    event.setCancelled(true);
-                }
-            }
-        }).start();
-
         // Enchanting table events
 
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.WINDOW_DATA) {
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_DATA) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -143,7 +123,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
             }
         }).start();
 
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.CLOSE_WINDOW) {
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.CLOSE_WINDOW) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -154,7 +134,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
             }
         }).start();
 
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Client.CLOSE_WINDOW) {
+        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Client.CLOSE_WINDOW) {
             public void onPacketReceiving(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -166,7 +146,8 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
         }).start();
 
         boolean is114 = BukkitVersionUtil.isAtLeast("1.14");
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.OPEN_WINDOW) {
+        // TODO: Hack - setting this to async will make chest contents mysteriously disappear client-side
+        manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.OPEN_WINDOW) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -184,7 +165,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     }
                 }
             }
-        }).start();
+        });
     }
 
     public static void setGlowing(ItemStack item) {
@@ -214,6 +195,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
         }
 
         asyncManager.unregisterAsyncHandlers(plugin);
+        manager.removePacketListeners(plugin);
     }
 
     public void sendFake(Block block, FakeBlockData newBlockData) {
