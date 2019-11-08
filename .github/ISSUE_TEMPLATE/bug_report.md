@@ -21,10 +21,13 @@ A clear and concise description of what you expected to happen.
 1. Install the plugin
 2. Start the server
 3. Click on '....'
-4. See error
+4. See error [PASTEBIN LINK TO FULL ERROR]
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Plugins**
+Provide a list of other plugins installed on the server, if any.
+
+**Screenshots/Video**
+If applicable, add screenshots/videos to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
