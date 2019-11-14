@@ -11,6 +11,7 @@ import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.services.material.MaterialLookup;
 import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.EnchantmentUtil;
+import me.egg82.ae.utils.InventoryUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
@@ -18,12 +19,16 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
 
 public class EnchantingTableEvents extends EventHolder {
     private final Plugin plugin;
 
     private static Material enchantedBookMaterial;
+    private static boolean hasEnchantID;
 
     static {
         Optional<Material> m = MaterialLookup.get("ENCHANTED_BOOK");
@@ -31,6 +36,13 @@ public class EnchantingTableEvents extends EventHolder {
             throw new RuntimeException("Could not get enchanted book material.");
         }
         enchantedBookMaterial = m.get();
+
+        try {
+            InventoryView.Property.valueOf("ENCHANT_ID1");
+            hasEnchantID = true;
+        } catch (IllegalArgumentException ignored) {
+            hasEnchantID = false;
+        }
     }
 
     public EnchantingTableEvents(Plugin plugin) {
@@ -42,6 +54,88 @@ public class EnchantingTableEvents extends EventHolder {
                         .filter(e -> e.getItem().getType() != enchantedBookMaterial) // TODO: Make books work
                         .handler(this::addEnchants)
         );
+
+        if (hasEnchantID) {
+            if (ConfigUtil.getDebugOrFalse()) {
+                logger.info("Set to rewrite enchanting table properties.");
+            }
+            events.add(
+                    BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL)
+                            .filter(BukkitEventFilters.ignoreCancelled())
+                            .filter(e -> e.getView().getType() == InventoryType.ENCHANTING)
+                            .filter(this::isTopOrMoved)
+                            .handler(this::setWindow)
+            );
+            events.add(
+                    BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL)
+                            .filter(BukkitEventFilters.ignoreCancelled())
+                            .filter(e -> e.getView().getType() == InventoryType.ENCHANTING)
+                            .filter(this::isTopOrMoved)
+                            .handler(this::setWindow)
+            );
+        }
+    }
+
+    private boolean isTopOrMoved(InventoryClickEvent event) {
+        if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getView().getBottomInventory().equals(InventoryUtil.getClickedInventory(event))) {
+            return true;
+        } else if (
+                (
+                        event.getAction() == InventoryAction.PLACE_ALL
+                        || event.getAction() == InventoryAction.PLACE_ONE
+                        || event.getAction() == InventoryAction.PLACE_SOME
+                        || event.getAction() == InventoryAction.SWAP_WITH_CURSOR
+                )
+                && event.getView().getTopInventory().equals(InventoryUtil.getClickedInventory(event)))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isTopOrMoved(InventoryDragEvent event) {
+        InventoryAction action;
+        Inventory clicked = InventoryUtil.getClickedInventory(event);
+
+        if (clicked == event.getView().getTopInventory()) {
+            action = InventoryAction.MOVE_TO_OTHER_INVENTORY;
+        } else {
+            action = (event.getCursor() == null || event.getCursor().getAmount() == 0) ? InventoryAction.PLACE_ALL : InventoryAction.PLACE_SOME;
+        }
+
+        if (action == InventoryAction.MOVE_TO_OTHER_INVENTORY && event.getView().getBottomInventory().equals(clicked)) {
+            return true;
+        } else if (
+                (
+                        action == InventoryAction.PLACE_ALL
+                                || action == InventoryAction.PLACE_ONE
+                                || action == InventoryAction.PLACE_SOME
+                                || action == InventoryAction.SWAP_WITH_CURSOR
+                )
+                        && event.getView().getTopInventory().equals(clicked))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void setWindow(InventoryEvent event) {
+        if (ConfigUtil.getDebugOrFalse()) {
+            logger.info("Removing enchanting table visual data from window.");
+        }
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (!event.getView().setProperty(InventoryView.Property.ENCHANT_ID1, -1)) {
+                logger.warn("Could not set ENCHANT_ID1 to none.");
+            }
+            if (!event.getView().setProperty(InventoryView.Property.ENCHANT_ID2, -1)) {
+                logger.warn("Could not set ENCHANT_ID2 to none.");
+            }
+            if (!event.getView().setProperty(InventoryView.Property.ENCHANT_ID3, -1)) {
+                logger.warn("Could not set ENCHANT_ID3 to none.");
+            }
+        }, 1L);
     }
 
     private void addEnchants(EnchantItemEvent event) {

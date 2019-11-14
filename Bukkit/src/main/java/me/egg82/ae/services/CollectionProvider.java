@@ -51,7 +51,4 @@ public class CollectionProvider {
 
     private static ConcurrentMap<Location, FakeBlockData> fakeBlocks = new ConcurrentHashMap<>();
     public static ConcurrentMap<Location, FakeBlockData> getFakeBlocks() { return fakeBlocks; }
-
-    private static Set<Integer> enchantmentWindows = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    public static Set<Integer> getEnchantmentWindows() { return enchantmentWindows; }
 }

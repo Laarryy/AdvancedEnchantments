@@ -18,10 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import me.egg82.ae.core.ChunkData;
 import me.egg82.ae.core.FakeBlockData;
-import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.block.FakeBlockHandler;
-import me.egg82.ae.utils.BukkitVersionUtil;
 import me.egg82.ae.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import org.bukkit.Bukkit;
@@ -89,83 +87,6 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                 }
             }
         }).start();
-
-        // Enchanting table events
-
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.WINDOW_DATA) {
-            public void onPacketSending(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                WrapperPlayServerWindowData packet = new WrapperPlayServerWindowData(event.getPacket());
-                if (!CollectionProvider.getEnchantmentWindows().contains(packet.getWindowId())) {
-                    return;
-                }
-                int property = packet.getProperty();
-                if (property < 4 || property > 6) {
-                    return;
-                }
-
-                Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
-                if (!cachedConfig.isPresent()) {
-                    logger.error("Cached config could not be fetched.");
-                    return;
-                }
-                if (cachedConfig.get().getEnchantChance() <= 0.0d) {
-                    return;
-                }
-
-                if (ConfigUtil.getDebugOrFalse()) {
-                    logger.info("Removing enchanting table visual data from packet at property " + property);
-                }
-                packet.setValue(-1);
-            }
-        }).start();
-
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.CLOSE_WINDOW) {
-            public void onPacketSending(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                WrapperPlayServerCloseWindow packet = new WrapperPlayServerCloseWindow(event.getPacket());
-                CollectionProvider.getEnchantmentWindows().remove(packet.getWindowId());
-            }
-        }).start();
-
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Client.CLOSE_WINDOW) {
-            public void onPacketReceiving(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                WrapperPlayClientCloseWindow packet = new WrapperPlayClientCloseWindow(event.getPacket());
-                CollectionProvider.getEnchantmentWindows().remove(packet.getWindowId());
-            }
-        }).start();
-
-        boolean is114 = BukkitVersionUtil.isAtLeast("1.14");
-        // TODO: Hack - setting this to async will make chest contents mysteriously disappear client-side
-        manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.MONITOR, PacketType.Play.Server.OPEN_WINDOW) {
-            public void onPacketSending(PacketEvent event) {
-                if (event.isCancelled()) {
-                    return;
-                }
-
-                if (is114) {
-                    Integer windowType = event.getPacket().getIntegers().readSafely(1);
-                    if (windowType == 12) { // TODO: Magic number - enchanting table
-                        CollectionProvider.getEnchantmentWindows().add(event.getPacket().getIntegers().readSafely(0));
-                    }
-                } else {
-                    WrapperPlayServerOpenWindow packet = new WrapperPlayServerOpenWindow(event.getPacket());
-                    if (packet.getInventoryType().toLowerCase().contains("enchantment")) {
-                        CollectionProvider.getEnchantmentWindows().add(packet.getWindowID());
-                    }
-                }
-            }
-        });
     }
 
     public static void setGlowing(ItemStack item) {
