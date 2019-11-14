@@ -44,7 +44,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
 
         // Fake block events
 
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.BLOCK_CHANGE) {
+        manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.BLOCK_CHANGE) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -63,9 +63,9 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     packet.setBlockData(WrappedBlockData.createData(fakeData.getType(), fakeData.getData()));
                 }
             }
-        }).start();
+        });
 
-        asyncManager.registerAsyncHandler(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
+        manager.addPacketListener(new PacketAdapter(plugin, ListenerPriority.HIGH, PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
             public void onPacketSending(PacketEvent event) {
                 if (event.isCancelled()) {
                     return;
@@ -86,7 +86,7 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
                     }
                 }
             }
-        }).start();
+        });
     }
 
     public static void setGlowing(ItemStack item) {
