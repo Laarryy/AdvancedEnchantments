@@ -581,15 +581,5 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         return retVal.toString();
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BukkitEnchantableItem that = (BukkitEnchantableItem) o;
-        return item.equals(that.item);
-    }
-
-    public int hashCode() {
-        return Objects.hash(getItemData(item));
-    }
+    public int hashCode() { return Objects.hash(getItemData(item)); }
 }

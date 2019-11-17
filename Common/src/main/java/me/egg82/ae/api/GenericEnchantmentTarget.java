@@ -34,7 +34,7 @@ public abstract class GenericEnchantmentTarget {
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof GenericEnchantmentTarget)) return false;
         GenericEnchantmentTarget that = (GenericEnchantmentTarget) o;
         return uuid.equals(that.uuid);
     }

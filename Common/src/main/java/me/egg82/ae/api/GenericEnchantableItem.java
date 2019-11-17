@@ -80,7 +80,7 @@ public abstract class GenericEnchantableItem {
 
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof GenericEnchantableItem)) return false;
         GenericEnchantableItem that = (GenericEnchantableItem) o;
         return Objects.equals(concrete, that.concrete);
     }
