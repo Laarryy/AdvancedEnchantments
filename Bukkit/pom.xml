@@ -214,15 +214,6 @@
         </repository>
 
         <repository>
-            <id>articdive-repo-proxy</id>
-            <url>https://nexus.egg82.me/repository/articdive/</url>
-        </repository>
-        <repository>
-            <id>articdive-repo</id>
-            <url>https://nexus.articdive.de/repository/maven-public/</url>
-        </repository>
-
-        <repository>
             <id>elmakers-proxy</id>
             <url>https://nexus.egg82.me/repository/elmakers/</url>
         </repository>
@@ -343,9 +334,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames</groupId>
+            <groupId>com.palmergames.bukkit.towny</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.94.0.5</version>
+            <version>0.95.1.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
