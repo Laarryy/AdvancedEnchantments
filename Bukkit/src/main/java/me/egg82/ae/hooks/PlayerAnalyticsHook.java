@@ -137,7 +137,6 @@ public class PlayerAnalyticsHook implements PluginHook {
         @NumberProvider(
                 text = "Enchants",
                 description = "Number of enchants the player possesses.",
-                priority = 1,
                 iconName = "file",
                 iconFamily = Family.SOLID,
                 iconColor = Color.NONE,
