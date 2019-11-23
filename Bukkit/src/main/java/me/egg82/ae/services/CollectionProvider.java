@@ -45,6 +45,9 @@ public class CollectionProvider {
     private static ExpiringMap<UUID, Double> marking = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getMarking() { return marking; }
 
+    private static Set<UUID> night = new HashSet<>();
+    public static Set<UUID> getNight() { return night; }
+
     private static Map<UUID, List<ItemStack>> soulbound = new HashMap<>();
     public static List<ItemStack> getSoulboundItems(UUID uuid) { return soulbound.computeIfAbsent(uuid, v -> new ArrayList<>()); }
     public static List<ItemStack> getAndClearSoulboundItems(UUID uuid) { return soulbound.remove(uuid); }
