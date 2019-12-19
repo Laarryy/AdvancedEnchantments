@@ -27,6 +27,9 @@ public class EnchantmentUtil {
             Class.forName("org.bukkit.NamespacedKey");
             hasKey = true;
         } catch (ClassNotFoundException e) { hasKey = false; }
+        if (!BukkitVersionUtil.isAtLeast("1.13")) {
+            hasKey = false;
+        }
 
         for (AdvancedEnchantment enchant : AdvancedEnchantment.values()) {
             if (enchant.isCurse()) {
