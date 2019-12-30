@@ -34,7 +34,7 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @CommandPermission("ae.admin")
     @Description("{@@description.set}")
     @Syntax("<enchant> [level] [force]")
-    @CommandCompletion("@enchant")
+    @CommandCompletion("@enchant @nothing @nothing")
     public void onSet(CommandIssuer issuer, String enchant, @Optional String level, @Default("false") String force) {
         new SetCommand(issuer, enchant, level, force).run();
     }
