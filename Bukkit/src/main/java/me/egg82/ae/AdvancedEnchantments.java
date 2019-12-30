@@ -122,11 +122,20 @@ public class AdvancedEnchantments {
                 "{tasks}", String.valueOf(tasks.size())
         );
 
-        workPool.submit(this::checkUpdate);
+        workPool.execute(this::checkUpdate);
     }
 
     public void onDisable() {
-        taskFactory.shutdown(8, TimeUnit.SECONDS);
+        workPool.shutdown();
+        try {
+            if (!workPool.awaitTermination(4L, TimeUnit.SECONDS)) {
+                workPool.shutdownNow();
+            }
+        } catch (InterruptedException ignored) {
+            Thread.currentThread().interrupt();
+        }
+
+        taskFactory.shutdown(4, TimeUnit.SECONDS);
         commandManager.unregisterCommands();
 
         for (int task : tasks) {
@@ -367,7 +376,7 @@ public class AdvancedEnchantments {
             Thread.currentThread().interrupt();
         }
 
-        workPool.submit(this::checkUpdate);
+        workPool.execute(this::checkUpdate);
     }
 
     private void unloadHooks() {
