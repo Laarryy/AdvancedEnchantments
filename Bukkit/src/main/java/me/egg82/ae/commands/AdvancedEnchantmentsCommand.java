@@ -26,9 +26,7 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("ae.admin")
     @Description("{@@description.reload}")
-    public void onReload(CommandIssuer issuer) {
-        new ReloadCommand(plugin, taskFactory.newChain(), issuer).run();
-    }
+    public void onReload(CommandIssuer issuer) { new ReloadCommand(plugin, taskFactory.newChain(), issuer).run(); }
 
     @Subcommand("add|set|enchant")
     @CommandPermission("ae.admin")
@@ -44,17 +42,13 @@ public class AdvancedEnchantmentsCommand extends BaseCommand {
     @Description("{@@description.remove}")
     @Syntax("<enchant>")
     @CommandCompletion("@enchant")
-    public void onRemove(CommandIssuer issuer, String enchant) {
-        new RemoveCommand(issuer, enchant).run();
-    }
+    public void onRemove(CommandIssuer issuer, String enchant) { new RemoveCommand(issuer, enchant).run(); }
 
     @Subcommand("souls|soul")
     @CommandPermission("ae.admin")
     @Description("{@@description.souls}")
     @Syntax("<num>")
-    public void onSouls(CommandIssuer issuer, int souls) {
-        new SoulsCommand(issuer, souls).run();
-    }
+    public void onSouls(CommandIssuer issuer, int souls) { new SoulsCommand(issuer, souls).run(); }
 
     @CatchUnknown @Default
     @CommandCompletion("@subcommand")

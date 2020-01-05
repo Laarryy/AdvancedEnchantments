@@ -115,7 +115,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         // First
 
-        Artifact.Builder guava = Artifact.builder("com.google.guava", "guava", "28.0-jre", cacheDir)
+        Artifact.Builder guava = Artifact.builder("com.google.guava", "guava", "28.2-jre", cacheDir)
                 .addRepository(Repository.builder("http://central.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInjectWait(guava, jarsDir, classLoader, "Google Guava", 1);
 
@@ -158,7 +158,7 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository(Repository.builder("http://central.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(serviceLocator, jarsDir, classLoader, "Service Locator");
 
-        Artifact.Builder javassist = Artifact.builder("org.javassist", "javassist", "3.25.0-GA", cacheDir)
+        Artifact.Builder javassist = Artifact.builder("org.javassist", "javassist", "3.26.0-GA", cacheDir)
                 .addRepository(Repository.builder("http://central.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(javassist, jarsDir, classLoader, "Javassist");
 
@@ -190,7 +190,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         // Global
 
-        Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.7.0", cacheDir)
+        Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.8.0", cacheDir)
                 .addRepository(Repository.builder("http://central.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(caffeine, jarsDir, classLoader, "Caffeine");
 
