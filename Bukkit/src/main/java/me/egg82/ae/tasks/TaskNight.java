@@ -52,7 +52,7 @@ public class TaskNight implements Runnable {
                 continue;
             }
 
-            player.setPlayerTime(1800, false);
+            player.setPlayerTime(18000, false);
             CollectionProvider.getNight().add(player.getUniqueId());
         }
     }
