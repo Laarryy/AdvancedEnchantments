@@ -83,7 +83,7 @@ public class PlayerAnalyticsHook implements PluginHook {
         @NumberProvider(
                 text = "Registered Enchants",
                 description = "Number of registered custom enchants.",
-                priority = 1,
+                priority = 2,
                 iconName = "book",
                 iconFamily = Family.SOLID,
                 iconColor = Color.NONE,
@@ -103,10 +103,10 @@ public class PlayerAnalyticsHook implements PluginHook {
         public long getSouls(UUID playerUUID) {
             Player player = Bukkit.getPlayer(playerUUID);
             if (player == null) {
-                return 0;
+                return 0L;
             }
 
-            int souls = 0;
+            long souls = 0L;
             Set<GenericEnchantableItem> items = getItems(player);
             for (GenericEnchantableItem item : items) {
                 souls += item.getSouls();
@@ -148,7 +148,7 @@ public class PlayerAnalyticsHook implements PluginHook {
                 return 0;
             }
 
-            int enchants = 0;
+            long enchants = 0L;
             Set<GenericEnchantableItem> items = getItems(player);
             for (GenericEnchantableItem item : items) {
                 for (Map.Entry<GenericEnchantment, Integer> kvp : item.getEnchantments().entrySet()) {
