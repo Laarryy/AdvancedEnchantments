@@ -1,5 +1,6 @@
 acf-minecraft:
   multiple_players_match: "en"
+  version: 1.2
 
 description:
   reload: "Reloads the plugin."
@@ -45,5 +46,3 @@ souls:
   error_min: "Souls cannot be < 0"
   success_main_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> main hand<c4>.</c4>"
   success_off_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> off hand<c4>.</c4>"
-
-version: 1.2
