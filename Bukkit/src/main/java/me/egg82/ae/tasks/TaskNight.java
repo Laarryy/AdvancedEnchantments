@@ -1,5 +1,6 @@
 package me.egg82.ae.tasks;
 
+import java.util.Optional;
 import me.egg82.ae.APIException;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.api.AdvancedEnchantment;
@@ -10,12 +11,8 @@ import me.egg82.ae.utils.PermissionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EntityEquipment;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 public class TaskNight implements Runnable {
     private final Logger logger = LoggerFactory.getLogger(getClass());

@@ -1,6 +1,7 @@
 package me.egg82.ae.hooks;
 
-import com.comphenix.packetwrapper.*;
+import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
+import com.comphenix.packetwrapper.WrapperPlayServerMultiBlockChange;
 import com.comphenix.protocol.AsynchronousManager;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
