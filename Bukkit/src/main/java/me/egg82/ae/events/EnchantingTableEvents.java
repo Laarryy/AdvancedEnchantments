@@ -9,6 +9,7 @@ import me.egg82.ae.api.BukkitEnchantment;
 import me.egg82.ae.api.GenericEnchantment;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.services.material.MaterialLookup;
+import me.egg82.ae.services.sound.SoundLookup;
 import me.egg82.ae.utils.ConfigUtil;
 import me.egg82.ae.utils.EnchantmentUtil;
 import me.egg82.ae.utils.InventoryUtil;
@@ -16,6 +17,7 @@ import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.enchantment.EnchantItemEvent;
@@ -29,6 +31,7 @@ public class EnchantingTableEvents extends EventHolder {
 
     private static Material enchantedBookMaterial;
     private static boolean hasEnchantID;
+    private static Sound enchantSound;
 
     static {
         Optional<Material> m = MaterialLookup.get("ENCHANTED_BOOK");
@@ -36,6 +39,12 @@ public class EnchantingTableEvents extends EventHolder {
             throw new RuntimeException("Could not get enchanted book material.");
         }
         enchantedBookMaterial = m.get();
+
+        Optional<Sound> s = SoundLookup.get("BLOCK_ENCHANTMENT_TABLE_USE");
+        if (!s.isPresent()) {
+            throw new RuntimeException("Could not get enchanting table sound.");
+        }
+        enchantSound = s.get();
 
         try {
             InventoryView.Property.valueOf("ENCHANT_ID1");
@@ -195,13 +204,14 @@ public class EnchantingTableEvents extends EventHolder {
             }
         }
 
-        // Edge-case, is empty no exp is taken by Bukkit so we have to do it ourselves
+        // Edge-case, if empty no exp is taken by Bukkit so we have to do it ourselves
         if (event.getEnchantsToAdd().isEmpty()) {
             int newLevel = event.getEnchanter().getLevel() - event.getExpLevelCost();
             if (newLevel < 0) {
                 newLevel = 0;
             }
             event.getEnchanter().setLevel(newLevel);
+            event.getEnchanter().playSound(event.getEnchanter().getLocation(), enchantSound, 1.0f, 1.0f);
         }
 
         // Add all the new (custom) enchants
