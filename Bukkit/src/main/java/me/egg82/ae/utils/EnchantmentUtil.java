@@ -33,15 +33,15 @@ public class EnchantmentUtil {
 
         for (AdvancedEnchantment enchant : AdvancedEnchantment.values()) {
             if (enchant.isCurse()) {
-                highestCurseWeight += 1;
+                highestCurseWeight += 1.0d;
                 customCurses.put(highestCurseWeight, enchant);
             } else {
-                highestEnchantWeight += 1;
+                highestEnchantWeight += 1.0d;
                 customEnchants.put(highestEnchantWeight, enchant);
             }
         }
-        highestEnchantWeight += 1;
-        highestCurseWeight += 1;
+        highestEnchantWeight += 1.0d;
+        highestCurseWeight += 1.0d;
     }
 
     public static String getName(Enchantment enchantment) {
@@ -54,7 +54,7 @@ public class EnchantmentUtil {
     }
 
     public static AdvancedEnchantment getNextEnchant() {
-        double lowestWeight = customEnchants.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
+        double lowestWeight = customEnchants.firstKey();
 
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Getting next enchant between " + lowestWeight + " and " + highestEnchantWeight);
@@ -74,14 +74,14 @@ public class EnchantmentUtil {
         }
 
         // Increase weight (decrease chance) of selected item
-        highestEnchantWeight = Math.max(highestEnchantWeight, entry.getKey() + 1);
+        highestEnchantWeight = Math.max(highestEnchantWeight, entry.getKey() + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
         customEnchants.remove(entry.getKey(), entry.getValue());
-        customEnchants.put(entry.getKey() + 1, entry.getValue());
+        customEnchants.put(entry.getKey() + 1.0d, entry.getValue());
         return entry.getValue();
     }
 
     public static AdvancedEnchantment getNextCurse() {
-        double lowestWeight = customCurses.firstKey() + 1.0d; // +1 because lowerEntry returns a value LOWER than the value provided
+        double lowestWeight = customCurses.firstKey();
 
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Getting next curse between " + lowestWeight + " and " + highestEnchantWeight);
@@ -101,9 +101,9 @@ public class EnchantmentUtil {
         }
 
         // Increase weight (decrease chance) of selected item
-        highestCurseWeight = Math.max(highestCurseWeight, entry.getKey() + 1);
+        highestCurseWeight = Math.max(highestCurseWeight, entry.getKey() + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
         customCurses.remove(entry.getKey(), entry.getValue());
-        customCurses.put(entry.getKey() + 1, entry.getValue());
+        customCurses.put(entry.getKey() + 1.0d, entry.getValue());
         return entry.getValue();
     }
 }
