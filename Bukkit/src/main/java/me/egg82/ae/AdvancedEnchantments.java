@@ -333,7 +333,7 @@ public class AdvancedEnchantments {
     }
 
     private void loadMetrics() {
-        metrics = new Metrics(plugin);
+        metrics = new Metrics(plugin, 2005); // TODO: Change ID when bStats finally allows multiple plugins of the same name
     }
 
     private void checkUpdate() {
