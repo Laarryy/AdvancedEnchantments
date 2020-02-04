@@ -18,6 +18,7 @@ import me.egg82.ae.enums.Message;
 import me.egg82.ae.events.*;
 import me.egg82.ae.events.curses.*;
 import me.egg82.ae.events.enchants.*;
+import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.hooks.PlayerAnalyticsHook;
 import me.egg82.ae.hooks.PluginHook;
@@ -98,8 +99,8 @@ public class AdvancedEnchantments {
 
         effectManager = new EffectManager(plugin);
 
-        loadLanguages();
         loadServices();
+        loadLanguages();
         loadCommands();
         loadEvents();
         loadTasks();
@@ -160,6 +161,11 @@ public class AdvancedEnchantments {
     }
 
     private void loadLanguages() {
+        Optional<CachedConfigValues> cachedConfig = ConfigUtil.getCachedConfig();
+        if (!cachedConfig.isPresent()) {
+            throw new RuntimeException("Cached config could not be fetched.");
+        }
+
         BukkitLocales locales = commandManager.getLocales();
 
         try {
@@ -175,6 +181,7 @@ public class AdvancedEnchantments {
         }
 
         locales.loadLanguages();
+        locales.setDefaultLocale(cachedConfig.get().getLanguage());
         commandManager.usePerIssuerLocale(true, true);
 
         commandManager.setFormat(MessageType.ERROR, new PluginMessageFormatter(commandManager, Message.GENERAL__HEADER));

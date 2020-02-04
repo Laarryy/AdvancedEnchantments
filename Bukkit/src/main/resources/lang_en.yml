@@ -1,12 +1,12 @@
 acf-minecraft:
   multiple_players_match: "en"
-  version: 1.2
+  version: 1.3
 
 description:
   reload: "Reloads the plugin."
   set: "Adds an enchantment (or sets its level) to your currently-held item."
   remove: "Removes an enchantment from your currently-held item."
-  souls: "Sets the number of souls on an item"
+  souls: "Sets the number of souls on an item."
 
 general:
   header: "<c2>[</c2><c3>AdvancedEnchantments</c3><c2>]</c2> "

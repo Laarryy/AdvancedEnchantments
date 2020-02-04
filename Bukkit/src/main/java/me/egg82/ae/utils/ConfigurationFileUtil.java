@@ -3,6 +3,7 @@ package me.egg82.ae.utils;
 import java.io.*;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.extended.Configuration;
 import ninja.egg82.service.ServiceLocator;
@@ -41,6 +42,15 @@ public class ConfigurationFileUtil {
 
         if (debug) {
             logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Debug " + ChatColor.WHITE + "enabled");
+        }
+
+        Locale language = getLanguage(config.getNode("lang").getString("en"));
+        if (language == null) {
+            logger.warn("lang is not a valid language. Using default value.");
+            language = Locale.US;
+        }
+        if (debug) {
+            logger.info(LogUtil.getHeading() + ChatColor.YELLOW + "Default language: " + ChatColor.WHITE + (language.getCountry() == null || language.getCountry().isEmpty() ? language.getLanguage() : language.getLanguage() + "-" + language.getCountry()));
         }
 
         double enchantChance = config.getNode("enchant-chance").getDouble(0.0d);
@@ -140,5 +150,19 @@ public class ConfigurationFileUtil {
         ConfigurationVersionUtil.conformVersion(loader, config, fileOnDisk);
 
         return config;
+    }
+
+    private static Locale getLanguage(String lang) {
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (locale.getLanguage().equalsIgnoreCase(lang)) {
+                return locale;
+            }
+
+            String l = locale.getCountry() == null || locale.getCountry().isEmpty() ? locale.getLanguage() : locale.getLanguage() + "-" + locale.getCountry();
+            if (l.equalsIgnoreCase(lang)) {
+                return locale;
+            }
+        }
+        return null;
     }
 }

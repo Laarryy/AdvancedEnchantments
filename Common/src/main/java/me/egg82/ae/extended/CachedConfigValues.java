@@ -1,10 +1,15 @@
 package me.egg82.ae.extended;
 
+import java.util.Locale;
+
 public class CachedConfigValues {
     private CachedConfigValues() {}
 
     private boolean debug = false;
     public boolean getDebug() { return debug; }
+
+    private Locale language = Locale.US;
+    public Locale getLanguage() { return language; }
 
     private double enchantChance = 0.0d;
     public double getEnchantChance() { return enchantChance; }
@@ -30,6 +35,10 @@ public class CachedConfigValues {
 
         public CachedConfigValues.Builder debug(boolean value) {
             values.debug = value;
+            return this;
+        }
+        public CachedConfigValues.Builder language(Locale value) {
+            values.language = value;
             return this;
         }
 
