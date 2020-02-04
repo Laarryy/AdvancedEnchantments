@@ -43,4 +43,4 @@ update:
   notify: true
 
 # Config version, no touchy plz
-version: 1.2
+version: 1.3
