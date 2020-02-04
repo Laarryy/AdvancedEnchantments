@@ -35,14 +35,14 @@ set:
   error_level_min: "Level cannot be < {level}"
   error_level_max: "Level cannot be > {level}"
   error_conflicts: "This enchant conflicts with the item or existing enchants."
-  success_main_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in</c4> main hand<c4>.</c4>"
-  success_off_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in</c4> off hand<c4>.</c4>"
+  success_main_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in main hand.</c4>"
+  success_off_hand: "<c4>Successfully set</c4> {name} <c4>to</c4> {level} <c4>for item in off hand.</c4>"
 
 remove:
-  success_main_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> main hand<c4>.</c4>"
-  success_off_hand: "<c4>Successfully removed</c4> {name} <c4>from item in</c4> off hand<c4>.</c4>"
+  success_main_hand: "<c4>Successfully removed</c4> {name} <c4>from item in main hand.</c4>"
+  success_off_hand: "<c4>Successfully removed</c4> {name} <c4>from item in off hand.</c4>"
 
 souls:
   error_min: "Souls cannot be < 0"
-  success_main_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> main hand<c4>.</c4>"
-  success_off_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in</c4> off hand<c4>.</c4>"
+  success_main_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in main hand.</c4>"
+  success_off_hand: "<c4>Successfully set</c4> souls <c4>to</c4> {souls} <c4>for item in off hand.</c4>"

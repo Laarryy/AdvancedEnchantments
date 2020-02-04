@@ -35,14 +35,14 @@ set:
   error_level_min: "El nivel no puede ser < {level}"
   error_level_max: "El nivel no puede ser > {level}"
   error_conflicts: "Este encantamiento entra en conflicto con el objeto o los encantamientos existentes."
-  success_main_hand: "<c4>Establezca con éxito</c4> {name} <c4>en</c4> {level} <c4>para el elemento en la </c4>mano principal<c4>.</c4>"
-  success_off_hand: "<c4>Establezca con éxito</c4> {name} <c4>en</c4> {level} <c4>para el elemento en </c4>mano<c4>.</c4>"
+  success_main_hand: "<c4>Establezca con éxito</c4> {name} <c4>en</c4> {level} <c4>para el elemento en la mano principal.</c4>"
+  success_off_hand: "<c4>Establezca con éxito</c4> {name} <c4>en</c4> {level} <c4>para el elemento en mano.</c4>"
 
 remove:
-  success_main_hand: "<c4>Se eliminó con éxito</c4> {name} <c4>del elemento en </c4>la mano principal<c4>.</c4>"
-  success_off_hand: "<c4>Se eliminó con éxito</c4> {nombre} <c4>del elemento en </c4>mano<c4>.</c4>"
+  success_main_hand: "<c4>Se eliminó con éxito</c4> {name} <c4>del elemento en la mano principal.</c4>"
+  success_off_hand: "<c4>Se eliminó con éxito</c4> {name} <c4>del elemento en mano.</c4>"
 
 souls:
   error_min: "Las almas no pueden ser < 0"
-  success_main_hand: "<c4>Establezca con éxito las</c4> almas <c4>en</c4> {souls} <c4>para el artículo en la</c4> mano principal<c4>.</c4>"
-  success_off_hand: "<c4>Establezca con éxito las</c4> almas <c4>en</c4> {souls} <c4>para el artículo en</c4> mano<c4>.</c4>"
+  success_main_hand: "<c4>Establezca con éxito</c4> las almas <c4>en</c4> {souls} <c4>para el artículo en la mano principal.</c4>"
+  success_off_hand: "<c4>Establezca con éxito</c4> las almas <c4>en</c4> {souls} <c4>para el artículo en mano.</c4>"
