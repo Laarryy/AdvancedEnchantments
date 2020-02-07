@@ -112,6 +112,11 @@ public class AnvilEvents extends EventHolder {
 
         // Add all enchants from sacrifice item
         for (Map.Entry<GenericEnchantment, Integer> kvp : enchants.entrySet()) {
+            if (!kvp.getKey().canEnchant(enchantableCarryoverItem)) {
+                // can't enchant carryover with this enchant, so skip it
+                continue;
+            }
+
             if (enchantableCarryoverItem.hasEnchantment(kvp.getKey())) {
                 // carryover has enchant
                 if (kvp.getValue() > enchantableCarryoverItem.getEnchantmentLevel(kvp.getKey())) {
