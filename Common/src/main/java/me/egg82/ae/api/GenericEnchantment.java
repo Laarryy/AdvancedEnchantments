@@ -62,10 +62,10 @@ public abstract class GenericEnchantment {
         if (ConfigUtil.getDebugOrFalse()) {
             logger.info("Checking if enchant " + name + " conflicts with " + (other == null ? "null" : other.name));
             logger.info("Conflicts: " + (other != null && conflicts.contains(other)));
-            return other != null && conflicts.contains(other);
+            return other != null && (conflicts.contains(other) || other.conflicts.contains(this));
         }
 
-        return other != null && conflicts.contains(other);
+        return other != null && (conflicts.contains(other) || other.conflicts.contains(this));
     }
 
     public boolean canEnchant(GenericEnchantableItem item) {
