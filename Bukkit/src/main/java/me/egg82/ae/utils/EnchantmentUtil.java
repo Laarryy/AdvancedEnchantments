@@ -1,9 +1,6 @@
 package me.egg82.ae.utils;
 
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 import me.egg82.ae.api.AdvancedEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.slf4j.Logger;
@@ -33,11 +30,11 @@ public class EnchantmentUtil {
 
         for (AdvancedEnchantment enchant : AdvancedEnchantment.values()) {
             if (enchant.isCurse()) {
-                highestCurseWeight += 1.0d;
                 customCurses.put(highestCurseWeight, enchant);
+                highestCurseWeight += 1.0d;
             } else {
-                highestEnchantWeight += 1.0d;
                 customEnchants.put(highestEnchantWeight, enchant);
+                highestEnchantWeight += 1.0d;
             }
         }
         highestEnchantWeight += 1.0d;
@@ -53,7 +50,7 @@ public class EnchantmentUtil {
         return retVal;
     }
 
-    public static AdvancedEnchantment getNextEnchant() {
+    public static synchronized AdvancedEnchantment getNextEnchant() {
         double lowestWeight = customEnchants.firstKey();
 
         if (ConfigUtil.getDebugOrFalse()) {
@@ -69,18 +66,21 @@ public class EnchantmentUtil {
             return null;
         }
 
+        double key = entry.getKey();
+        AdvancedEnchantment value = entry.getValue();
+
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Got enchant " + entry.getValue().getName() + " at weight " + entry.getKey());
+            logger.info("Got enchant " + value.getName() + " at weight " + key);
         }
 
         // Increase weight (decrease chance) of selected item
-        highestEnchantWeight = Math.max(highestEnchantWeight, entry.getKey() + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
-        customEnchants.remove(entry.getKey(), entry.getValue());
-        customEnchants.put(entry.getKey() + 1.0d, entry.getValue());
-        return entry.getValue();
+        highestEnchantWeight = Math.max(highestEnchantWeight, key + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
+        customEnchants.remove(key);
+        customEnchants.put(highestEnchantWeight - 1.0d, value);
+        return value;
     }
 
-    public static AdvancedEnchantment getNextCurse() {
+    public static synchronized AdvancedEnchantment getNextCurse() {
         double lowestWeight = customCurses.firstKey();
 
         if (ConfigUtil.getDebugOrFalse()) {
@@ -96,14 +96,17 @@ public class EnchantmentUtil {
             return null;
         }
 
+        double key = entry.getKey();
+        AdvancedEnchantment value = entry.getValue();
+
         if (ConfigUtil.getDebugOrFalse()) {
-            logger.info("Got curse " + entry.getValue().getName() + " at weight " + entry.getKey());
+            logger.info("Got curse " + value.getName() + " at weight " + key);
         }
 
         // Increase weight (decrease chance) of selected item
-        highestCurseWeight = Math.max(highestCurseWeight, entry.getKey() + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
-        customCurses.remove(entry.getKey(), entry.getValue());
-        customCurses.put(entry.getKey() + 1.0d, entry.getValue());
-        return entry.getValue();
+        highestCurseWeight = Math.max(highestCurseWeight, key + 2.0d); // +2 to keep the highest +1 above the max, for a floored random
+        customCurses.remove(key);
+        customCurses.put(highestCurseWeight - 1.0d, value);
+        return value;
     }
 }
