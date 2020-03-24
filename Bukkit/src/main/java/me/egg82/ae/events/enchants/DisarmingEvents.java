@@ -23,7 +23,7 @@ public class DisarmingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.disarming"))
                         .handler(this::damage)

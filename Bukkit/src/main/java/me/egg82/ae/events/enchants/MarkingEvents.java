@@ -27,7 +27,7 @@ public class MarkingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .handler(this::damageIncrease)
         );
         events.add(

@@ -23,7 +23,7 @@ public class AerialEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> !e.getDamager().isOnGround())
                         .filter(e -> e.getDamager() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.aerial"))

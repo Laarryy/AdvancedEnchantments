@@ -34,7 +34,7 @@ public class FreezingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.freezing"))
                         .handler(this::damage)
@@ -42,7 +42,7 @@ public class FreezingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> CollectionProvider.getFreezing().containsKey(e.getDamager().getUniqueId()))
                         .handler(e -> e.setCancelled(true))
         );

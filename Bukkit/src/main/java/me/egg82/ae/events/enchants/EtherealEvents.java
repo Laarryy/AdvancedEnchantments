@@ -31,7 +31,7 @@ public class EtherealEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.ethereal"))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.vorpal"))

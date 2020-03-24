@@ -190,7 +190,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         // Global
 
-        Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.8.0", cacheDir)
+        Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.8.1", cacheDir)
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(caffeine, jarsDir, classLoader, "Caffeine");
 

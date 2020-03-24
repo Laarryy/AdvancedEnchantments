@@ -54,7 +54,7 @@ public class FieryEvents extends EventHolder {
                     BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                             .filter(e -> CollectionProvider.getFiery().remove(e.getDamager().getUniqueId()))
                             .filter(BukkitEventFilters.ignoreCancelled())
-                            .filter(this::townyIgnoreCancelled)
+                            .filter(this::compatIgnoreCancelled)
                             .handler(e -> e.getEntity().setFireTicks(50))
         );
     }

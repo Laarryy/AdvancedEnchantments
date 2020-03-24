@@ -24,7 +24,7 @@ public class ChargingEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof Player)
                         .filter(e -> ((Player) e.getDamager()).isSprinting())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.charging"))

@@ -18,7 +18,7 @@ public class FragilityEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::townyIgnoreCancelled)
+                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> ((LivingEntity) e.getEntity()).getEquipment() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.curse.fragility"))

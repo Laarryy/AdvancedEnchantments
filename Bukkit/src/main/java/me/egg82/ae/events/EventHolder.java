@@ -2,11 +2,12 @@ package me.egg82.ae.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import me.egg82.ae.EnchantAPI;
 import me.egg82.ae.hooks.TownyHook;
+import me.egg82.ae.hooks.WorldGuardHook;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.service.ServiceLocator;
-import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,14 @@ public abstract class EventHolder {
         }
     }
 
-    protected final boolean townyIgnoreCancelled(EntityDamageByEntityEvent event) {
+    protected final boolean compatIgnoreCancelled(EntityDamageByEntityEvent event) {
         try {
-            TownyHook townyHook = ServiceLocator.get(TownyHook.class);
-            return townyHook.ignoreCancelled(event);
-        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ignored) { return true; }
+            Optional<TownyHook> townyHook = ServiceLocator.getOptional(TownyHook.class);
+            Optional<WorldGuardHook> worldGuardHook = ServiceLocator.getOptional(WorldGuardHook.class);
+            return
+                    (!townyHook.isPresent() || townyHook.get().ignoreCancelled(event))
+                    && (!worldGuardHook.isPresent() || worldGuardHook.get().ignoreCancelled(event))
+            ;
+        } catch (InstantiationException | IllegalAccessException ignored) { return true; }
     }
 }
