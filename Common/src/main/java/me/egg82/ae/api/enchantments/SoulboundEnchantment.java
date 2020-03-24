@@ -8,5 +8,6 @@ public class SoulboundEnchantment extends AdvancedEnchantment {
     public SoulboundEnchantment() {
         super(UUID.randomUUID(), "soulbound", "Soulbound", false, 1, 1);
         targets.add(AdvancedEnchantmentTarget.ALL);
+        conflicts.add(AdvancedEnchantment.REPAIRING);
     }
 }

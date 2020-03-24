@@ -85,7 +85,7 @@ public class VampiricEvents extends EventHolder {
         }
 
         double health = to.getHealth();
-        double damage = event.getFinalDamage();
+        double damage = Math.max(7.0d, event.getFinalDamage()) / 4.0d;
         health += damage - (damage / (level + 0.3333333333333334d));
         to.setHealth(Math.min(to.getMaxHealth(), health));
     }

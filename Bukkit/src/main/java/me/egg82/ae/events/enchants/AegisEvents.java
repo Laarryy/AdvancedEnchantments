@@ -61,7 +61,7 @@ public class AegisEvents extends EventHolder {
             return;
         }
 
-        double damage = event.getDamage();
+        double damage = Math.max(10.0d, event.getDamage()) / 1.25d;
         damage -= damage - (damage / (level + 0.3333333333333334d));
         event.setDamage(damage);
     }

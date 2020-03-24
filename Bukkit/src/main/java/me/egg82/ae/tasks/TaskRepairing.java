@@ -73,7 +73,7 @@ public class TaskRepairing implements Runnable {
             return;
         }
 
-        if (Math.random() <= 0.35d) {
+        if (Math.random() <= 0.45d) {
             return;
         }
 

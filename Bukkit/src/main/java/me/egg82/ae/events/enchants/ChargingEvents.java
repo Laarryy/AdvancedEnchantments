@@ -25,6 +25,7 @@ public class ChargingEvents extends EventHolder {
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(this::compatIgnoreCancelled)
+                        .filter(e -> e.getDamager().isOnGround())
                         .filter(e -> e.getDamager() instanceof Player)
                         .filter(e -> ((Player) e.getDamager()).isSprinting())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.charging"))
@@ -60,7 +61,7 @@ public class ChargingEvents extends EventHolder {
             return;
         }
 
-        double damage = event.getDamage();
+        double damage = Math.max(10.0d, event.getDamage()) / 2.0d;
         damage += damage - (damage / (level + 0.3333333333333334d));
         event.setDamage(damage);
     }

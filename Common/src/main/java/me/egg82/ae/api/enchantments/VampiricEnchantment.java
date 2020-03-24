@@ -6,7 +6,7 @@ import me.egg82.ae.api.AdvancedEnchantmentTarget;
 
 public class VampiricEnchantment extends AdvancedEnchantment {
     public VampiricEnchantment() {
-        super(UUID.randomUUID(), "vampiric", "Vampiric", false, 1, 5);
+        super(UUID.randomUUID(), "vampiric", "Vampiric", false, 1, 3);
         targets.add(AdvancedEnchantmentTarget.WEAPON);
     }
 }

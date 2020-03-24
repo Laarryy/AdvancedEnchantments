@@ -61,6 +61,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         targets.addAll(targetCache.get(item.getType()));
         enchantments.putAll(getBukkitEnchantments(item));
         enchantments.putAll(getAdvancedEnchantments(item));
+        // TODO: Enforce conflicts (with vanilla enchants as well - except durability 0), accounting for forced enchants (somehow)
         souls = getNumSouls(item);
     }
 
@@ -69,6 +70,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
         this.item = item;
         this.targets.addAll(targets);
         this.enchantments.putAll(enchantments);
+        // TODO: Enforce conflicts (with vanilla enchants as well - except durability 0), accounting for forced enchants (somehow)
         this.souls = souls;
     }
 
@@ -130,6 +132,8 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             if (!level.isPresent()) {
                 continue;
             }
+
+            // TODO: Enforce level requirements, accounting for forced enchants (somehow)
 
             if (ConfigUtil.getDebugOrFalse()) {
                 logger.info("Found AE enchant for " + item.getType() + ": " + enchant.get().getName() + " " + getNumerals(level.get()));
@@ -406,6 +410,7 @@ public class BukkitEnchantableItem extends GenericEnchantableItem {
             }
         }
 
+        // TODO: Get ProtocolLib working?
         /*if (Bukkit.getPluginManager().getPlugin("ProtocolLib") != null) {
             if (hasHackyEnchant) {
                 enchantments.remove(BukkitEnchantment.fromEnchant(Enchantment.DURABILITY));

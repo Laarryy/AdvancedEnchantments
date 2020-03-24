@@ -74,8 +74,8 @@ public class RampageEvents extends EventHolder {
             return;
         }
 
-        double damage = event.getDamage();
-        damage += damage - (damage / (level * value + 0.75d));
+        double damage = Math.max(10.0d, event.getDamage()) / 2.0d;
+        damage += damage - (damage / (level * (double) value + 0.75d));
         event.setDamage(damage);
     }
 
