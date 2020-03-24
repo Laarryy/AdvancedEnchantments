@@ -206,7 +206,7 @@ public class EnchantingTableEvents extends EventHolder {
 
         // Edge-case, if empty no exp is taken by Bukkit so we have to do it ourselves
         if (event.getEnchantsToAdd().isEmpty()) {
-            int newLevel = event.getEnchanter().getLevel() - event.getExpLevelCost();
+            int newLevel = event.getEnchanter().getLevel() - event.whichButton() - 1; // getExpLevelCost() will sometimes return 30 (max level?) so this hack is needed
             if (newLevel < 0) {
                 newLevel = 0;
             }

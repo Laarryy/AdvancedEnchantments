@@ -40,11 +40,11 @@ public class SetCommand implements Runnable {
         int l = level == null ? en.get().getMinLevel() : Integer.parseInt(level);
         boolean f = Boolean.parseBoolean(force);
 
-        if (l < en.get().getMinLevel()) {
+        if (!f && l < en.get().getMinLevel()) {
             issuer.sendError(Message.SET__ERROR_LEVEL_MIN, "{level}", String.valueOf(en.get().getMinLevel()));
             return;
         }
-        if (l > en.get().getMaxLevel()) {
+        if (!f && l > en.get().getMaxLevel()) {
             issuer.sendError(Message.SET__ERROR_LEVEL_MAX, "{level}", String.valueOf(en.get().getMaxLevel()));
             return;
         }
