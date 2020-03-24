@@ -181,6 +181,16 @@ public class EnchantingTableEvents extends EventHolder {
                             && !conflicts(newEnchant, newEnchants) // We don't want enchants that conflict with other new enchants
                     ) {
                         break;
+                    } else {
+                        if (ConfigUtil.getDebugOrFalse()) {
+                            if (newEnchant == null) {
+                                logger.info("New enchant is null. Skipping.");
+                            } else if (kvp.getValue() < newEnchant.getMinLevel() || kvp.getValue() > newEnchant.getMaxLevel()) {
+                                logger.info("Enchant " + newEnchant.getName() + " has a different level range than replaced enchant. Skipping.");
+                            } else if (!event.getEnchanter().hasPermission("ae.enchant." + newEnchant.getName())) {
+                                logger.info("Player does not have permissions to use enchant " + newEnchant.getName() + ". Skipping.");
+                            }
+                        }
                     }
                     newEnchant = null; // Set enchant to null to prevent adding. The "break" above will skip this
                 } while (tries < 100);
