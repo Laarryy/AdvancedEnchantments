@@ -8,6 +8,8 @@ import org.bukkit.Material;
 public class MaterialLookup {
     private static final ConcurrentMap<String, Material> cache = new ConcurrentHashMap<>();
 
+    private MaterialLookup() { }
+
     public static Optional<Material> get(String... search) {
         if (search == null) {
             throw new IllegalArgumentException("search cannot be null.");
@@ -16,7 +18,7 @@ public class MaterialLookup {
         Optional<Material> retVal = Optional.empty();
 
         for (String s : search) {
-            retVal = Optional.ofNullable(cache.computeIfAbsent(s, k -> tryGetMaterial(k)));
+            retVal = Optional.ofNullable(cache.computeIfAbsent(s, MaterialLookup::tryGetMaterial));
             if (retVal.isPresent()) {
                 return retVal;
             }

@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +34,7 @@ public class CustomLootTable implements LootTable {
         this.curseChance = curseChance;
     }
 
-    @NotNull
-    public Collection<ItemStack> populateLoot(@NotNull Random random, @NotNull LootContext context) {
+    public Collection<ItemStack> populateLoot(Random random, LootContext context) {
         Collection<ItemStack> retVal = backingTable.populateLoot(random, context);
 
         for (ItemStack i : retVal) {
@@ -123,13 +121,12 @@ public class CustomLootTable implements LootTable {
         return retVal;
     }
 
-    public void fillInventory(@NotNull Inventory inventory, @NotNull Random random, @NotNull LootContext context) {
+    public void fillInventory(Inventory inventory, Random random, LootContext context) {
         Collection<ItemStack> loot = populateLoot(random, context);
         for (ItemStack l : loot) {
             inventory.addItem(l);
         }
     }
 
-    @NotNull
     public NamespacedKey getKey() { return new NamespacedKey(plugin, "custom"); }
 }

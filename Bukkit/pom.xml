@@ -317,6 +317,12 @@
             <version>1.0.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>expiringmap</artifactId>
+            <version>0.5.9</version>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.bstats</groupId>

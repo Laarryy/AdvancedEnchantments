@@ -11,7 +11,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import javax.xml.xpath.XPathExpressionException;
-import me.egg82.ae.api.ExternalBukkitEnchantableItem;
 import me.egg82.ae.utils.BukkitEnvironmentUtil;
 import me.egg82.ae.utils.LogUtil;
 import ninja.egg82.maven.Artifact;
@@ -47,7 +46,7 @@ public class BukkitBootstrap extends JavaPlugin {
         proxiedClassLoader = new ProxiedURLClassLoader(getClass().getClassLoader(), new String[] { "org\\.slf4j\\..*" });
 
         try {
-            loadJars(new File(getDataFolder(), "external"), proxiedClassLoader);
+            loadJars(new File(getDataFolder(), "external"), proxiedClassLoader, (URLClassLoader) getClass().getClassLoader());
         } catch (ClassCastException | IOException | IllegalAccessException | InvocationTargetException ex) {
             logger.error(ex.getMessage(), ex);
             throw new RuntimeException("Could not load required deps.");
@@ -82,13 +81,6 @@ public class BukkitBootstrap extends JavaPlugin {
             logger.error(ex.getMessage(), ex);
             throw new RuntimeException("Could not invoke onEnable.");
         }
-
-        if (ExternalAPI.getInstance() == null) {
-            ExternalAPI.setInstance(proxiedClassLoader);
-        }
-        if (ExternalBukkitEnchantableItem.getClassLoader() == null) {
-            ExternalBukkitEnchantableItem.setClassLoader(proxiedClassLoader);
-        }
     }
 
     @Override
@@ -101,7 +93,7 @@ public class BukkitBootstrap extends JavaPlugin {
         }
     }
 
-    private void loadJars(File jarsDir, URLClassLoader classLoader) throws IOException, IllegalAccessException, InvocationTargetException {
+    private void loadJars(File jarsDir, URLClassLoader classLoader, URLClassLoader parentLoader) throws IOException, IllegalAccessException, InvocationTargetException {
         if (jarsDir.exists() && !jarsDir.isDirectory()) {
             Files.delete(jarsDir.toPath());
         }
@@ -182,17 +174,22 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(packetWrapper, jarsDir, classLoader, "PacketWrapper");
 
-        printLatest("EffectLib");
         Artifact.Builder effectLib = Artifact.builder("de.slikey", "EffectLib", "6.2", cacheDir)
                 .addRepository(Repository.builder("http://maven.elmakers.com/repository/").addProxy("https://nexus.egg82.me/repository/elmakers/").build())
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(effectLib, jarsDir, classLoader, "EffectLib");
+
+        Artifact.Builder expiringMap = Artifact.builder("net.jodah", "expiringmap", "0.5.9", cacheDir)
+                .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
+        buildInject(expiringMap, jarsDir, classLoader, "ExpiringMap");
 
         // Global
 
         Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "2.8.1", cacheDir)
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(caffeine, jarsDir, classLoader, "Caffeine");
+        // TODO: Relocate Caffeine using https://github.com/lucko/jar-relocator?
+        buildInject(caffeine, jarsDir, parentLoader, "Caffeine"); // Polluting the main namespace, but this makes the API easier
 
         Artifact.Builder gameanalyticsApi = Artifact.builder("ninja.egg82", "gameanalytics-api", "1.0.1", cacheDir)
                 .addRepository(Repository.builder("https://www.myget.org/F/egg82-java/maven/").addProxy("https://nexus.egg82.me/repository/egg82/").build())
