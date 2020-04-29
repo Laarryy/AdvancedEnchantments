@@ -8,10 +8,7 @@ import me.egg82.ae.api.BukkitEnchantableItem;
 import me.egg82.ae.events.EventHolder;
 import me.egg82.ae.services.CollectionProvider;
 import me.egg82.ae.services.entity.EntityItemHandler;
-import me.egg82.ae.utils.BlockUtil;
-import me.egg82.ae.utils.ItemDurabilityUtil;
-import me.egg82.ae.utils.LocationUtil;
-import me.egg82.ae.utils.PermissionUtil;
+import me.egg82.ae.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
@@ -28,6 +25,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 public class ExplosiveEvents extends EventHolder {
+    private final boolean hasHardnessMethod = ReflectUtil.hasMethod("getHardness", Material.class);
+
     public ExplosiveEvents(Plugin plugin) {
         events.add(
                 BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
@@ -82,7 +81,7 @@ public class ExplosiveEvents extends EventHolder {
 
         int blockCount = 1;
         Location originalLocation = event.getBlock().getLocation();
-        float originalHardness = event.getBlock().getType().getHardness();
+        float originalHardness = hasHardnessMethod ? event.getBlock().getType().getHardness() : 0.0f;
 
         for (Block block : blocks) {
             Location location = block.getLocation();
@@ -91,7 +90,7 @@ public class ExplosiveEvents extends EventHolder {
             if (location.equals(originalLocation)) {
                 continue;
             }
-            if (!type.isBlock() || type.getHardness() <= 0.0f || type.getHardness() > originalHardness) {
+            if (!type.isBlock() || (hasHardnessMethod && (type.getHardness() <= 0.0f || type.getHardness() > originalHardness))) {
                 continue;
             }
 
