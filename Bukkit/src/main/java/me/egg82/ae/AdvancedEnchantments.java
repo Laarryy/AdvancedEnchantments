@@ -321,7 +321,9 @@ public class AdvancedEnchantments {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_ENABLE, "{plugin}", "ProtocolLib");
             Set<? extends FakeBlockHandler> handlers = ServiceLocator.remove(FakeBlockHandler.class);
             for (FakeBlockHandler h : handlers) {
-                h.removeAll();
+                if (h != null) {
+                    h.removeAll();
+                }
             }
             ProtocolLibHook.create(plugin, protocolLib);
         } else {

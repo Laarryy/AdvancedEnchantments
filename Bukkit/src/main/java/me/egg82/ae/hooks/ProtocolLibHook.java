@@ -127,7 +127,9 @@ public class ProtocolLibHook implements PluginHook, FakeBlockHandler {
     public void cancel() {
         Set<? extends FakeBlockHandler> handlers = ServiceLocator.remove(FakeBlockHandler.class);
         for (FakeBlockHandler h : handlers) {
-            h.removeAll();
+            if (h != null) {
+                h.removeAll();
+            }
         }
 
         asyncManager.unregisterAsyncHandlers(plugin);
