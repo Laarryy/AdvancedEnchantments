@@ -9,6 +9,38 @@
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
+    <properties>
+        <plugin.version>4.20.27</plugin.version>
+        <paper.version>1.15.1-R0.1-SNAPSHOT</paper.version>
+        <bstats.version>1.7</bstats.version>
+
+        <servicelocator.version>1.0.2</servicelocator.version>
+        <configurate.version>3.6.1</configurate.version>
+        <abstractconfiguration.version>1.0.3</abstractconfiguration.version>
+        <guava.version>29.0-jre</guava.version>
+        <caffeine.version>2.8.2</caffeine.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <gameanalytics.version>1.0.2</gameanalytics.version>
+        <junit.version>5.7.0-M1</junit.version>
+
+        <taskchain.version>3.7.2</taskchain.version>
+        <acf.version>0.5.0-SNAPSHOT</acf.version>
+        <eventchain.version>1.1.10</eventchain.version>
+        <updater.version>1.0.5</updater.version>
+        <depdownloader.version>2.2.16</depdownloader.version>
+        <relocator.version>1.4</relocator.version>
+        <reflectionutils.version>1.0.5</reflectionutils.version>
+        <expiringmap.version>0.5.9</expiringmap.version>
+
+        <mineskin.version>1.0.3-SNAPSHOT</mineskin.version>
+        <plan.version>5.1-R0.2</plan.version>
+        <plib.version>4.5.0</plib.version>
+        <packetwrapper.version>1.13-R0.1-SNAPSHOT</packetwrapper.version>
+        <towny.version>0.96.1.9</towny.version>
+        <effectlib.version>6.2</effectlib.version>
+        <worldguard.version>7.0.2</worldguard.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -70,6 +102,180 @@
             <url>https://nexus.egg82.me/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>egg82-nexus</id>
+            <url>https://nexus.egg82.me/repository/maven-releases/</url>
+        </repository>
+        <repository>
+            <id>sponge</id>
+            <url>https://repo.spongepowered.org/maven/</url>
+        </repository>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Common -->
+
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>service-locator</artifactId>
+                <version>${servicelocator.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.spongepowered</groupId>
+                <artifactId>configurate-core</artifactId>
+                <version>${configurate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.spongepowered</groupId>
+                <artifactId>configurate-yaml</artifactId>
+                <version>${configurate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>abstract-configuration</artifactId>
+                <version>${abstractconfiguration.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.ben-manes.caffeine</groupId>
+                <artifactId>caffeine</artifactId>
+                <version>${caffeine.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>gameanalytics-api</artifactId>
+                <version>${gameanalytics.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+
+            <!-- Bukkit -->
+
+            <dependency>
+                <groupId>org.bukkit</groupId>
+                <artifactId>bukkit</artifactId>
+                <version>1.8-R0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.destroystokyo.paper</groupId>
+                <artifactId>paper-api</artifactId>
+                <version>${paper.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>co.aikar</groupId>
+                <artifactId>taskchain-bukkit</artifactId>
+                <version>${taskchain.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>co.aikar</groupId>
+                <artifactId>acf-paper</artifactId>
+                <version>${acf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>event-chain-bukkit</artifactId>
+                <version>${eventchain.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>spigot-updater</artifactId>
+                <version>${updater.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>dep-downloader</artifactId>
+                <version>${depdownloader.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>me.lucko</groupId>
+                <artifactId>jar-relocator</artifactId>
+                <version>${relocator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ninja.egg82</groupId>
+                <artifactId>reflection-utils</artifactId>
+                <version>${reflectionutils.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mineskin</groupId>
+                <artifactId>java-client</artifactId>
+                <version>${mineskin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.jodah</groupId>
+                <artifactId>expiringmap</artifactId>
+                <version>${expiringmap.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bstats</groupId>
+                <artifactId>bstats-bukkit</artifactId>
+                <version>${bstats.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.djrapitops</groupId>
+                <artifactId>Plan-api</artifactId>
+                <version>${plan.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.comphenix.protocol</groupId>
+                <artifactId>ProtocolLib</artifactId>
+                <version>${plib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.comphenix.packetwrapper</groupId>
+                <artifactId>PacketWrapper</artifactId>
+                <version>${packetwrapper.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.palmergames.bukkit.towny</groupId>
+                <artifactId>Towny</artifactId>
+                <version>${towny.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.slikey</groupId>
+                <artifactId>EffectLib</artifactId>
+                <version>${effectlib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sk89q.worldguard</groupId>
+                <artifactId>worldguard-bukkit</artifactId>
+                <version>${worldguard.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>me.egg82</groupId>
+                <artifactId>advancedenchantments-common</artifactId>
+                <version>${plugin.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <modules>
         <module>Common</module>

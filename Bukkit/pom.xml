@@ -10,10 +10,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>advancedenchantments-bukkit</artifactId>
-    <version>4.20.27</version>
+    <version>${plugin.version}</version>
 
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <filtering>true</filtering>
+                <targetPath>../filtered-sources/java</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <sourceDirectory>target/filtered-sources/java</sourceDirectory>
 
         <plugins>
             <plugin>
@@ -123,125 +135,45 @@
 
     <repositories>
         <repository>
-            <id>egg82-ninja-proxy</id>
-            <url>https://nexus.egg82.me/repository/egg82/</url>
-        </repository>
-        <repository>
-            <id>egg82-ninja</id>
-            <url>https://www.myget.org/F/egg82-java/maven/</url>
-        </repository>
-
-        <repository>
-            <id>papermc-proxy</id>
-            <url>https://nexus.egg82.me/repository/papermc/</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
-
         <!--<repository>
-            <id>spigot-repo-proxy</id>
-            <url>https://nexus.egg82.me/repository/spigot/</url>
-        </repository>
-        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>-->
 
         <repository>
-            <id>aikar-proxy</id>
-            <url>https://nexus.egg82.me/repository/aikar/</url>
-        </repository>
-        <repository>
-            <id>aikar</id>
-            <url>https://repo.aikar.co/content/groups/aikar/</url>
-        </repository>
-
-        <repository>
-            <id>sponge-proxy</id>
-            <url>https://nexus.egg82.me/repository/sponge/</url>
-        </repository>
-        <repository>
-            <id>sponge</id>
-            <url>https://repo.spongepowered.org/maven/</url>
-        </repository>
-
-        <repository>
-            <id>github-rjenkinsjr-proxy</id>
-            <url>https://nexus.egg82.me/repository/rjenkinsjr/</url>
-        </repository>
-        <repository>
             <id>github-rjenkinsjr</id>
             <url>https://raw.github.com/rjenkinsjr/maven2/repo</url>
-        </repository>
-
-        <repository>
-            <id>CodeMC-proxy</id>
-            <url>https://nexus.egg82.me/repository/codemc/</url>
         </repository>
         <repository>
             <id>CodeMC</id>
             <url>https://repo.codemc.org/repository/maven-public</url>
         </repository>
-
-        <repository>
-            <id>inventivetalent-proxy</id>
-            <url>https://nexus.egg82.me/repository/inventivetalent/</url>
-        </repository>
         <repository>
             <id>inventivetalent</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
-        </repository>
-
-        <repository>
-            <id>dmulloy2-repo-proxy</id>
-            <url>https://nexus.egg82.me/repository/dmulloy2/</url>
         </repository>
         <repository>
             <id>dmulloy2-repo</id>
             <url>https://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
-
-        <repository>
-            <id>dmulloy2-snapshots-proxy</id>
-            <url>https://nexus.egg82.me/repository/dmulloy2-snapshots/</url>
-        </repository>
         <repository>
             <id>dmulloy2-snapshots</id>
             <url>https://repo.dmulloy2.net/nexus/repository/snapshots/</url>
-        </repository>
-
-        <repository>
-            <id>enginehub-proxy</id>
-            <url>https://nexus.egg82.me/repository/enginehub/</url>
         </repository>
         <repository>
             <id>enginehub-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
-
-        <repository>
-            <id>elmakers-proxy</id>
-            <url>https://nexus.egg82.me/repository/elmakers/</url>
-        </repository>
         <repository>
             <id>elmakers</id>
             <url>http://maven.elmakers.com/repository/</url>
         </repository>
-
-        <repository>
-            <id>plan-proxy</id>
-            <url>https://nexus.egg82.me/repository/plan/</url>
-        </repository>
         <repository>
             <id>plan</id>
             <url>https://dl.bintray.com/rsl1122/Plan-repository</url>
-        </repository>
-
-        <repository>
-            <id>maven-central-proxy</id>
-            <url>https://nexus.egg82.me/repository/maven-central/</url>
         </repository>
     </repositories>
 
@@ -249,133 +181,107 @@
         <!--<dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>-->
         <dependency>
             <groupId>com.destroystokyo.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.15.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>taskchain-bukkit</artifactId>
-            <version>3.7.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>co.aikar</groupId>
             <artifactId>acf-paper</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>event-chain-bukkit</artifactId>
-            <version>1.0.9</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>configurate-yaml</artifactId>
-            <version>3.6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>spigot-updater</artifactId>
-            <version>1.0.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>service-locator</artifactId>
-            <version>1.0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>dep-downloader</artifactId>
-            <version>2.2.15</version>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>reflection-utils</artifactId>
-            <version>1.0.4</version>
         </dependency>
 
         <dependency>
-            <groupId>info.ronjenkins</groupId>
-            <artifactId>slf4bukkit</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.mineskin</groupId>
             <artifactId>java-client</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.jodah</groupId>
             <artifactId>expiringmap</artifactId>
-            <version>0.5.9</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.djrapitops</groupId>
             <artifactId>Plan-api</artifactId>
-            <version>5.1-R0.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.5.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.comphenix.packetwrapper</groupId>
             <artifactId>PacketWrapper</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.palmergames.bukkit.towny</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.95.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>de.slikey</groupId>
             <artifactId>EffectLib</artifactId>
-            <version>6.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-bukkit</artifactId>
-            <version>7.0.2</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>me.egg82</groupId>
             <artifactId>advancedenchantments-common</artifactId>
-            <version>4.20.27</version>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.6.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
