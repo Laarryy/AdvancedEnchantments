@@ -15,17 +15,12 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/java</directory>
-                <filtering>true</filtering>
-                <targetPath>../filtered-sources/java</targetPath>
-            </resource>
-            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
 
-        <sourceDirectory>target/filtered-sources/java</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
 
         <plugins>
             <plugin>
@@ -34,6 +29,23 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/maven-templates</outputDirectory>
                 </configuration>
             </plugin>
 

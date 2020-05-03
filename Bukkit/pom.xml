@@ -15,17 +15,12 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/java</directory>
-                <filtering>true</filtering>
-                <targetPath>../filtered-sources/java</targetPath>
-            </resource>
-            <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
 
-        <sourceDirectory>target/filtered-sources/java</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
 
         <plugins>
             <plugin>
@@ -38,11 +33,36 @@
             </plugin>
 
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>templating-maven-plugin</artifactId>
+                <version>1.0.0</version>
+                <executions>
+                    <execution>
+                        <id>filter-src</id>
+                        <goals>
+                            <goal>filter-sources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${project.build.directory}/maven-templates</outputDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.1</version>
                 <configuration>
                     <relocations>
+                        <relocation>
+                            <pattern>com.github.benmanes.caffeine</pattern>
+                            <shadedPattern>me.egg82.ae.external.com.github.benmanes.caffeine</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>me.lucko.jarrelocator</pattern>
+                            <shadedPattern>me.egg82.ae.external.me.lucko.jarrelocator</shadedPattern>
+                        </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>me.egg82.ae.external.org.bstats</shadedPattern>
@@ -214,6 +234,7 @@
             <artifactId>spigot-updater</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>service-locator</artifactId>
@@ -222,6 +243,10 @@
         <dependency>
             <groupId>ninja.egg82</groupId>
             <artifactId>dep-downloader</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>me.lucko</groupId>
+            <artifactId>jar-relocator</artifactId>
         </dependency>
         <dependency>
             <groupId>ninja.egg82</groupId>

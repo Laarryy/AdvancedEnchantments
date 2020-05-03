@@ -10,6 +10,8 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <plugin.version>4.20.27</plugin.version>
         <paper.version>1.15.1-R0.1-SNAPSHOT</paper.version>
         <bstats.version>1.7</bstats.version>

@@ -6,6 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +15,13 @@ import java.util.logging.Level;
 import javax.xml.xpath.XPathExpressionException;
 import me.egg82.ae.utils.BukkitEnvironmentUtil;
 import me.egg82.ae.utils.LogUtil;
+import me.lucko.jarrelocator.JarRelocator;
+import me.lucko.jarrelocator.Relocation;
 import ninja.egg82.maven.Artifact;
 import ninja.egg82.maven.Repository;
 import ninja.egg82.maven.Scope;
 import ninja.egg82.services.ProxiedURLClassLoader;
+import ninja.egg82.utils.DownloadUtil;
 import ninja.egg82.utils.InjectUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -187,9 +192,8 @@ public class BukkitBootstrap extends JavaPlugin {
 
         Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "${caffeine.version}", cacheDir)
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
-        buildInject(caffeine, jarsDir, classLoader, "Caffeine");
-        // TODO: Relocate Caffeine using https://github.com/lucko/jar-relocator?
-        buildInject(caffeine, jarsDir, parentLoader, "Caffeine"); // Polluting the main namespace, but this makes the API easier
+        buildRelocateInject(caffeine, jarsDir, Collections.singletonList(new Relocation("com.github.benmanes.caffeine", "me.egg82.ae.external.com.github.benmanes.caffeine")), classLoader, "Caffeine");
+        buildRelocateInject(caffeine, jarsDir, Collections.singletonList(new Relocation("com.github.benmanes.caffeine", "me.egg82.ae.external.com.github.benmanes.caffeine")), parentLoader, "Caffeine");
 
         Artifact.Builder gameanalyticsApi = Artifact.builder("ninja.egg82", "gameanalytics-api", "${gameanalytics.version}", cacheDir)
                 .addRepository(Repository.builder("https://nexus.egg82.me/repository/maven-releases/").build())
@@ -217,7 +221,7 @@ public class BukkitBootstrap extends JavaPlugin {
     private void buildInjectWait(Artifact.Builder builder, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth) {
         Exception lastEx = null;
         try {
-            injectArtifact(builder.build(), jarsDir, classLoader, friendlyName, depth);
+            injectArtifact(builder.build(), jarsDir, classLoader, friendlyName, depth, null);
             return;
         } catch (IOException ex) {
             lastEx = ex;
@@ -232,13 +236,45 @@ public class BukkitBootstrap extends JavaPlugin {
         }
 
         try {
-            injectArtifact(builder, jarsDir, classLoader);
+            injectArtifact(builder, jarsDir, classLoader, null);
         } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
             logger.error(lastEx.getMessage(), lastEx);
         }
     }
 
-    private void injectArtifact(Artifact artifact, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth) throws IOException, IllegalAccessException, InvocationTargetException, URISyntaxException, XPathExpressionException, SAXException {
+    private void buildRelocateInject(Artifact.Builder builder, File jarsDir, List<Relocation> rules, URLClassLoader classLoader, String friendlyName) {
+        buildRelocateInject(builder, jarsDir, rules, classLoader, friendlyName, 0);
+    }
+
+    private void buildRelocateInject(Artifact.Builder builder, File jarsDir, List<Relocation> rules, URLClassLoader classLoader, String friendlyName, int depth) {
+        downloadPool.submit(() -> buildRelocateInjectWait(builder, jarsDir, rules, classLoader, friendlyName, depth));
+    }
+
+    private void buildRelocateInjectWait(Artifact.Builder builder, File jarsDir, List<Relocation> rules, URLClassLoader classLoader, String friendlyName, int depth) {
+        Exception lastEx = null;
+        try {
+            injectArtifact(builder.build(), jarsDir, classLoader, friendlyName, depth, rules);
+            return;
+        } catch (IOException ex) {
+            lastEx = ex;
+        } catch (IllegalAccessException | InvocationTargetException | URISyntaxException | XPathExpressionException | SAXException ex) {
+            logger.error(ex.getMessage(), ex);
+            return;
+        }
+
+        if (depth > 0) {
+            logger.error(lastEx.getMessage(), lastEx);
+            return;
+        }
+
+        try {
+            injectArtifact(builder, jarsDir, classLoader, rules);
+        } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
+            logger.error(lastEx.getMessage(), lastEx);
+        }
+    }
+
+    private void injectArtifact(Artifact artifact, File jarsDir, URLClassLoader classLoader, String friendlyName, int depth, List<Relocation> rules) throws IOException, IllegalAccessException, InvocationTargetException, URISyntaxException, XPathExpressionException, SAXException {
         File output = new File(jarsDir, artifact.getGroupId()
                 + "-" + artifact.getArtifactId()
                 + "-" + artifact.getRealVersion() + ".jar"
@@ -247,18 +283,34 @@ public class BukkitBootstrap extends JavaPlugin {
         if (friendlyName != null && !artifact.fileExists(output)) {
             log(Level.INFO, LogUtil.getHeading() + ChatColor.YELLOW + "Downloading " + ChatColor.WHITE + friendlyName);
         }
-        artifact.injectJar(output, classLoader);
+
+        if (rules == null) {
+            artifact.injectJar(output, classLoader);
+        } else {
+            if (!DownloadUtil.hasFile(output)) {
+                artifact.downloadJar(output);
+            }
+            File relocatedOutput = new File(jarsDir, artifact.getGroupId()
+                    + "-" + artifact.getArtifactId()
+                    + "-" + artifact.getRealVersion() + "-relocated.jar"
+            );
+            if (!DownloadUtil.hasFile(relocatedOutput)) {
+                JarRelocator relocator = new JarRelocator(output, relocatedOutput, rules);
+                relocator.run();
+            }
+            InjectUtil.injectFile(relocatedOutput, classLoader);
+        }
 
         if (depth > 0) {
             for (Artifact dependency : artifact.getDependencies()) {
                 if (dependency.getScope() == Scope.COMPILE || dependency.getScope() == Scope.RUNTIME) {
-                    injectArtifact(dependency, jarsDir, classLoader, null, depth - 1);
+                    injectArtifact(dependency, jarsDir, classLoader, null, depth - 1, rules);
                 }
             }
         }
     }
 
-    private void injectArtifact(Artifact.Builder builder, File jarsDir, URLClassLoader classLoader) throws IOException, IllegalAccessException, InvocationTargetException {
+    private void injectArtifact(Artifact.Builder builder, File jarsDir, URLClassLoader classLoader, List<Relocation> rules) throws IOException, IllegalAccessException, InvocationTargetException {
         File[] files = jarsDir.listFiles();
         if (files == null) {
             throw new IOException();
@@ -276,7 +328,17 @@ public class BukkitBootstrap extends JavaPlugin {
         if (retVal == null) {
             throw new IOException();
         }
-        InjectUtil.injectFile(retVal, classLoader);
+
+        if (rules == null) {
+            InjectUtil.injectFile(retVal, classLoader);
+        } else {
+            File output = new File(jarsDir, retVal.getName().substring(0, retVal.getName().length() - 4) + "-relocated.jar");
+            if (!DownloadUtil.hasFile(output)) {
+                JarRelocator relocator = new JarRelocator(retVal, output, rules);
+                relocator.run();
+            }
+            InjectUtil.injectFile(output, classLoader);
+        }
     }
 
     private void log(Level level, String message) {
