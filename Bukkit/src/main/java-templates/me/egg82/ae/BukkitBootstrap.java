@@ -192,8 +192,7 @@ public class BukkitBootstrap extends JavaPlugin {
 
         Artifact.Builder caffeine = Artifact.builder("com.github.ben-manes.caffeine", "caffeine", "${caffeine.version}", cacheDir)
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
-        buildRelocateInject(caffeine, jarsDir, Collections.singletonList(new Relocation("com.github.benmanes.caffeine", "me.egg82.ae.external.com.github.benmanes.caffeine")), classLoader, "Caffeine");
-        buildRelocateInject(caffeine, jarsDir, Collections.singletonList(new Relocation("com.github.benmanes.caffeine", "me.egg82.ae.external.com.github.benmanes.caffeine")), parentLoader, "Caffeine");
+        buildRelocateInject(caffeine, jarsDir, Collections.singletonList(new Relocation(getCaffeinePackage(), "me.egg82.ae.external." + getCaffeinePackage())), parentLoader, "Caffeine");
 
         Artifact.Builder gameanalyticsApi = Artifact.builder("ninja.egg82", "gameanalytics-api", "${gameanalytics.version}", cacheDir)
                 .addRepository(Repository.builder("https://nexus.egg82.me/repository/maven-releases/").build())
@@ -205,6 +204,9 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(abstractConfiguration, jarsDir, classLoader, "Abstract Configuration");
     }
+
+    // Prevent Maven from relocating this
+    private String getCaffeinePackage() { return new String(new byte[] {'c', 'o', 'm', '.', 'g', 'i', 't', 'h', 'u', 'b', '.', 'b', 'e', 'n', 'm', 'a', 'n', 'e', 's', '.', 'c', 'a', 'f', 'f', 'e', 'i', 'n', 'e'}); }
 
     private void printLatest(String friendlyName) {
         log(Level.INFO, LogUtil.getHeading() + ChatColor.YELLOW + "Checking version of " + ChatColor.WHITE + friendlyName);
@@ -235,10 +237,12 @@ public class BukkitBootstrap extends JavaPlugin {
             return;
         }
 
+        logger.warn("Failed to download/relocate jar. Searching disk instead.", lastEx);
+
         try {
             injectArtifact(builder, jarsDir, classLoader, null);
         } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
-            logger.error(lastEx.getMessage(), lastEx);
+            throw new RuntimeException("Could not download/relocate jar, and no on-disk option is available.", lastEx);
         }
     }
 
@@ -267,10 +271,12 @@ public class BukkitBootstrap extends JavaPlugin {
             return;
         }
 
+        logger.warn("Failed to download/relocate jar. Searching disk instead.", lastEx);
+
         try {
             injectArtifact(builder, jarsDir, classLoader, rules);
         } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
-            logger.error(lastEx.getMessage(), lastEx);
+            throw new RuntimeException("Could not download/relocate jar, and no on-disk option is available.", lastEx);
         }
     }
 
