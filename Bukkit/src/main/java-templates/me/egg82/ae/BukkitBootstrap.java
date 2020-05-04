@@ -159,7 +159,7 @@ public class BukkitBootstrap extends JavaPlugin {
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(javassist, jarsDir, classLoader, "Javassist");
 
-        Artifact.Builder javaxAnnotationApi = Artifact.builder("javax.annotation", "javax.annotation-api", "${javaxannotation.version", cacheDir)
+        Artifact.Builder javaxAnnotationApi = Artifact.builder("javax.annotation", "javax.annotation-api", "${javaxannotation.version}", cacheDir)
                 .addRepository(Repository.builder("https://repo1.maven.org/maven2/").addProxy("https://nexus.egg82.me/repository/maven-central/").build());
         buildInject(javaxAnnotationApi, jarsDir, classLoader, "Javax Annotations");
 
@@ -237,12 +237,12 @@ public class BukkitBootstrap extends JavaPlugin {
             return;
         }
 
-        logger.warn("Failed to download/relocate jar. Searching disk instead.", lastEx);
+        logger.warn("Failed to download/relocate " + builder.getGroupId() + ":" + builder.getArtifactId() + "-" + builder.getVersion() + ". Searching disk instead.", lastEx);
 
         try {
             injectArtifact(builder, jarsDir, classLoader, null);
         } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
-            throw new RuntimeException("Could not download/relocate jar, and no on-disk option is available.", lastEx);
+            throw new RuntimeException("Could not download/relocate " + builder.getGroupId() + ":" + builder.getArtifactId() + "-" + builder.getVersion() + ", and no on-disk option is available.", lastEx);
         }
     }
 
@@ -271,12 +271,12 @@ public class BukkitBootstrap extends JavaPlugin {
             return;
         }
 
-        logger.warn("Failed to download/relocate jar. Searching disk instead.", lastEx);
+        logger.warn("Failed to download/relocate " + builder.getGroupId() + ":" + builder.getArtifactId() + "-" + builder.getVersion() + ". Searching disk instead.", lastEx);
 
         try {
             injectArtifact(builder, jarsDir, classLoader, rules);
         } catch (IOException | IllegalAccessException | InvocationTargetException ex) {
-            throw new RuntimeException("Could not download/relocate jar, and no on-disk option is available.", lastEx);
+            throw new RuntimeException("Could not download/relocate " + builder.getGroupId() + ":" + builder.getArtifactId() + "-" + builder.getVersion() + ", and no on-disk option is available.", lastEx);
         }
     }
 
