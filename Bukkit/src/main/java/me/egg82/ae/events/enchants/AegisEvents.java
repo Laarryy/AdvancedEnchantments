@@ -20,7 +20,6 @@ public class AegisEvents extends EventHolder {
         events.add(
                 BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.aegis"))
                         .handler(this::damageByEntity)

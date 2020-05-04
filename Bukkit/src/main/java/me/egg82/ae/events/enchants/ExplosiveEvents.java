@@ -29,7 +29,7 @@ public class ExplosiveEvents extends EventHolder {
 
     public ExplosiveEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !CollectionProvider.getExplosive().contains(e.getBlock().getLocation()))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.explosive"))

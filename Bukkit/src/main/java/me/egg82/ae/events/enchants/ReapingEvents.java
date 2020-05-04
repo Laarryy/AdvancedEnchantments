@@ -26,7 +26,7 @@ public class ReapingEvents extends EventHolder {
         this.commandManager = commandManager;
 
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.MONITOR)
                         .filter(e -> e.getEntity().getKiller() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.reaping"))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.vorpal"))

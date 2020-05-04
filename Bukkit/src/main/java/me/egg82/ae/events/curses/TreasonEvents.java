@@ -24,9 +24,8 @@ import org.bukkit.plugin.Plugin;
 public class TreasonEvents extends EventHolder {
     public TreasonEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.curse.treason"))
                         .handler(this::damage)

@@ -33,7 +33,7 @@ public class BurstEvents extends EventHolder {
         this.plugin = plugin;
 
         events.add(
-                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.burst"))
                         .handler(this::shoot)

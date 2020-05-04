@@ -22,13 +22,13 @@ import org.bukkit.plugin.Plugin;
 public class ProficiencyEvents extends EventHolder {
     public ProficiencyEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.proficiency"))
                         .handler(this::blockBreak)
         );
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.LOW)
                         .filter(e -> e.getEntity().getKiller() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.proficiency"))
                         .handler(this::death)
@@ -36,11 +36,11 @@ public class ProficiencyEvents extends EventHolder {
         try {
             Class.forName("org.bukkit.event.player.PlayerFishEvent");
             events.add(
-                    BukkitEvents.subscribe(plugin, PlayerFishEvent.class, EventPriority.NORMAL)
+                    BukkitEvents.subscribe(plugin, PlayerFishEvent.class, EventPriority.LOW)
                             .filter(BukkitEventFilters.ignoreCancelled())
                             .handler(this::fish)
             );
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) { }
     }
 
     private void blockBreak(BlockBreakEvent event) {

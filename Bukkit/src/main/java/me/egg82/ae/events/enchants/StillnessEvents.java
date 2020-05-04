@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 public class StillnessEvents extends EventHolder {
     public StillnessEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.stillness"))
                         .handler(this::blockBreak)

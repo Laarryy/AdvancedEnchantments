@@ -53,16 +53,16 @@ public class ArtisanEvents extends EventHolder {
 
     public ArtisanEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !CollectionProvider.getArtisan().contains(e.getBlock().getLocation()))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.artisan"))
                         .handler(this::blockBreak)
         );
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerInteractEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, PlayerInteractEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(e -> e.hasBlock())
+                        .filter(PlayerInteractEvent::hasBlock)
                         .filter(e -> !CollectionProvider.getArtisan().contains(e.getClickedBlock().getLocation()))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.artisan"))
                         .handler(this::hoeInteract)

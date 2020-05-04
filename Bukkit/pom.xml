@@ -195,6 +195,10 @@
             <id>plan</id>
             <url>https://dl.bintray.com/rsl1122/Plan-repository</url>
         </repository>
+        <repository>
+            <id>factions</id>
+            <url>http://ci.ender.zone/plugin/repository/everything/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -284,18 +288,8 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.palmergames.bukkit.towny</groupId>
-            <artifactId>Towny</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>de.slikey</groupId>
             <artifactId>EffectLib</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q.worldguard</groupId>
-            <artifactId>worldguard-bukkit</artifactId>
             <scope>provided</scope>
         </dependency>
 

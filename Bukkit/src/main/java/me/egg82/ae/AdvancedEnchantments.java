@@ -20,7 +20,9 @@ import me.egg82.ae.events.curses.*;
 import me.egg82.ae.events.enchants.*;
 import me.egg82.ae.extended.CachedConfigValues;
 import me.egg82.ae.extended.Configuration;
-import me.egg82.ae.hooks.*;
+import me.egg82.ae.hooks.PlayerAnalyticsHook;
+import me.egg82.ae.hooks.PluginHook;
+import me.egg82.ae.hooks.ProtocolLibHook;
 import me.egg82.ae.services.GameAnalyticsErrorHandler;
 import me.egg82.ae.services.PluginMessageFormatter;
 import me.egg82.ae.services.block.FakeBlockHandler;
@@ -329,22 +331,6 @@ public class AdvancedEnchantments {
             ProtocolLibHook.create(plugin, protocolLib);
         } else {
             consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_DISABLE, "{plugin}", "ProtocolLib");
-        }
-
-        Plugin towny;
-        if ((towny = manager.getPlugin("Towny")) != null) {
-            consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_ENABLE, "{plugin}", "Towny");
-            TownyHook.create(plugin, towny);
-        } else {
-            consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_DISABLE, "{plugin}", "Towny");
-        }
-
-        Plugin worldGuard;
-        if ((worldGuard = manager.getPlugin("WorldGuard")) != null) {
-            consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_ENABLE, "{plugin}", "WorldGuard");
-            WorldGuardHook.create(plugin, worldGuard);
-        } else {
-            consoleCommandIssuer.sendInfo(Message.GENERAL__HOOK_DISABLE, "{plugin}", "WorldGuard");
         }
     }
 

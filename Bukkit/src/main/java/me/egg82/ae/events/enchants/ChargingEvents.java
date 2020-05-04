@@ -22,9 +22,8 @@ import org.bukkit.plugin.Plugin;
 public class ChargingEvents extends EventHolder {
     public ChargingEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager().isOnGround())
                         .filter(e -> e.getDamager() instanceof Player)
                         .filter(e -> ((Player) e.getDamager()).isSprinting())

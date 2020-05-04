@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 public class StickinessEvents extends EventHolder {
     public StickinessEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, PlayerItemHeldEvent.class, EventPriority.LOWEST)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.curse.stickiness"))
                         .handler(this::held)

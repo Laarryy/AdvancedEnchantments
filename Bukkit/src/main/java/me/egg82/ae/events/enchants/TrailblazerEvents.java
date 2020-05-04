@@ -19,7 +19,7 @@ import org.bukkit.plugin.Plugin;
 public class TrailblazerEvents extends EventHolder {
     public TrailblazerEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, PlayerMoveEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> !LocationUtil.isBlockEqual(e.getFrom(), e.getTo()))
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.trailblazer"))

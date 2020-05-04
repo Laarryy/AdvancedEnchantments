@@ -30,7 +30,7 @@ import org.bukkit.util.Vector;
 public class MultishotEvents extends EventHolder {
     public MultishotEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.multishot"))
                         .handler(this::shoot)
@@ -45,7 +45,7 @@ public class MultishotEvents extends EventHolder {
         );
 
         events.add(
-                BukkitEvents.subscribe(plugin, ItemDespawnEvent.class, EventPriority.HIGHEST)
+                BukkitEvents.subscribe(plugin, ItemDespawnEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .handler(e -> CollectionProvider.getMultishot().remove(e.getEntity().getUniqueId()))
         );

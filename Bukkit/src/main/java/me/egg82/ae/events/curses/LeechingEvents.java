@@ -31,9 +31,8 @@ public class LeechingEvents extends EventHolder {
         this.effectManager = effectManager;
 
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.curse.leeching"))
                         .handler(this::damage)

@@ -26,15 +26,14 @@ import org.bukkit.plugin.Plugin;
 public class RampageEvents extends EventHolder {
     public RampageEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.rampage"))
                         .handler(this::damage)
         );
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.MONITOR)
                         .filter(e -> e.getEntity().getKiller() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.rampage"))
                         .handler(this::death)

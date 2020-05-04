@@ -26,9 +26,8 @@ public class ThunderousEvents extends EventHolder {
         this.plugin = plugin;
 
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.thunderous"))
                         .handler(this::damage)

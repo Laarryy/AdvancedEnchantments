@@ -20,13 +20,13 @@ import org.bukkit.plugin.Plugin;
 public class SoulboundEvents extends EventHolder {
     public SoulboundEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.LOW)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.soulbound"))
                         .handler(this::death)
         );
 
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerRespawnEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, PlayerRespawnEvent.class, EventPriority.MONITOR)
                         .handler(this::respawn)
         );
     }

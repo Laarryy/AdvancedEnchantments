@@ -38,7 +38,7 @@ public class MirageEvents extends EventHolder {
         this.effectManager = effectManager;
 
         events.add(
-                BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, PlayerAnimationEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> e.getAnimationType() == PlayerAnimationType.ARM_SWING)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.enchant.mirage"))

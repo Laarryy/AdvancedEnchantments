@@ -23,9 +23,8 @@ import org.bukkit.potion.PotionEffectType;
 public class BlindingEvents extends EventHolder {
     public BlindingEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getDamager() instanceof LivingEntity && e.getEntity() instanceof LivingEntity)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getDamager(), "ae.enchant.blinding"))
                         .handler(this::damage)

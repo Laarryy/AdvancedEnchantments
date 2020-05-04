@@ -18,14 +18,14 @@ import org.bukkit.plugin.Plugin;
 public class AdherenceEvents extends EventHolder {
     public AdherenceEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, InventoryClickEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getWhoClicked(), "ae.curse.adherence"))
                         .filter(e -> !e.getWhoClicked().hasPermission("ae.admin"))
                         .handler(this::click)
         );
         events.add(
-                BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, InventoryDragEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getWhoClicked(), "ae.curse.adherence"))
                         .filter(e -> !e.getWhoClicked().hasPermission("ae.admin"))
@@ -33,7 +33,7 @@ public class AdherenceEvents extends EventHolder {
         );
 
         events.add(
-                BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, InventoryMoveItemEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> {
                             if (e.getSource().getViewers().isEmpty()) {

@@ -22,7 +22,7 @@ import org.bukkit.plugin.Plugin;
 public class MisfortuneEvents extends EventHolder {
     public MisfortuneEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, BlockBreakEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> e.getPlayer().getGameMode() != GameMode.CREATIVE)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.curse.misfortune"))

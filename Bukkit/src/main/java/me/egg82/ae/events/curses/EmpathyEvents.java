@@ -21,9 +21,8 @@ import org.bukkit.plugin.Plugin;
 public class EmpathyEvents extends EventHolder {
     public EmpathyEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .handler(this::damageNearby)
         );
     }

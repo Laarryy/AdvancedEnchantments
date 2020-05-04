@@ -1,6 +1,9 @@
 package me.egg82.ae.utils;
 
-import java.util.*;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Random;
+import java.util.TreeMap;
 import me.egg82.ae.api.AdvancedEnchantment;
 import org.bukkit.enchantments.Enchantment;
 import org.slf4j.Logger;

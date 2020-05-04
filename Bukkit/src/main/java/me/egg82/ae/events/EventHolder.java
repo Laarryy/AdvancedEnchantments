@@ -2,13 +2,11 @@ package me.egg82.ae.events;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import me.egg82.ae.EnchantAPI;
-import me.egg82.ae.hooks.TownyHook;
-import me.egg82.ae.hooks.WorldGuardHook;
+import me.egg82.ae.services.entity.EntityItemHandler;
 import ninja.egg82.events.BukkitEventSubscriber;
 import ninja.egg82.service.ServiceLocator;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import ninja.egg82.service.ServiceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,14 +25,14 @@ public abstract class EventHolder {
         }
     }
 
-    protected final boolean compatIgnoreCancelled(EntityDamageByEntityEvent event) {
+    protected EntityItemHandler getItemHandler() {
+        EntityItemHandler retVal;
         try {
-            Optional<TownyHook> townyHook = ServiceLocator.getOptional(TownyHook.class);
-            Optional<WorldGuardHook> worldGuardHook = ServiceLocator.getOptional(WorldGuardHook.class);
-            return
-                    (!townyHook.isPresent() || townyHook.get().ignoreCancelled(event))
-                    && (!worldGuardHook.isPresent() || worldGuardHook.get().ignoreCancelled(event))
-            ;
-        } catch (InstantiationException | IllegalAccessException ignored) { return true; }
+            retVal = ServiceLocator.get(EntityItemHandler.class);
+        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
+            logger.error(ex.getMessage(), ex);
+            return null;
+        }
+        return retVal;
     }
 }

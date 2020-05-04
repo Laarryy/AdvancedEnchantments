@@ -2,7 +2,8 @@ package me.egg82.ae.commands.internal;
 
 import co.aikar.commands.CommandIssuer;
 import java.util.Optional;
-import me.egg82.ae.api.*;
+import me.egg82.ae.api.BukkitEnchantableItem;
+import me.egg82.ae.api.GenericEnchantableItem;
 import me.egg82.ae.enums.Message;
 import me.egg82.ae.services.entity.EntityItemHandler;
 import ninja.egg82.service.ServiceLocator;

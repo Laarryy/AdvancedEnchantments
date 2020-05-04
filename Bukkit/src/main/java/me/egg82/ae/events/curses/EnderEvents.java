@@ -21,9 +21,8 @@ import org.bukkit.plugin.Plugin;
 public class EnderEvents extends EventHolder {
     public EnderEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .filter(e -> e.getEntity() instanceof LivingEntity)
                         .filter(e -> ((LivingEntity) e.getEntity()).getEquipment() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.curse.ender"))
@@ -32,7 +31,7 @@ public class EnderEvents extends EventHolder {
         try {
             Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
             events.add(
-                    BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL)
+                    BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.MONITOR)
                             .filter(e -> e.getHitEntity() != null)
                             .filter(e -> e.getHitEntity() instanceof LivingEntity)
                             .filter(e -> ((LivingEntity) e.getHitEntity()).getEquipment() != null)

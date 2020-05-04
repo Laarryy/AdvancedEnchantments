@@ -25,13 +25,12 @@ import org.bukkit.plugin.Plugin;
 public class MarkingEvents extends EventHolder {
     public MarkingEvents(Plugin plugin) {
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.LOW)
                         .filter(BukkitEventFilters.ignoreCancelled())
-                        .filter(this::compatIgnoreCancelled)
                         .handler(this::damageIncrease)
         );
         events.add(
-                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityShootBowEvent.class, EventPriority.MONITOR)
                         .filter(BukkitEventFilters.ignoreCancelled())
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity(), "ae.enchant.marking"))
                         .handler(this::shoot)
@@ -39,13 +38,13 @@ public class MarkingEvents extends EventHolder {
         try {
             Class.forName("org.bukkit.event.entity.ProjectileHitEvent");
             events.add(
-                    BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.NORMAL)
+                    BukkitEvents.subscribe(plugin, ProjectileHitEvent.class, EventPriority.MONITOR)
                             .filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getEntity().getUniqueId()))
                             .handler(this::hit)
             );
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) { }
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDamageByEntityEvent.class, EventPriority.MONITOR)
                         .filter(e -> CollectionProvider.getMarkingArrows().containsKey(e.getDamager().getUniqueId()))
                         .handler(this::damageMark)
         );

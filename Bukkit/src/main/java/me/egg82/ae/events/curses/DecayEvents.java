@@ -17,12 +17,12 @@ public class DecayEvents extends EventHolder {
         try {
             Class.forName("org.bukkit.event.player.PlayerItemDamageEvent");
             events.add(
-                    BukkitEvents.subscribe(plugin, PlayerItemDamageEvent.class, EventPriority.NORMAL)
+                    BukkitEvents.subscribe(plugin, PlayerItemDamageEvent.class, EventPriority.LOW)
                             .filter(BukkitEventFilters.ignoreCancelled())
                             .filter(e -> PermissionUtil.canUseEnchant(e.getPlayer(), "ae.curse.decay"))
                             .handler(this::damage)
             );
-        } catch (ClassNotFoundException ignored) {}
+        } catch (ClassNotFoundException ignored) { }
     }
 
     private void damage(PlayerItemDamageEvent event) {

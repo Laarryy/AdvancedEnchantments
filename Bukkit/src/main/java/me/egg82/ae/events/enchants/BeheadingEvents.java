@@ -54,7 +54,7 @@ public class BeheadingEvents extends EventHolder {
         this.plugin = plugin;
 
         events.add(
-                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.NORMAL)
+                BukkitEvents.subscribe(plugin, EntityDeathEvent.class, EventPriority.MONITOR)
                         .filter(e -> e.getEntity().getKiller() != null)
                         .filter(e -> PermissionUtil.canUseEnchant(e.getEntity().getKiller(), "ae.enchant.beheading"))
                         .handler(this::death)
