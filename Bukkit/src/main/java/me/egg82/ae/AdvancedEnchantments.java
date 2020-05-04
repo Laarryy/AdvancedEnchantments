@@ -32,6 +32,7 @@ import ninja.egg82.events.BukkitEvents;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
 import ninja.egg82.updater.SpigotUpdater;
+import ninja.egg82.updater.Updater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -357,9 +358,9 @@ public class AdvancedEnchantments {
             return;
         }
 
-        SpigotUpdater updater;
+        Updater updater;
         try {
-            updater = ServiceLocator.get(SpigotUpdater.class);
+            updater = ServiceLocator.get(Updater.class);
         } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
             logger.error(ex.getMessage(), ex);
             return;

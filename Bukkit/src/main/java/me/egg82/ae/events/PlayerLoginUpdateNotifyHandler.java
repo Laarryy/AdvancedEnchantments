@@ -9,7 +9,7 @@ import me.egg82.ae.extended.Configuration;
 import me.egg82.ae.utils.ConfigUtil;
 import ninja.egg82.service.ServiceLocator;
 import ninja.egg82.service.ServiceNotFoundException;
-import ninja.egg82.updater.SpigotUpdater;
+import ninja.egg82.updater.Updater;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
@@ -37,10 +37,10 @@ public class PlayerLoginUpdateNotifyHandler implements Consumer<PlayerLoginEvent
             return;
         }
 
-        SpigotUpdater updater;
+        Updater updater;
 
         try {
-            updater = ServiceLocator.get(SpigotUpdater.class);
+            updater = ServiceLocator.get(Updater.class);
         } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
             logger.error(ex.getMessage(), ex);
             return;
