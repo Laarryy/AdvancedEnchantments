@@ -47,11 +47,8 @@ public class MirageEvents extends EventHolder {
     }
 
     private void swing(PlayerAnimationEvent event) {
-        EntityItemHandler entityItemHandler;
-        try {
-            entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
-        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
+        EntityItemHandler entityItemHandler = getItemHandler();
+        if (entityItemHandler == null) {
             return;
         }
 

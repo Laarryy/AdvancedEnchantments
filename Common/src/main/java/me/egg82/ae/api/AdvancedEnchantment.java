@@ -46,6 +46,7 @@ public abstract class AdvancedEnchantment extends GenericEnchantment {
     public static final AdvancedEnchantment THUNDEROUS = new ThunderousEnchantment();
     public static final AdvancedEnchantment TORNADO = new TornadoEnchantment();
     public static final AdvancedEnchantment TRAILBLAZER = new TrailblazerEnchantment();
+    public static final AdvancedEnchantment VACUUM = new VacuumEnchantment();
     public static final AdvancedEnchantment VAMPIRIC = new VampiricEnchantment();
     public static final AdvancedEnchantment VORPAL = new VorpalEnchantment();
 

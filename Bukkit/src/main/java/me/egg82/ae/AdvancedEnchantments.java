@@ -280,6 +280,7 @@ public class AdvancedEnchantments {
         eventHolders.add(new ThunderousEvents(plugin));
         eventHolders.add(new TornadoEvents(plugin, effectManager));
         eventHolders.add(new TrailblazerEvents(plugin));
+        eventHolders.add(new VacuumEvents(plugin, commandManager));
         eventHolders.add(new VampiricEvents(plugin, effectManager));
 
         eventHolders.add(new AdherenceEvents(plugin));
@@ -306,6 +307,8 @@ public class AdvancedEnchantments {
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskRepairing(), 0L, 100L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskWither(), 0L, 40L));
         tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskVoid(), 0L, 100L));
+
+        tasks.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new TaskClearSouls(), 0L, 100L));
     }
 
     private void loadHooks() {

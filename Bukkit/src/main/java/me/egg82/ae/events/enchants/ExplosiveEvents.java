@@ -11,8 +11,6 @@ import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.*;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
-import ninja.egg82.service.ServiceLocator;
-import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -39,11 +37,8 @@ public class ExplosiveEvents extends EventHolder {
     }
 
     private void blockBreak(BlockBreakEvent event) {
-        EntityItemHandler entityItemHandler;
-        try {
-            entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
-        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
+        EntityItemHandler entityItemHandler = getItemHandler();
+        if (entityItemHandler == null) {
             return;
         }
 

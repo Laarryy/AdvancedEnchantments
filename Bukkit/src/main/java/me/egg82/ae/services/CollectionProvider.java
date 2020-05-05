@@ -42,6 +42,9 @@ public class CollectionProvider {
     private static Map<UUID, Integer> markingArrows = new HashMap<>();
     public static Map<UUID, Integer> getMarkingArrows() { return markingArrows; }
 
+    private static Set<UUID> souls = new HashSet<>();
+    public static Set<UUID> getSouls() { return souls; }
+
     private static ExpiringMap<UUID, Double> marking = ExpiringMap.builder().variableExpiration().expirationPolicy(ExpirationPolicy.CREATED).build();
     public static ExpiringMap<UUID, Double> getMarking() { return marking; }
 

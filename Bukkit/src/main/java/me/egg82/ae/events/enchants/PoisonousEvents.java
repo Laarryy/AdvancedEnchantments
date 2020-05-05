@@ -10,8 +10,6 @@ import me.egg82.ae.services.entity.EntityItemHandler;
 import me.egg82.ae.utils.PermissionUtil;
 import ninja.egg82.events.BukkitEventFilters;
 import ninja.egg82.events.BukkitEvents;
-import ninja.egg82.service.ServiceLocator;
-import ninja.egg82.service.ServiceNotFoundException;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -32,11 +30,8 @@ public class PoisonousEvents extends EventHolder {
     }
 
     private void damage(EntityDamageByEntityEvent event) {
-        EntityItemHandler entityItemHandler;
-        try {
-            entityItemHandler = ServiceLocator.get(EntityItemHandler.class);
-        } catch (InstantiationException | IllegalAccessException | ServiceNotFoundException ex) {
-            logger.error(ex.getMessage(), ex);
+        EntityItemHandler entityItemHandler = getItemHandler();
+        if (entityItemHandler == null) {
             return;
         }
 
